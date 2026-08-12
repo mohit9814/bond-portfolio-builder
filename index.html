@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bond Ladder Portfolio Architect</title>
+    <meta name="description" content="Generate a well-diversified bond portfolio maturity ladder and compare returns with Fixed Deposits." />
+  </head>
+  <body>
+    <div class="app-container">
+      <div id="shared-banner" style="display: none; background: rgba(212, 175, 55, 0.15); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 12px; padding: 0.75rem 1.5rem; margin-bottom: 1.5rem; justify-content: space-between; align-items: center; gap: 1rem; color: var(--text-primary);">
+        <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem;">
+          <span style="font-size: 1.1rem;">📄</span>
+          <span><strong>Viewing Shared Proposal (Read-Only Mode)</strong>. Changes are disabled.</span>
+        </div>
+        <a href="/" style="font-size: 0.85rem; color: var(--accent-gold); font-weight: 600; text-decoration: none; border: 1px solid var(--accent-gold); padding: 0.35rem 0.75rem; border-radius: 8px; background: rgba(212, 175, 55, 0.05); transition: all 0.2s;">Create Custom Proposal</a>
+      </div>
+
+      <header>
+        <div class="logo">
+          <h1>Bond Portfolio Architect</h1>
+          <p>Optimize yield & match liquidity with structured laddering</p>
+        </div>
+        <div style="display: flex; gap: 0.75rem; align-items: center;">
+          <button id="share-proposal" class="btn" style="background: rgba(212, 175, 55, 0.15); color: var(--accent-gold); border-color: rgba(212, 175, 55, 0.3);">Share Proposal</button>
+          <button id="export-excel" class="btn" style="background: linear-gradient(135deg, var(--accent-green) 0%, #059669 100%); color: white; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);">Export Excel</button>
+          <button id="export-pdf" class="btn">Export PDF</button>
+        </div>
+      </header>
+
+      <main class="bento-grid">
+        <!-- Control Panel -->
+        <aside class="panel">
+          <h2>Portfolio Controls</h2>
+          
+          <div class="input-group">
+            <label for="investment-amount">Total Investment</label>
+            <input type="number" id="investment-amount" value="1000000" min="100000" step="50000" />
+            <div id="investment-helper" style="font-size: 0.85rem; color: var(--accent-gold); margin-top: 0.35rem; font-weight: 500;">₹10.00 Lakhs</div>
+          </div>
+
+          <div class="input-group">
+            <label for="investor-category">Investor Category</label>
+            <select id="investor-category" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 10px; padding: 0.75rem 1rem; color: var(--text-primary); font-family: var(--font-sans); font-size: 1rem; cursor: pointer; outline: none; transition: border-color 0.2s; width: 100%;">
+              <option value="general" selected>General Public</option>
+              <option value="senior">Senior Citizen</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label for="allocation-strategy">Allocation Strategy</label>
+            <select id="allocation-strategy" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 10px; padding: 0.75rem 1rem; color: var(--text-primary); font-family: var(--font-sans); font-size: 1rem; cursor: pointer; outline: none; transition: border-color 0.2s; width: 100%;">
+              <option value="equal" selected>Equal Weights (Balanced)</option>
+              <option value="smart">Smart Weights (Yield Maximizer)</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label for="min-rating">Minimum Credit Rating</label>
+            <select id="min-rating" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 10px; padding: 0.75rem 1rem; color: var(--text-primary); font-family: var(--font-sans); font-size: 1rem; cursor: pointer; outline: none; transition: border-color 0.2s;">
+              <option value="A" selected>A or Better (Recommended)</option>
+              <option value="BBB-">BBB- or Better</option>
+              <option value="ALL">All Ratings / Unrated</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label for="target-yield">Target Blended Yield (%)</label>
+            <input type="number" id="target-yield" placeholder="Best Possible (Default)" min="1.00" max="20.00" step="0.10" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 10px; padding: 0.75rem 1rem; color: var(--text-primary); font-family: var(--font-sans); font-size: 1.1rem; outline: none; transition: border-color 0.2s;" />
+          </div>
+
+          <div class="input-group">
+            <label for="num-issuers">Min No. of Companies (Issuers)</label>
+            <input type="number" id="num-issuers" value="10" min="5" max="25" step="1" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 10px; padding: 0.75rem 1rem; color: var(--text-primary); font-family: var(--font-sans); font-size: 1.1rem; outline: none; transition: border-color 0.2s;" />
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; margin-bottom: 1.25rem;">
+            <div class="input-group" style="flex: 1; margin-bottom: 0;">
+              <label for="min-tenure">Min Tenure (m)</label>
+              <input type="number" id="min-tenure" value="7" min="1" max="120" step="1" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 10px; padding: 0.75rem 1rem; color: var(--text-primary); font-family: var(--font-sans); font-size: 1.1rem; outline: none; transition: border-color 0.2s; width: 100%; box-sizing: border-box;" />
+            </div>
+            <div class="input-group" style="flex: 1; margin-bottom: 0;">
+              <label for="max-tenure">Max Tenure (m)</label>
+              <input type="number" id="max-tenure" value="24" min="2" max="120" step="1" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 10px; padding: 0.75rem 1rem; color: var(--text-primary); font-family: var(--font-sans); font-size: 1.1rem; outline: none; transition: border-color 0.2s; width: 100%; box-sizing: border-box;" />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="target-quarterly-cashflow">Target Quarterly Cashflow (%) <span style="font-size: 0.75rem; color: var(--accent-gold); font-weight: 500;">(Optional)</span></label>
+            <input type="number" id="target-quarterly-cashflow" placeholder="e.g. 5.0 (5% per quarter)" min="0.5" max="25.0" step="0.5" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 10px; padding: 0.75rem 1rem; color: var(--text-primary); font-family: var(--font-sans); font-size: 1.1rem; outline: none; transition: border-color 0.2s;" />
+          </div>
+
+          <div class="input-group">
+            <label>Bond Inventory</label>
+            <div id="drop-zone" class="file-upload">
+              <span class="file-upload-text">
+                Drag & drop excel or <strong>Browse</strong>
+              </span>
+              <input type="file" id="file-input" accept=".xlsx, .csv" />
+            </div>
+            <p id="file-status" style="font-size: 0.8rem; color: var(--accent-green); margin-top: 0.25rem;">
+              ✓ Preloaded default inventory (261 bonds)
+            </p>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem; align-items: stretch; margin-bottom: 1.25rem;">
+            <select id="optimize-vary" style="flex: 0 0 auto; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 10px; padding: 0.5rem 0.6rem; color: var(--text-primary); font-family: var(--font-sans); font-size: 0.8rem; cursor: pointer; outline: none;">
+              <option value="both" selected>Vary Both</option>
+              <option value="tenure">Vary Max Tenure</option>
+              <option value="issuers">Vary No. of Issuers</option>
+            </select>
+            <button id="optimize-yield-btn" class="btn" style="flex: 1; padding: 0.65rem 1rem; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; font-weight: 600; font-size: 0.85rem; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3); transition: all 0.2s;">
+              🔍 Find Best Yield
+            </button>
+          </div>
+
+          <div class="input-group fd-rates-section" style="margin-top: 1rem; margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;" id="toggle-fd-rates">
+              <label style="margin: 0; cursor: pointer;">Configure FD Rates Table</label>
+              <span id="fd-toggle-icon" style="font-size: 0.8rem; color: var(--accent-gold); transition: transform 0.2s;">▼</span>
+            </div>
+            
+            <div id="fd-rates-table-container" style="margin-top: 0.75rem; background: rgba(0, 0, 0, 0.2); border-radius: 8px; padding: 0.5rem; border: 1px solid var(--border-glass); max-height: 200px; overflow-y: auto;">
+              <table class="fd-config-table" style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left;">
+                <thead>
+                  <tr style="border-bottom: 1px solid var(--border-glass);">
+                    <th style="padding: 0.25rem 0.5rem; color: var(--text-secondary);">Tenure</th>
+                    <th style="padding: 0.25rem 0.5rem; color: var(--text-secondary); text-align: right;">Rate (%)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="padding: 0.25rem 0.5rem;">&lt; 46 Days</td>
+                    <td style="padding: 0.25rem 0.5rem; text-align: right;"><input type="number" id="fd-t1" value="2.75" step="0.05" style="width: 60px; text-align: right; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 4px; color: var(--text-primary); padding: 2px 4px; font-size: 0.8rem;" /></td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 0.25rem 0.5rem;">46 - 183 Days</td>
+                    <td style="padding: 0.25rem 0.5rem; text-align: right;"><input type="number" id="fd-t2" value="4.25" step="0.05" style="width: 60px; text-align: right; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 4px; color: var(--text-primary); padding: 2px 4px; font-size: 0.8rem;" /></td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 0.25rem 0.5rem;">184 - 365 Days</td>
+                    <td style="padding: 0.25rem 0.5rem; text-align: right;"><input type="number" id="fd-t3" value="5.75" step="0.05" style="width: 60px; text-align: right; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 4px; color: var(--text-primary); padding: 2px 4px; font-size: 0.8rem;" /></td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 0.25rem 0.5rem;">1 - 2 Years</td>
+                    <td style="padding: 0.25rem 0.5rem; text-align: right;"><input type="number" id="fd-t4" value="6.25" step="0.05" style="width: 60px; text-align: right; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 4px; color: var(--text-primary); padding: 2px 4px; font-size: 0.8rem;" /></td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 0.25rem 0.5rem;">2 - 3 Years</td>
+                    <td style="padding: 0.25rem 0.5rem; text-align: right;"><input type="number" id="fd-t5" value="6.45" step="0.05" style="width: 60px; text-align: right; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 4px; color: var(--text-primary); padding: 2px 4px; font-size: 0.8rem;" /></td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 0.25rem 0.5rem;">3 - 5 Years</td>
+                    <td style="padding: 0.25rem 0.5rem; text-align: right;"><input type="number" id="fd-t6" value="6.50" step="0.05" style="width: 60px; text-align: right; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 4px; color: var(--text-primary); padding: 2px 4px; font-size: 0.8rem;" /></td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 0.25rem 0.5rem;">5 - 10 Years</td>
+                    <td style="padding: 0.25rem 0.5rem; text-align: right;"><input type="number" id="fd-t7" value="6.50" step="0.05" style="width: 60px; text-align: right; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 4px; color: var(--text-primary); padding: 2px 4px; font-size: 0.8rem;" /></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <button id="generate-btn" class="btn" style="width: 100%;">Rebalance Portfolio</button>
+        </aside>
+
+        <!-- Dashboard Workspace -->
+        <section class="dashboard">
+          
+          <!-- KPIs -->
+          <div class="kpi-row">
+            <div class="kpi-card gold">
+              <span class="kpi-label">Pre-Tax Extra Profit (Alpha)</span>
+              <div class="kpi-value" id="kpi-alpha">₹72,400</div>
+              <span class="kpi-subtext" id="kpi-alpha-pct">Over and above FD returns</span>
+            </div>
+
+            <div class="kpi-card blue">
+              <span class="kpi-label">Portfolio Yield (YTM)</span>
+              <div class="kpi-value" id="kpi-yield">9.84%</div>
+              <span class="kpi-subtext" id="kpi-yield-vs-fd">vs 7.10% FD rate</span>
+            </div>
+
+            <div class="kpi-card green">
+              <span class="kpi-label">Maturing Cash flow Stream</span>
+              <div class="kpi-value" id="kpi-bonds">12 Bonds</div>
+              <span class="kpi-subtext">Diversified maturities</span>
+            </div>
+          </div>
+
+          <!-- Tabbed Visualizations -->
+          <div class="tabs-container">
+            <button class="tab-btn active" data-tab="ladder">Maturity & Cash Flow Ladder</button>
+            <button class="tab-btn" data-tab="comparison">Yield & Growth Comparison</button>
+            <button class="tab-btn" data-tab="risk">Risk & Credit Quality</button>
+            <button class="tab-btn" data-tab="cashflow">Cash Flow Schedule</button>
+            <button class="tab-btn" data-tab="quarterly">Quarterly Cashflow Target</button>
+          </div>
+
+          <!-- Tab 1: Ladder -->
+          <div class="tab-pane active" id="tab-ladder">
+            <div class="chart-card">
+              <h3>Maturity Ladder Cash Flows</h3>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                Shows the principal and interest returned in 3-month buckets.
+              </p>
+              <div class="chart-container">
+                <canvas id="ladder-chart"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <h3>Expected Monthly Maturities</h3>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                Exact timeline of funds maturing and ready to be re-invested.
+              </p>
+              <div id="maturity-schedule-summary" style="display: flex; flex-direction: column; gap: 0.5rem; justify-content: center; min-height: 250px;">
+                <!-- Dynamic timeline of cash coming back -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 2: Comparison -->
+          <div class="tab-pane" id="tab-comparison">
+            <div class="chart-card">
+              <h3>Cumulative Value Comparison (2 Years)</h3>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                Growth path comparing your bond portfolio vs. standard Fixed Deposit interest.
+              </p>
+              <div class="chart-container">
+                <canvas id="growth-chart"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <h3>Returns Analysis</h3>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem; margin-bottom: 1.5rem;">
+                  Detailed projection based on your input parameters.
+                </p>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                  <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">
+                    <span style="color: var(--text-secondary);">Total Investment</span>
+                    <span id="detail-investment" style="font-weight: 600;">₹1,000,000</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">
+                    <span style="color: var(--text-secondary);">Avg Portfolio Yield (YTM)</span>
+                    <span id="detail-bond-yield" style="font-weight: 600; color: var(--accent-gold);">9.8%</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">
+                    <span style="color: var(--text-secondary);">FD Interest Rate</span>
+                    <span id="detail-fd-yield" style="font-weight: 600; color: var(--accent-blue);">6.2%</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">
+                    <span style="color: var(--text-secondary);">Est. Net Pre-Tax Returns (Bond)</span>
+                    <span id="detail-bond-return" style="font-weight: 600; color: var(--accent-green);">₹196,000</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">
+                    <span style="color: var(--text-secondary);">Est. Net Pre-Tax Returns (FD)</span>
+                    <span id="detail-fd-return" style="font-weight: 600;">₹124,000</span>
+                  </div>
+                </div>
+              </div>
+              <div style="background: rgba(212, 175, 55, 0.05); border: 1px solid rgba(212, 175, 55, 0.15); padding: 1rem; border-radius: 12px; font-size: 0.85rem; line-height: 1.4;">
+                <strong>💡 Pre-tax Alpha Benefit:</strong> By allocating to this diversified bond ladder, you generate an estimated additional <span id="detail-alpha-val" style="font-weight: 700; color: var(--accent-gold);">₹72,000</span> of yield over 2 years compared to standard bank FDs.
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 3: Risk Profile -->
+          <div class="tab-pane" id="tab-risk">
+            <div class="chart-card">
+              <h3>Credit Quality Profile</h3>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                Distribution of bond holdings by standardized credit ratings.
+              </p>
+              <div class="chart-container" style="height: 220px;">
+                <canvas id="rating-chart"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <h3>Credit Safety Benchmarks</h3>
+              <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.85rem; margin-top: 0.5rem;">
+                <div style="display: flex; gap: 0.75rem; align-items: start;">
+                  <span class="rating-badge sovereign" style="min-width: 90px; text-align: center;">Sovereign</span>
+                  <p style="color: var(--text-secondary);"><strong style="color: var(--text-primary);">Government Backed.</strong> Issued by central or state governments. Considered risk-free with zero default risk.</p>
+                </div>
+                <div style="display: flex; gap: 0.75rem; align-items: start;">
+                  <span class="rating-badge high-grade" style="min-width: 90px; text-align: center;">AAA</span>
+                  <p style="color: var(--text-secondary);"><strong style="color: var(--text-primary);">Highest Safety.</strong> Extremely strong capacity to meet financial obligations. Default risk is negligible.</p>
+                </div>
+                <div style="display: flex; gap: 0.75rem; align-items: start;">
+                  <span class="rating-badge" style="min-width: 90px; text-align: center; background: rgba(59, 130, 246, 0.15); color: #60a5fa;">AA / AA+ / AA-</span>
+                  <p style="color: var(--text-secondary);"><strong style="color: var(--text-primary);">High Safety.</strong> Very strong capacity to meet financial obligations. Very low default risk.</p>
+                </div>
+                <div style="display: flex; gap: 0.75rem; align-items: start;">
+                  <span class="rating-badge" style="min-width: 90px; text-align: center; background: rgba(244, 114, 182, 0.15); color: #f472b6;">A / A+ / A-</span>
+                  <p style="color: var(--text-secondary);"><strong style="color: var(--text-primary);">Adequate Safety.</strong> Safe, but more susceptible to changes in economic conditions than higher ratings.</p>
+                </div>
+                <div style="display: flex; gap: 0.75rem; align-items: start;">
+                  <span class="rating-badge" style="min-width: 90px; text-align: center; background: rgba(251, 113, 133, 0.15); color: #fb7185;">BBB & below</span>
+                  <p style="color: var(--text-secondary);"><strong style="color: var(--text-primary);">Moderate Safety.</strong> Adequate default protection, but adverse economic conditions are more likely to weaken capacity to service debt.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Company Concentration Card -->
+            <div class="chart-card" style="grid-column: span 2;">
+              <h3>Issuer Diversification & Company Concentration (Clubbed Allocation)</h3>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+                Aggregated holdings by parent entity to ensure regulatory diversification limits are met.
+              </p>
+              <div id="company-allocations-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.75rem;">
+                <!-- Dynamically injected company blocks -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 4: Cash Flow Schedule -->
+          <div class="tab-pane" id="tab-cashflow">
+            <div class="chart-card" style="grid-column: span 2;">
+              <h3>Detailed Cash Flow Schedule</h3>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                Maturing cash inflow details showing the principal and interest breakdown for each bond in the portfolio.
+              </p>
+              <div style="overflow-x: auto; background: rgba(0, 0, 0, 0.2); border-radius: 12px; border: 1px solid var(--border-glass);">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+                  <thead>
+                    <tr style="border-bottom: 1px solid var(--border-glass); background: rgba(255, 255, 255, 0.02);">
+                      <th style="padding: 1rem;">Maturity Month</th>
+                      <th style="padding: 1rem;">Redemption Date</th>
+                      <th style="padding: 1rem;">Bond ISIN</th>
+                      <th style="padding: 1rem;">Issuer</th>
+                      <th style="padding: 1rem; text-align: right;">Principal Returned</th>
+                      <th style="padding: 1rem; text-align: right;">Interest Earned</th>
+                      <th style="padding: 1rem; text-align: right;">Total Cash Inflow</th>
+                    </tr>
+                  </thead>
+                  <tbody id="cashflow-table-body">
+                    <!-- Dynamic rows -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 5: Quarterly Cashflow Target -->
+          <div class="tab-pane" id="tab-quarterly">
+            <div class="chart-card" style="grid-column: span 2;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div>
+                  <h3 style="margin-bottom: 0.25rem;">Quarterly Cashflow Requirement Tracker</h3>
+                  <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0;">
+                    Monitors whether maturity cashflows (principal + interest) satisfy the customer's desired quarterly payout target.
+                  </p>
+                </div>
+                <div id="quarterly-target-badge" style="padding: 0.5rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.9rem; background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass);">
+                  Target: Not Set
+                </div>
+              </div>
+
+              <div style="overflow-x: auto; background: rgba(0, 0, 0, 0.2); border-radius: 12px; border: 1px solid var(--border-glass);">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+                  <thead>
+                    <tr style="border-bottom: 1px solid var(--border-glass); background: rgba(255, 255, 255, 0.02);">
+                      <th style="padding: 0.85rem 1rem;">Quarter</th>
+                      <th style="padding: 0.85rem 1rem;">Time Period</th>
+                      <th style="padding: 0.85rem 1rem; text-align: right;">Required Cashflow</th>
+                      <th style="padding: 0.85rem 1rem; text-align: right;">Actual Cashflow</th>
+                      <th style="padding: 0.85rem 1rem; text-align: right;">Coverage %</th>
+                      <th style="padding: 0.85rem 1rem; text-align: right;">Surplus / Deficit</th>
+                      <th style="padding: 0.85rem 1rem; text-align: center;">Target Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="quarterly-table-body">
+                    <!-- Dynamic rows -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table of Selected Bonds -->
+          <div class="table-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h3 style="margin-bottom: 0;">Diversified Investment Portfolio Allocation</h3>
+              <button id="customize-alloc-btn" class="btn" style="padding: 0.4rem 0.85rem; font-size: 0.8rem; background: linear-gradient(135deg, var(--accent-gold) 0%, #b8860b 100%); color: #000; font-weight: 600; border-radius: 8px; border: none; cursor: pointer; box-shadow: 0 2px 10px rgba(212, 175, 55, 0.25);">
+                ⚙ Customize Allocations
+              </button>
+            </div>
+            <table>
+              <thead>
+                <tr id="portfolio-table-headers">
+                  <th class="sortable" data-sort="isin">ISIN <span class="sort-icon">↕</span></th>
+                  <th class="sortable" data-sort="issuer">Issuer Name <span class="sort-icon">↕</span></th>
+                  <th class="sortable" data-sort="sector">Sector / Industry <span class="sort-icon">↕</span></th>
+                  <th class="sortable" data-sort="guarantor">Guarantor <span class="sort-icon">↕</span></th>
+                  <th class="sortable" data-sort="rating">Credit Rating <span class="sort-icon">↕</span></th>
+                  <th class="sortable" data-sort="ratingTrend">Rating Trend <span class="sort-icon">↕</span></th>
+                  <th class="sortable" data-sort="maturity">Maturity Date <span class="sort-icon">↕</span></th>
+                  <th class="sortable active" data-sort="months">Months <span class="sort-icon">▲</span></th>
+                  <th class="sortable" data-sort="yield">Yield (YTM) <span class="sort-icon">↕</span></th>
+                  <th class="sortable" data-sort="allocatedAmount">Allocation Amount <span class="sort-icon">↕</span></th>
+                  <th style="text-align: center;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="portfolio-table-body">
+                <!-- Rows injected dynamically -->
+              </tbody>
+            </table>
+          </div>
+
+        </section>
+      </main>
+    </div>
+
+    <!-- Sleek Customisation Swap Modal -->
+    <div id="swap-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(6px);">
+      <div style="background: #111827; border: 1px solid var(--border-glass); border-radius: 16px; padding: 2rem; width: 90%; max-width: 620px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6); font-family: var(--font-sans); color: var(--text-primary);">
+        <h3 style="margin-top: 0; font-size: 1.25rem; color: var(--accent-gold); margin-bottom: 0.25rem;" id="swap-modal-title">Customise Holding</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;" id="swap-modal-subtitle">Replace or exclude this bond from the recommended portfolio.</p>
+        
+        <!-- Structured Company Insights Container in Swap Modal -->
+        <div id="swap-modal-insights" style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-glass); border-radius: 12px; padding: 1rem; margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.6rem;">
+          <!-- Dynamically populated company structured insights -->
+        </div>
+
+        <div class="input-group" style="margin-bottom: 1.25rem;">
+          <label for="swap-bond-select" style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: var(--text-secondary); font-weight: 500;">Select Replacement Bond</label>
+          <select id="swap-bond-select" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 10px; padding: 0.75rem 1rem; color: var(--text-primary); width: 100%; cursor: pointer; outline: none; font-size: 0.95rem;">
+            <!-- Options dynamically populated -->
+          </select>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="display: flex; gap: 0.75rem;">
+            <button id="swap-modal-save" class="btn" style="flex: 1; padding: 0.6rem;">Apply Swap</button>
+            <button id="swap-modal-suggest" class="btn" style="flex: 1; background: var(--accent-gold); color: #000; padding: 0.6rem; font-weight: 600;">Suggest Next</button>
+          </div>
+          <button id="swap-modal-exclude" class="btn" style="width: 100%; background: rgba(239, 68, 68, 0.15); color: #ef4444; border-color: rgba(239, 68, 68, 0.3); padding: 0.6rem;">Exclude Company/Issuer</button>
+          <button id="swap-modal-cancel" class="btn" style="width: 100%; background: transparent; border-color: var(--border-glass); padding: 0.6rem;">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <!-- Yield Optimizer Results Modal -->
+    <div id="optimizer-modal" style="display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); justify-content: center; align-items: center; padding: 2rem;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 16px; padding: 1.5rem 2rem; max-width: 750px; width: 100%; max-height: 80vh; overflow-y: auto; color: var(--text-primary);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <h3 id="optimizer-modal-title" style="margin: 0; font-size: 1.1rem;">🔍 Yield Optimization Results</h3>
+          <button id="optimizer-modal-close" style="background: none; border: none; color: var(--text-secondary); font-size: 1.3rem; cursor: pointer;">✕</button>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">
+          Configurations ranked by portfolio yield. Click <strong>"Apply"</strong> to load any configuration.
+        </p>
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+          <thead>
+            <tr style="border-bottom: 1px solid var(--border-glass); text-align: left;">
+              <th style="padding: 0.5rem;">Rank</th>
+              <th style="padding: 0.5rem;">Issuers</th>
+              <th style="padding: 0.5rem;">Max Tenure</th>
+              <th style="padding: 0.5rem;">Portfolio Yield</th>
+              <th style="padding: 0.5rem;">Extra Return (₹)</th>
+              <th style="padding: 0.5rem;"></th>
+            </tr>
+          </thead>
+          <tbody id="optimizer-results-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Allocation Customization Modal -->
+    <div id="alloc-custom-modal" style="display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); justify-content: center; align-items: center; padding: 2rem;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 16px; padding: 1.75rem 2rem; max-width: 1050px; width: 100%; max-height: 85vh; overflow-y: auto; color: var(--text-primary);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+          <h3 style="margin: 0; font-size: 1.15rem; color: var(--accent-gold);">⚙ Customize Bond Allocation Amounts</h3>
+          <button id="alloc-modal-close" style="background: none; border: none; color: var(--text-secondary); font-size: 1.4rem; cursor: pointer;">✕</button>
+        </div>
+        <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.4;">
+          Adjust allocation per bond in steps of ₹10,000. Each bond's allocation is capped by its <strong>Total Tradable Face Value (FV)</strong>. The total allocated must equal your target investment.
+        </p>
+
+        <div style="overflow-x: auto; margin-bottom: 1.25rem;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+            <thead>
+              <tr style="border-bottom: 1px solid var(--border-glass); text-align: left;">
+                <th style="padding: 0.5rem;">Issuer / ISIN</th>
+                <th style="padding: 0.5rem;">Rating & Trend</th>
+                <th style="padding: 0.5rem;">Tenure</th>
+                <th style="padding: 0.5rem;">Yield (YTM)</th>
+                <th style="padding: 0.5rem;">Sector & Credit Insights</th>
+                <th style="padding: 0.5rem;">Tradable FV Cap</th>
+                <th style="padding: 0.5rem; text-align: right;">Allocation Amount (₹)</th>
+              </tr>
+            </thead>
+            <tbody id="alloc-modal-rows"></tbody>
+          </table>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid var(--border-glass);">
+          <div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary);">Total Allocated / Target</div>
+            <div id="alloc-modal-summary" style="font-weight: 700; font-size: 1.05rem;">₹0 / ₹0</div>
+            <div id="alloc-modal-error" style="font-size: 0.8rem; color: #ef4444; font-weight: 600; margin-top: 0.2rem; display: none;"></div>
+          </div>
+          <div style="display: flex; gap: 0.75rem;">
+            <button id="alloc-modal-auto" class="btn" style="background: rgba(212, 175, 55, 0.15); color: var(--accent-gold); border-color: rgba(212, 175, 55, 0.3); font-size: 0.85rem; padding: 0.5rem 1rem;">Auto-Distribute Remaining</button>
+            <button id="alloc-modal-save" class="btn" style="background: var(--accent-green); color: #000; font-weight: 700; font-size: 0.85rem; padding: 0.5rem 1.25rem;">Apply Custom Allocation</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
