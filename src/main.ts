@@ -4,6 +4,8 @@ import { DEFAULT_INVENTORY, DefaultBond } from './defaultInventory';
 import { generateBondPortfolio, PortfolioSummary, getMaturityBuckets } from './bondEngine';
 import { parseExcelInventory } from './excelParser';
 import { getCompanyInsights } from './companyReference';
+import { openBondDetailModal } from './bondDetailModal';
+import { renderEliminatedSummaryBar } from './eliminatedBondsModal';
 import * as XLSX from 'xlsx';
 
 Chart.register(...registerables);
@@ -74,6 +76,7 @@ const kpiBonds = document.getElementById('kpi-bonds') as HTMLDivElement;
 
 // Table & Summary Elements
 const tableBody = document.getElementById('portfolio-table-body') as HTMLTableSectionElement;
+const eliminatedSummaryContainer = document.getElementById('eliminated-summary-container') as HTMLDivElement;
 const cashflowTableBody = document.getElementById('cashflow-table-body') as HTMLTableSectionElement;
 const maturityScheduleSummary = document.getElementById('maturity-schedule-summary') as HTMLDivElement;
 const companyAllocationsList = document.getElementById('company-allocations-list') as HTMLDivElement;
@@ -150,6 +153,8 @@ function updateDashboard() {
   renderCashFlowTable(summary);
   renderQuarterlyTable(summary);
   renderCharts(summary);
+  // Show the screening transparency bar above the portfolio table
+  renderEliminatedSummaryBar(summary.eliminatedBonds, activeInventory.length, eliminatedSummaryContainer);
 }
 
 function renderQuarterlyTable(summary: PortfolioSummary) {
@@ -425,14 +430,29 @@ function renderTable(summary: PortfolioSummary) {
       </td>
       `}
     `;
+    // Make the row clickable — opens the full bond detail modal.
+    // Look up the richer full bond object from activeInventory (has all Excel fields);
+    // fall back to the summary bond data if not found (e.g. shared/demo mode).
+    tr.style.cursor = 'pointer';
+    tr.title = 'Click to view full bond details';
+    tr.addEventListener('mouseenter', () => { tr.style.background = 'rgba(255,255,255,0.04)'; });
+    tr.addEventListener('mouseleave', () => { tr.style.background = ''; });
+    tr.addEventListener('click', (e) => {
+      // Don't open modal if the click was on the Swap button
+      if ((e.target as HTMLElement).closest('.swap-btn')) return;
+      const fullBond = activeInventory.find(b => b.isin === bond.isin) ?? bond;
+      openBondDetailModal(fullBond);
+    });
+
     tableBody.appendChild(tr);
   });
 
   if (!isSharedMode) {
-    // Bind click handlers to Swap buttons
+    // Bind click handlers to Swap buttons (stop propagation so row click doesn't also fire)
     const swapButtons = tableBody.querySelectorAll('.swap-btn');
     swapButtons.forEach(btn => {
       btn.addEventListener('click', (e) => {
+        e.stopPropagation();
         const target = e.currentTarget as HTMLButtonElement;
         const isin = target.getAttribute('data-isin') || '';
         const bucketIdx = parseInt(target.getAttribute('data-bucket') || '-1');
@@ -1112,7 +1132,9 @@ window.addEventListener('DOMContentLoaded', () => {
         // periodicCashFlows is not stored in the share payload; default to empty for read-only shared views
         periodicCashFlows: [],
         companyAllocations: payload.ca,
-        ratingDistribution: ratingDistribution
+        ratingDistribution: ratingDistribution,
+        // Eliminated bonds are not stored in the share payload — shared view is read-only
+        eliminatedBonds: []
       };
 
       latestSummary = reconstructedSummary;

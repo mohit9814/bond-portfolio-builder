@@ -88,9 +88,39 @@ export async function parseExcelInventory(file: File, baseDate: Date = new Date(
           let totalTradableFV: number | undefined = undefined;
           if (typeof rawFV === 'number') {
             totalTradableFV = rawFV;
-          } else if (typeof rawFV === 'string') {
+          } else if (typeof rawFV === 'string' && rawFV.trim() !== '' && rawFV.trim() !== '-') {
             const parsed = parseFloat(rawFV.replace(/,/g, ''));
             if (!isNaN(parsed)) totalTradableFV = parsed;
+          }
+
+          // CRITICAL: Skip bonds with 0, '-', or missing Total Tradable FV — no face value
+          // means the bond cannot be sized for investment.
+          if (!totalTradableFV || totalTradableFV <= 0) {
+            continue;
+          }
+
+          // Parse total tradable Qty (column header contains a newline in some sheets)
+          // Normalized keys replace \r\n with a space, so we try several variants.
+          const rawQty =
+            normalizedRow['total tradable qty'] ||
+            normalizedRow['total tradable\nqty'] ||
+            normalizedRow['total tradable  qty'] ||
+            normalizedRow['total tradable_qty'] ||
+            normalizedRow['tradable qty'] ||
+            normalizedRow['tradable quantity'];
+
+          let totalTradableQty: number | undefined = undefined;
+          if (typeof rawQty === 'number') {
+            totalTradableQty = rawQty;
+          } else if (typeof rawQty === 'string' && rawQty.trim() !== '') {
+            const parsed = parseFloat(rawQty.replace(/,/g, ''));
+            if (!isNaN(parsed)) totalTradableQty = parsed;
+          }
+
+          // CRITICAL: Skip bonds with 0 or missing tradable quantity — they are illiquid
+          // and cannot be purchased regardless of their yield or rating.
+          if (!totalTradableQty || totalTradableQty <= 0) {
+            continue;
           }
 
           // Parse Guarantor and Rating Trend fields
@@ -141,6 +171,41 @@ export async function parseExcelInventory(file: File, baseDate: Date = new Date(
             ''
           ).trim() || undefined;
 
+          // Parse per-unit face value (different from Total Tradable FV)
+          const rawFaceValue = normalizedRow['face value'] || normalizedRow['face_value'];
+          let faceValue: number | undefined = undefined;
+          if (typeof rawFaceValue === 'number' && rawFaceValue > 0) {
+            faceValue = rawFaceValue;
+          } else if (typeof rawFaceValue === 'string') {
+            const parsed = parseFloat(rawFaceValue.replace(/,/g, ''));
+            if (!isNaN(parsed) && parsed > 0) faceValue = parsed;
+          }
+
+          // Parse secured/unsecured status
+          const securedUnsecured = String(
+            normalizedRow['secured / unsecured'] ||
+            normalizedRow['secured/unsecured'] ||
+            normalizedRow['security type'] ||
+            normalizedRow['secured'] ||
+            ''
+          ).trim() || undefined;
+
+          // Parse residual tenure string (e.g. "1Y,3M,12D")
+          const residualTenure = String(
+            normalizedRow['residual tenure'] ||
+            normalizedRow['residual_tenure'] ||
+            normalizedRow['tenure'] ||
+            ''
+          ).trim() || undefined;
+
+          // Parse principal redemption type (e.g. "ON MATURITY", "Amortising")
+          const principalRedemption = String(
+            normalizedRow['principal redemption'] ||
+            normalizedRow['principal_redemption'] ||
+            normalizedRow['redemption type'] ||
+            ''
+          ).trim() || undefined;
+
           bonds.push({
             isin,
             issuer,
@@ -151,6 +216,11 @@ export async function parseExcelInventory(file: File, baseDate: Date = new Date(
             rating,
             frequency,
             totalTradableFV,
+            totalTradableQty,
+            faceValue,
+            securedUnsecured,
+            residualTenure,
+            principalRedemption,
             sector: rawSector || undefined,
             category,
             guarantor,
@@ -158,6 +228,7 @@ export async function parseExcelInventory(file: File, baseDate: Date = new Date(
             ratingTrend,
             ratingOutlookNote
           });
+
         }
 
         resolve(bonds);

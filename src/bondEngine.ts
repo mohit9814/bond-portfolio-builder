@@ -76,6 +76,24 @@ export interface QuarterlyCashflowAnalysis {
   items: QuarterlyCashflowItem[];
 }
 
+/** Reason categories for bond elimination — shown in the transparency panel. */
+export type EliminationReason =
+  | 'TENURE_MISMATCH'      // Outside min/max tenure window selected by user
+  | 'BUNDLE_FLEXI'         // Excluded category (Bundle-Flexi products)
+  | 'USER_EXCLUDED'        // Manually excluded by user via the exclusion list
+  | 'ILLIQUID_QTY'         // Total Tradable Qty = 0 or blank
+  | 'ILLIQUID_FV'          // Total Tradable FV = 0 or blank
+  | 'BBB_TENOR_VIOLATION'  // BBB-rated bond with tenure > 12 months (regulatory risk cap)
+  | 'BELOW_MIN_RATING'     // Rating below user-specified minimum
+  | 'NOT_SELECTED';        // Passed all filters but not chosen by the optimizer (runner-up)
+
+export interface EliminatedBond {
+  bond: DefaultBond;
+  reason: EliminationReason;
+  /** Human-readable explanation shown in the drill-down view */
+  detail: string;
+}
+
 export interface PortfolioSummary {
   selectedBonds: SelectedBond[];
   totalInvestment: number;
@@ -91,6 +109,8 @@ export interface PortfolioSummary {
   periodicCashFlows: PeriodicCashFlow[];
   companyAllocations: CompanyAllocation[];
   quarterlyCashflow?: QuarterlyCashflowAnalysis;
+  /** All bonds that were screened out, with the reason and explanation for each. */
+  eliminatedBonds: EliminatedBond[];
 }
 
 export interface MaturityBucket {
@@ -198,40 +218,101 @@ export function generateBondPortfolio(
 
 
 
-  // Filter candidates dynamically based on remaining tenure, exclusion list, and category rules
-  let candidateBonds = bonds.map(b => {
-    const dynMonths = getDynamicMonths(b.maturity);
-    return { ...b, months: dynMonths };
-  }).filter(b => b.months >= minTenure && b.months <= (maxTenure + 0.99));
+  // ─── Elimination tracking ─────────────────────────────────────────────────
+  // Collect every bond that is screened out with the specific reason and a
+  // human-readable explanation. This powers the transparency panel in the UI.
+  const eliminated: EliminatedBond[] = [];
 
-  // Always exclude "Bundle - Flexi" category
+  /** Push a bond into the eliminated list and return false (for use in filter callbacks). */
+  const eliminate = (bond: DefaultBond, reason: EliminationReason, detail: string): false => {
+    eliminated.push({ bond, reason, detail });
+    return false;
+  };
+
+  // ─── Stage 1: Tenure window ───────────────────────────────────────────────
+  // Map to live months, then keep only bonds inside the user's tenure range.
+  const allWithDynMonths = bonds.map(b => ({
+    ...b,
+    months: getDynamicMonths(b.maturity)
+  }));
+
+  let candidateBonds = allWithDynMonths.filter(b => {
+    if (b.months < minTenure) {
+      return eliminate(b, 'TENURE_MISMATCH',
+        `Maturity in ${b.months.toFixed(1)}m is below the minimum tenure of ${minTenure}m selected.`);
+    }
+    if (b.months > maxTenure + 0.99) {
+      return eliminate(b, 'TENURE_MISMATCH',
+        `Maturity in ${b.months.toFixed(1)}m exceeds the maximum tenure of ${maxTenure}m selected.`);
+    }
+    return true;
+  });
+
+  // ─── Stage 2: Bundle-Flexi category ──────────────────────────────────────
   candidateBonds = candidateBonds.filter(b => {
     if (!b.category) return true;
     const cat = b.category.trim().toLowerCase();
-    return !cat.includes('bundle - flexi') && !cat.includes('bundle-flexi');
+    if (cat.includes('bundle - flexi') || cat.includes('bundle-flexi')) {
+      return eliminate(b, 'BUNDLE_FLEXI',
+        `Category "${b.category}" is a Bundle-Flexi product which is excluded from all portfolios.`);
+    }
+    return true;
   });
 
+  // ─── Stage 3: User-excluded ISINs ────────────────────────────────────────
   if (excludedIsins) {
-    candidateBonds = candidateBonds.filter(b => !excludedIsins.has(b.isin));
+    candidateBonds = candidateBonds.filter(b => {
+      if (excludedIsins.has(b.isin)) {
+        return eliminate(b, 'USER_EXCLUDED',
+          `Manually excluded from this proposal.`);
+      }
+      return true;
+    });
   }
 
-  // Special rule: Any bond with BBB or worse rating cannot be held for more than 1 year (12.0 months)
+  // ─── Stage 4: Liquidity guard ─────────────────────────────────────────────
+  candidateBonds = candidateBonds.filter(b => {
+    if (b.totalTradableQty !== undefined && b.totalTradableQty <= 0) {
+      return eliminate(b, 'ILLIQUID_QTY',
+        `Total Tradable Qty is ${b.totalTradableQty} — bond is illiquid and cannot be purchased.`);
+    }
+    if (b.totalTradableFV !== undefined && b.totalTradableFV <= 0) {
+      return eliminate(b, 'ILLIQUID_FV',
+        `Total Tradable FV is ₹0 — no inventory available for this bond.`);
+    }
+    return true;
+  });
+
+  // ─── Stage 5: BBB > 12-month tenor cap ───────────────────────────────────
   candidateBonds = candidateBonds.filter(b => {
     const symbol = getCleanRatingSymbol(b.rating);
     const isBetterThanBBB = symbol.includes('SOVEREIGN') || symbol.includes('GOI') ||
                             symbol.includes('AAA') || symbol.includes('AA') ||
                             symbol.includes('A');
-    const isBBBOwWorse = !isBetterThanBBB;
-    if (isBBBOwWorse && b.months > 12.0) {
-      return false; // Cannot hold BBB/BBB-/BBB+ for more than 12 months
+    if (!isBetterThanBBB && b.months > 12.0) {
+      return eliminate(b, 'BBB_TENOR_VIOLATION',
+        `Rating ${b.rating} (BBB tier) with tenure ${b.months.toFixed(1)}m exceeds the 12-month cap for sub-A bonds. Regulatory risk management rule.`);
     }
     return true;
   });
 
+  // ─── Stage 6: Minimum rating filter ──────────────────────────────────────
   if (minRatingGrade === 'A') {
-    candidateBonds = candidateBonds.filter(b => isAOrBetter(b.rating));
+    candidateBonds = candidateBonds.filter(b => {
+      if (!isAOrBetter(b.rating)) {
+        return eliminate(b, 'BELOW_MIN_RATING',
+          `Rating ${b.rating} is below the minimum "A" grade selected for this portfolio.`);
+      }
+      return true;
+    });
   } else if (minRatingGrade === 'BBB-') {
-    candidateBonds = candidateBonds.filter(b => isBBBMinusOrBetter(b.rating));
+    candidateBonds = candidateBonds.filter(b => {
+      if (!isBBBMinusOrBetter(b.rating)) {
+        return eliminate(b, 'BELOW_MIN_RATING',
+          `Rating ${b.rating} is below the minimum "BBB-" grade selected for this portfolio.`);
+      }
+      return true;
+    });
   }
 
   // Group into buckets
@@ -910,6 +991,20 @@ export function generateBondPortfolio(
     };
   }
 
+  // ─── Stage 7: NOT_SELECTED (runner-up bonds) ──────────────────────────────
+  // Bonds that passed all 6 filter stages but were not chosen by the optimizer.
+  // These are valuable "almost" picks — showing them builds user trust.
+  const selectedIsins = new Set(selectedBonds.map(b => b.isin));
+  candidateBonds.forEach(b => {
+    if (!selectedIsins.has(b.isin)) {
+      eliminated.push({
+        bond: b,
+        reason: 'NOT_SELECTED',
+        detail: `Passed all risk filters (Rating: ${b.rating}, Yield: ${(b.yield * 100).toFixed(2)}%) but was not chosen by the optimizer — another bond in the same maturity bucket offered a better risk-adjusted return or portfolio diversification.`
+      });
+    }
+  });
+
   return {
     selectedBonds,
     totalInvestment,
@@ -922,6 +1017,7 @@ export function generateBondPortfolio(
     monthlyCashFlows,
     periodicCashFlows,
     companyAllocations: companyAllocations.sort((a, b) => b.amount - a.amount),
-    quarterlyCashflow
+    quarterlyCashflow,
+    eliminatedBonds: eliminated
   };
 }

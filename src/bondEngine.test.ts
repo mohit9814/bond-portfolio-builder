@@ -77,6 +77,63 @@ function runTests() {
   const maxCompanyWeight = Math.max(...summaryA.companyAllocations.map(c => c.percent));
   console.assert(maxCompanyWeight <= 0.150001, `FAIL Test 8: Company weight ${(maxCompanyWeight * 100).toFixed(2)}% exceeded 15% cap!`);
 
+  // Test 8b: Zero/blank totalTradableQty AND zero/blank totalTradableFV bonds must never appear
+  const zeroQtyIsin = 'IN_ZERO_QTY_0001';
+  const zeroFvIsin  = 'IN_ZERO_FV__0001';
+  const inventoryWithZeroQty = [
+    // High-yield bond: qty=0 — must be excluded
+    {
+      isin: zeroQtyIsin, issuer: 'Zero Qty Co', coupon: 0.15, yield: 0.15,
+      maturity: (() => { const d = new Date(); d.setMonth(d.getMonth() + 12); return d.toISOString().split('T')[0]; })(),
+      months: 12, rating: 'ICRA AA', frequency: 'QUARTERLY',
+      totalTradableFV: 5000000, totalTradableQty: 0, sector: 'NBFC'
+    },
+    // High-yield bond: FV=0 — must be excluded
+    {
+      isin: zeroFvIsin, issuer: 'Zero FV Co', coupon: 0.14, yield: 0.14,
+      maturity: (() => { const d = new Date(); d.setMonth(d.getMonth() + 11); return d.toISOString().split('T')[0]; })(),
+      months: 11, rating: 'ICRA AA', frequency: 'QUARTERLY',
+      totalTradableFV: 0, totalTradableQty: 100, sector: 'NBFC'
+    },
+    // Bond with undefined qty/FV (hardcoded inventory style) — must pass through
+    {
+      isin: 'IN_UNDEF_QTY_0001', issuer: 'Undefined Qty Co', coupon: 0.10, yield: 0.10,
+      maturity: (() => { const d = new Date(); d.setMonth(d.getMonth() + 12); return d.toISOString().split('T')[0]; })(),
+      months: 12, rating: 'ICRA AA', frequency: 'QUARTERLY',
+      totalTradableFV: undefined, totalTradableQty: undefined, sector: 'HFC'
+    },
+    // Normal bonds with valid qty + FV
+    ...Array.from({ length: 10 }, (_, i) => ({
+      isin: `IN_VALID_${String(i).padStart(4, '0')}`, issuer: `Valid Issuer ${i}`,
+      coupon: 0.11 + i * 0.001, yield: 0.11 + i * 0.001,
+      maturity: (() => { const d = new Date(); d.setMonth(d.getMonth() + 9 + i); return d.toISOString().split('T')[0]; })(),
+      months: 9 + i, rating: 'ICRA AA', frequency: 'QUARTERLY',
+      totalTradableFV: 5000000, totalTradableQty: 100 + i, sector: 'MFI'
+    }))
+  ];
+  const summaryQtyFilter = generateBondPortfolio(inventoryWithZeroQty, 1000000, fdRates, 'ALL');
+  console.assert(
+    !summaryQtyFilter.selectedBonds.some(b => b.isin === zeroQtyIsin),
+    `FAIL Test 8b: Bond with totalTradableQty=0 must NEVER appear in recommendations`
+  );
+  console.assert(
+    !summaryQtyFilter.selectedBonds.some(b => b.isin === zeroFvIsin),
+    `FAIL Test 8b: Bond with totalTradableFV=0 must NEVER appear in recommendations`
+  );
+
+  // Verify undefined-FV/Qty bond (hardcoded inventory) is not incorrectly filtered
+  const twoItemInventory = [inventoryWithZeroQty[0], inventoryWithZeroQty[2]]; // zeroQty + undefinedQty
+  const summaryTwoItem = generateBondPortfolio(twoItemInventory, 1000000, fdRates, 'ALL');
+  console.assert(
+    !summaryTwoItem.selectedBonds.some(b => b.isin === zeroQtyIsin),
+    'FAIL Test 8b: Zero-qty bond must not be selected even in a 2-bond inventory'
+  );
+  console.assert(
+    summaryTwoItem.selectedBonds.some(b => b.isin === 'IN_UNDEF_QTY_0001'),
+    'FAIL Test 8b: undefined-qty/FV bond (hardcoded inventory) must NOT be filtered out'
+  );
+  console.log(`Test 8b — Liquidity filters: qty=0 excluded ✓, FV=0 excluded ✓, undefined-qty allowed ✓. Selected: ${summaryQtyFilter.selectedBonds.length} bonds.`);
+
   // ══════════════════════════════════════════════════════════════════════════
   // QUARTERLY CASHFLOW TARGET TESTS (Tests 9-14)
   //
