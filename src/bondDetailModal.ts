@@ -1,4 +1,6 @@
 import { DefaultBond } from './defaultInventory';
+import { setCompanyOverride } from './overridesManager';
+import { getCompanyInsights } from './companyReference';
 
 /**
  * Renders a full-detail slide-in modal for a selected bond.
@@ -71,43 +73,49 @@ export function openBondDetailModal(bond: DefaultBond): void {
     if (e.target === overlay) closeBondDetailModal();
   });
 
-  // Trend badge
-  const trend = bond.ratingTrend;
+  const insights = getCompanyInsights(bond);
+  
+  // Trend badge (use explicit bond trend, fallback to insight trend, fallback to stable)
+  const trend = bond.ratingTrend || insights.ratingTrend;
   const trendHtml = trend === 'improving'
     ? `<span class="trend-badge improving">▲ Improving</span>`
     : trend === 'deteriorating'
       ? `<span class="trend-badge deteriorating">▼ Deteriorating</span>`
       : `<span class="trend-badge stable">● Stable</span>`;
 
+  // Calculate unit price if available
+  const calculatedUnitPrice = (bond.totalTradableFV && bond.totalTradableQty) ? Math.floor(bond.totalTradableFV / bond.totalTradableQty) : bond.faceValue;
+
   // Build field grid
   const fields = `
     ${section('Identification')}
     ${row('ISIN', `<span style="font-family: monospace; font-size: 0.95rem;">${bond.isin}</span>`)}
     ${row('Issuer Name', bond.issuer)}
-    ${bond.sector ? row('Sector', bond.sector) : ''}
+    ${row('Sector', bond.sector || insights.sector)}
     ${bond.category ? row('Category', bond.category) : ''}
 
-    ${section('Instrument Details')}
+    ${section('Company & Credit Insights')}
+    ${row('Core Focus', insights.coreFocus)}
+    ${row('Analyst Note', bond.ratingOutlookNote || insights.insightNote)}
     ${row('Credit Rating', `<span class="rating-badge ${ratingClass(bond.rating)}" style="font-size: 0.85rem;">${bond.rating}</span>`)}
     ${row('Rating Outlook', trendHtml)}
-    ${bond.ratingOutlookNote ? row('Rating Note', bond.ratingOutlookNote) : ''}
     ${bond.securedUnsecured ? row('Security Type', bond.securedUnsecured) : ''}
-    ${bond.guarantor ? row('Guarantor', bond.guarantor) : ''}
-    ${bond.guarantorRating ? row('Guarantor Rating', bond.guarantorRating) : ''}
+    ${bond.guarantor || insights.guarantor ? row('Guarantor', bond.guarantor || insights.guarantor) : ''}
+    ${bond.guarantorRating || insights.guarantorRating ? row('Guarantor Rating', bond.guarantorRating || insights.guarantorRating) : ''}
 
-    ${section('Financials')}
+    ${section('Financials & Yield')}
     ${row('Offer Yield (YTM)', pct(bond.yield), true)}
     ${bond.coupon !== null && bond.coupon !== undefined ? row('Coupon Rate', pct(bond.coupon)) : ''}
     ${row('Interest Payment', bond.frequency)}
     ${bond.principalRedemption ? row('Principal Redemption', bond.principalRedemption) : ''}
-    ${bond.faceValue ? row('Face Value (per unit)', fmtCurrency(bond.faceValue)) : ''}
+    ${calculatedUnitPrice ? row('Face Value / Unit Price', fmtCurrency(calculatedUnitPrice)) : ''}
 
-    ${section('Tenure & Liquidity')}
+    ${section('Tenure & Liquidity (Availability)')}
     ${row('Redemption Date', bond.maturity)}
     ${row('Residual Tenure (months)', bond.months + 'm')}
     ${bond.residualTenure ? row('Residual Tenure (detailed)', bond.residualTenure) : ''}
-    ${bond.totalTradableFV ? row('Total Tradable FV', fmtCurrency(bond.totalTradableFV)) : ''}
-    ${bond.totalTradableQty ? row('Total Tradable Qty', fmt(bond.totalTradableQty, 0) + ' units') : ''}
+    ${bond.totalTradableFV ? row('Total Tradable FV', `<span style="color: var(--accent-blue); font-weight: 700;">${fmtCurrency(bond.totalTradableFV)}</span>`) : ''}
+    ${bond.totalTradableQty ? row('Available Qty (Units)', `<span style="color: var(--accent-blue); font-weight: 700;">${fmt(bond.totalTradableQty, 0)} units</span>`) : ''}
   `;
 
   overlay.innerHTML = `
@@ -153,6 +161,13 @@ export function openBondDetailModal(bond: DefaultBond): void {
       ">
         ${fields}
       </div>
+
+      <!-- Action Footer -->
+      <div style="padding: 1.2rem 1.6rem; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: flex-end; gap: 1rem; background: rgba(0,0,0,0.15); border-radius: 0 0 16px 16px;">
+        <button id="bond-detail-force-exclude" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
+          Ban Company
+        </button>
+      </div>
     </div>
   `;
 
@@ -160,6 +175,14 @@ export function openBondDetailModal(bond: DefaultBond): void {
 
   // Close button handler
   document.getElementById('bond-detail-close')?.addEventListener('click', closeBondDetailModal);
+
+  document.getElementById('bond-detail-force-exclude')?.addEventListener('click', () => {
+    const comment = prompt(`Please provide a reason to permanently ban the company "${bond.issuer}":`);
+    if (comment !== null && comment.trim() !== '') {
+      setCompanyOverride(bond.issuer, 'EXCLUDE', comment.trim());
+      closeBondDetailModal();
+    }
+  });
 
   // Keyboard: ESC to close
   const onKey = (e: KeyboardEvent) => {

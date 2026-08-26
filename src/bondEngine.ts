@@ -6,6 +6,7 @@ export interface SelectedBond extends DefaultBond {
   expectedAnnualReturn: number;
   bucketIndex: number;
   fdRate?: number;
+  overrideJustification?: string;
 }
 
 export interface FDRateConfig {
@@ -81,6 +82,7 @@ export type EliminationReason =
   | 'TENURE_MISMATCH'      // Outside min/max tenure window selected by user
   | 'BUNDLE_FLEXI'         // Excluded category (Bundle-Flexi products)
   | 'USER_EXCLUDED'        // Manually excluded by user via the exclusion list
+  | 'USER_EXCLUDE'         // Alias for manual exclusion
   | 'ILLIQUID_QTY'         // Total Tradable Qty = 0 or blank
   | 'ILLIQUID_FV'          // Total Tradable FV = 0 or blank
   | 'BBB_TENOR_VIOLATION'  // BBB-rated bond with tenure > 12 months (regulatory risk cap)
@@ -137,6 +139,14 @@ export function getMaturityBuckets(minTenure: number, maxTenure: number, targetN
   });
 }
 
+export const getUnitPrice = (bond: DefaultBond): number => {
+  if (bond.faceValue && bond.faceValue > 0) return bond.faceValue;
+  if (bond.totalTradableFV && bond.totalTradableQty && bond.totalTradableQty > 0) {
+    return Math.floor(bond.totalTradableFV / bond.totalTradableQty);
+  }
+  return 100000;
+};
+
 export function generateBondPortfolio(
   bonds: DefaultBond[],
   totalInvestment: number,
@@ -150,7 +160,9 @@ export function generateBondPortfolio(
   maxTenure: number = 24,
   allocationStrategy: 'equal' | 'smart' = 'equal',
   customAllocations?: Map<string, number>,
-  targetQuarterlyCashflowPct?: number
+  targetQuarterlyCashflowPct?: number,
+  relaxBBBCap: boolean = false,
+  companyOverrides: Record<string, { action: string; justification: string }> = {}
 ): PortfolioSummary {
   // 1. Define buckets dynamically based on minTenure, maxTenure, and targetNumIssuers
   const buckets = getMaturityBuckets(minTenure, maxTenure, targetNumIssuers);
@@ -224,17 +236,25 @@ export function generateBondPortfolio(
   const eliminated: EliminatedBond[] = [];
 
   /** Push a bond into the eliminated list and return false (for use in filter callbacks). */
-  const eliminate = (bond: DefaultBond, reason: EliminationReason, detail: string): false => {
+  const eliminate = (bond: DefaultBond, reason: EliminationReason, detail: string): boolean => {
+    const override = companyOverrides[bond.issuer];
+    if (override?.action === 'INCLUDE' && reason !== 'ILLIQUID_QTY' && reason !== 'ILLIQUID_FV') {
+      return true;
+    }
     eliminated.push({ bond, reason, detail });
     return false;
   };
 
-  // ─── Stage 1: Tenure window ───────────────────────────────────────────────
-  // Map to live months, then keep only bonds inside the user's tenure range.
+  // Exclude early if EXCLUDE is present
   const allWithDynMonths = bonds.map(b => ({
     ...b,
     months: getDynamicMonths(b.maturity)
-  }));
+  })).filter(b => {
+    if (companyOverrides[b.issuer]?.action === 'EXCLUDE') {
+      return eliminate(b, 'USER_EXCLUDE', 'User manually excluded this company.');
+    }
+    return true;
+  });
 
   let candidateBonds = allWithDynMonths.filter(b => {
     if (b.months < minTenure) {
@@ -289,7 +309,7 @@ export function generateBondPortfolio(
     const isBetterThanBBB = symbol.includes('SOVEREIGN') || symbol.includes('GOI') ||
                             symbol.includes('AAA') || symbol.includes('AA') ||
                             symbol.includes('A');
-    if (!isBetterThanBBB && b.months > 12.0) {
+    if (!isBetterThanBBB && b.months > 12.0 && !relaxBBBCap) {
       return eliminate(b, 'BBB_TENOR_VIOLATION',
         `Rating ${b.rating} (BBB tier) with tenure ${b.months.toFixed(1)}m exceeds the 12-month cap for sub-A bonds. Regulatory risk management rule.`);
     }
@@ -798,7 +818,8 @@ export function generateBondPortfolio(
       allocatedAmount,
       expectedAnnualReturn: allocatedAmount * s.bond.yield,
       bucketIndex: s.bucketIndex,
-      fdRate: fdRateForBond
+      fdRate: fdRateForBond,
+      overrideJustification: companyOverrides[s.bond.issuer]?.justification
     });
 
     const issuer = s.bond.issuer;

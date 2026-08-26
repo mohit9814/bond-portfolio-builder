@@ -198,7 +198,7 @@ export const COMPANY_REFERENCE_MAP: Record<string, CompanyReferenceKnowledge> = 
 /**
  * Fuzzy lookup helper to match company insights by issuer name or ISIN
  */
-export function getCompanyInsights(bond: DefaultBond): { sector: string; ratingTrend?: 'stable' | 'improving' | 'deteriorating'; insightNote?: string } {
+export function getCompanyInsights(bond: DefaultBond): { sector: string; ratingTrend?: 'stable' | 'improving' | 'deteriorating'; insightNote?: string; coreFocus?: string; guarantor?: string; guarantorRating?: string; } {
   const issuerLower = (bond.issuer || '').toLowerCase();
   
   for (const key of Object.keys(COMPANY_REFERENCE_MAP)) {
@@ -207,7 +207,10 @@ export function getCompanyInsights(bond: DefaultBond): { sector: string; ratingT
       return {
         sector: ref.sector,
         ratingTrend: ref.ratingTrend,
-        insightNote: ref.summaryInsight
+        insightNote: ref.summaryInsight,
+        coreFocus: ref.coreFocus,
+        guarantor: ref.guarantor,
+        guarantorRating: ref.guarantorRating
       };
     }
   }

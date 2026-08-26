@@ -1,4 +1,5 @@
 import { EliminatedBond, EliminationReason } from './bondEngine';
+import { setCompanyOverride } from './overridesManager';
 
 const MODAL_ID = 'eliminated-bonds-modal-overlay';
 
@@ -68,6 +69,13 @@ const REASON_META: Record<EliminationReason, ReasonMeta> = {
     color: '#3b82f6',
     bgColor: 'rgba(59,130,246,0.08)',
     description: 'Passed all risk filters — not chosen because a better-yielding bond filled the same maturity bucket.'
+  },
+  USER_EXCLUDE: {
+    label: "User Excluded",
+    icon: "🚫",
+    color: "text-red-500",
+    bgColor: "bg-red-500/10",
+    description: "You manually excluded this company."
   }
 };
 
@@ -149,6 +157,16 @@ export function renderEliminatedSummaryBar(
 
 // ─── Drill-down Modal ─────────────────────────────────────────────────────────
 
+// Make it globally accessible for the inline onclick handler
+(window as any).forceIncludeCompany = (issuer: string) => {
+  const comment = prompt(`Please provide a reason to auto-include the company "${issuer}" in future recommendations:`);
+  if (comment !== null && comment.trim() !== '') {
+    setCompanyOverride(issuer, 'INCLUDE', comment.trim());
+    // The main dashboard will catch the event, we can also close this modal
+    document.body.removeChild(document.getElementById('eliminated-bonds-modal-overlay')!);
+  }
+};
+
 export function openEliminatedBondsModal(
   eliminated: EliminatedBond[],
   totalInventory: number
@@ -206,15 +224,16 @@ export function openEliminatedBondsModal(
 
     // Bond rows table
     const rowsHtml = filtered.length === 0
-      ? `<tr><td colspan="7" style="text-align:center; padding: 2rem; color: var(--text-secondary);">No bonds in this category.</td></tr>`
+      ? `<tr><td colspan="8" style="text-align:center; padding: 2rem; color: var(--text-secondary);">No bonds in this category.</td></tr>`
       : filtered.map(e => {
         const meta = REASON_META[e.reason];
         const yieldStr = e.bond.yield > 0 ? pct(e.bond.yield) : '—';
         const couponStr = e.bond.coupon !== null && e.bond.coupon !== undefined ? pct(e.bond.coupon) : '—';
         return `
-          <tr style="border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.1s;"
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.1s; cursor: pointer;"
               onmouseenter="this.style.background='rgba(255,255,255,0.03)'"
-              onmouseleave="this.style.background=''">
+              onmouseleave="this.style.background=''"
+              onclick="if(event.target.tagName !== 'BUTTON') window.openBondDetailByIsin('${e.bond.isin}')">
             <td style="padding: 0.6rem 0.75rem; font-family: monospace; font-size: 0.77rem; color: var(--text-secondary);">
               ${e.bond.isin}
             </td>
@@ -238,6 +257,12 @@ export function openEliminatedBondsModal(
             </td>
             <td style="padding: 0.6rem 0.75rem; font-size: 0.75rem; color: var(--text-secondary); max-width: 280px;">
               ${e.detail}
+            </td>
+            <td style="padding: 0.6rem 0.75rem; text-align: right;">
+              <button onclick="window.forceIncludeCompany('${e.bond.issuer.replace(/'/g, "\\'")}')" 
+                style="background: transparent; border: 1px solid var(--border-glass); color: var(--text-primary); font-size: 0.7rem; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer;">
+                Override
+              </button>
             </td>
           </tr>`;
       }).join('');
@@ -299,6 +324,7 @@ export function openEliminatedBondsModal(
                 <th style="padding: 0.65rem 0.75rem; text-align: right; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); font-weight: 600;">Coupon</th>
                 <th style="padding: 0.65rem 0.75rem; text-align: center; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); font-weight: 600;">Reason</th>
                 <th style="padding: 0.65rem 0.75rem; text-align: left; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); font-weight: 600;">Explanation</th>
+                <th style="padding: 0.65rem 0.75rem; text-align: right; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); font-weight: 600;">Action</th>
               </tr>
             </thead>
             <tbody>${rowsHtml}</tbody>

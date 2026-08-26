@@ -1,12 +1,13 @@
 import { Chart, registerables } from 'chart.js';
 import './style.css';
 import { DEFAULT_INVENTORY, DefaultBond } from './defaultInventory';
-import { generateBondPortfolio, PortfolioSummary, getMaturityBuckets } from './bondEngine';
+import { generateBondPortfolio, getUnitPrice, PortfolioSummary, getMaturityBuckets } from './bondEngine';
 import { parseExcelInventory } from './excelParser';
 import { getCompanyInsights } from './companyReference';
 import { openBondDetailModal } from './bondDetailModal';
 import { renderEliminatedSummaryBar } from './eliminatedBondsModal';
 import * as XLSX from 'xlsx';
+import { getCompanyOverrides } from './overridesManager';
 
 Chart.register(...registerables);
 
@@ -21,6 +22,13 @@ const customAllocations = new Map<string, number>();
 (window as any).customAllocations = customAllocations;
 let isSharedMode = false;
 let latestSummary: PortfolioSummary | null = null;
+
+// Expose openBondDetailModal globally for dynamically injected HTML (like eliminated bonds)
+(window as any).openBondDetailByIsin = (isin: string) => {
+  const fullBond = activeInventory.find(b => b.isin === isin);
+  if (fullBond) openBondDetailModal(fullBond);
+};
+
 let growthChartInstance: Chart | null = null;
 let ladderChartInstance: Chart | null = null;
 let ratingChartInstance: Chart | null = null;
@@ -139,11 +147,13 @@ function updateDashboard() {
 
   const targetQuarterlyVal = parseFloat(targetQuarterlyCashflowInput.value);
   const targetQuarterlyCashflowPct = isNaN(targetQuarterlyVal) ? undefined : targetQuarterlyVal;
+  
+  const relaxBBBCap = (document.getElementById('relax-bbb-cap') as HTMLInputElement).checked;
 
   const summary = generateBondPortfolio(
     activeInventory, amount, getFdRateConfig(), minRating, targetYield, numIssuers,
     excludedIsins, manualReplacements, minTenure, maxTenure, strategy, customAllocations,
-    targetQuarterlyCashflowPct
+    targetQuarterlyCashflowPct, relaxBBBCap, getCompanyOverrides()
   );
   latestSummary = summary;
   renderKPIs(summary);
@@ -248,6 +258,15 @@ function renderCashFlowTable(summary: PortfolioSummary) {
       <td style="padding: 1rem; text-align: right; color: var(--accent-green); font-weight: 600;">+${formatCurrency(Math.round(cf.coupon))}</td>
       <td style="padding: 1rem; text-align: right; color: var(--text-primary); font-weight: 700;">${formatCurrency(Math.round(cf.total))}</td>
     `;
+    
+    tr.style.cursor = 'pointer';
+    tr.title = 'Click to view full bond details';
+    tr.addEventListener('mouseenter', () => { tr.style.background = 'rgba(255,255,255,0.04)'; });
+    tr.addEventListener('mouseleave', () => { tr.style.background = ''; });
+    tr.addEventListener('click', () => {
+      (window as any).openBondDetailByIsin(cf.isin);
+    });
+
     cashflowTableBody.appendChild(tr);
   });
 }
@@ -411,7 +430,12 @@ function renderTable(summary: PortfolioSummary) {
 
     tr.innerHTML = `
       <td><span style="font-family: monospace; font-size: 0.85rem;">${bond.isin}</span></td>
-      <td><strong>${bond.issuer}</strong></td>
+      <td>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <strong>${bond.issuer}</strong>
+          ${bond.overrideJustification ? `<span title="Force Included: ${bond.overrideJustification.replace(/"/g, '&quot;')}" style="cursor: help; background: rgba(59, 130, 246, 0.2); color: #60a5fa; padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; font-weight: 700;">OVERRIDE</span>` : ''}
+        </div>
+      </td>
       <td><span style="font-size: 0.82rem; color: var(--accent-gold); font-weight: 500;">${sectorDisplay}</span></td>
       <td>${guarantorDisplay}</td>
       <td><span class="rating-badge ${ratingClass}">${bond.rating}</span></td>
@@ -1221,6 +1245,9 @@ function openSwapModal(isin: string, bucketIdx: number, summary: PortfolioSummar
     const trendColor = effectiveTrend === 'improving' ? '#10b981' : effectiveTrend === 'deteriorating' ? '#ef4444' : '#3b82f6';
     const noteText = currentBond.ratingOutlookNote || insights.insightNote || 'Credit profile backed by operational history and active monitoring.';
 
+    swapInsightsContainer.style.cursor = 'pointer';
+    swapInsightsContainer.title = 'Click to view full bond details';
+    swapInsightsContainer.onclick = () => (window as any).openBondDetailByIsin(currentBond.isin);
     swapInsightsContainer.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: flex-start;">
         <div>
@@ -1262,6 +1289,9 @@ function openSwapModal(isin: string, bucketIdx: number, summary: PortfolioSummar
 
   // Find all bonds in activeInventory belonging to this bucket
   const bucketRange = currentBuckets[bucketIdx];
+  const overrides = getCompanyOverrides();
+  const relaxBBBCap = (document.getElementById('relax-bbb-cap') as HTMLInputElement)?.checked || false;
+
   const candidates = activeInventory.map(b => {
     const mat = new Date(b.maturity);
     const diffTime = mat.getTime() - today.getTime();
@@ -1270,19 +1300,32 @@ function openSwapModal(isin: string, bucketIdx: number, summary: PortfolioSummar
   }).filter(b => {
     if (b.months < bucketRange.min || b.months > bucketRange.max) return false;
     if (excludedIsins.has(b.isin)) return false;
+
+    const override = overrides[b.issuer.trim().toUpperCase()];
+    if (override?.action === 'EXCLUDE') return false;
+    const isForceIncluded = override?.action === 'INCLUDE';
+
+    if (b.totalTradableQty !== undefined && b.totalTradableQty <= 0) return false;
+    if (b.totalTradableFV !== undefined && b.totalTradableFV <= 0) return false;
+
+    if (isForceIncluded) return true; // BYPASS REMAINING RISK FILTERS
+
     if (b.category) {
       const cat = b.category.trim().toLowerCase();
       if (cat.includes('bundle - flexi') || cat.includes('bundle-flexi')) return false;
     }
+    
     if (minRating === 'A' && !isAOrBetter(b.rating)) return false;
     if (minRating === 'BBB-' && !isBBBMinusOrBetter(b.rating)) return false;
     
     // Special rule: Any bond with BBB or worse rating cannot be held for more than 1 year (12.0 months)
-    const symbol = getCleanRatingSymbol(b.rating);
-    const isBetterThanBBB = symbol.includes('SOVEREIGN') || symbol.includes('GOI') ||
-                            symbol.includes('AAA') || symbol.includes('AA') ||
-                            symbol.includes('A');
-    if (!isBetterThanBBB && b.months > 12.0) return false;
+    if (!relaxBBBCap) {
+      const symbol = getCleanRatingSymbol(b.rating);
+      const isBetterThanBBB = symbol.includes('SOVEREIGN') || symbol.includes('GOI') ||
+                              symbol.includes('AAA') || symbol.includes('AA') ||
+                              symbol.includes('A');
+      if (!isBetterThanBBB && b.months > 12.0) return false;
+    }
     
     return true;
   });
@@ -1437,12 +1480,11 @@ customizeAllocBtn.addEventListener('click', () => {
 
   const bonds = latestSummary.selectedBonds;
   const targetTotal = parseFloat(amountInput.value) || 1000000;
-  const STEP = 10000;
 
   allocModalRows.innerHTML = '';
   allocModalError.style.display = 'none';
 
-  const MAX_COMPANY_CAP = Math.floor((targetTotal * 0.15) / STEP) * STEP;
+  const baseCompanyCap = targetTotal * 0.15;
 
   bonds.forEach(bond => {
     const tr = document.createElement('tr');
@@ -1454,14 +1496,17 @@ customizeAllocBtn.addEventListener('click', () => {
     const trendColor = effectiveTrend === 'improving' ? '#10b981' : effectiveTrend === 'deteriorating' ? '#ef4444' : '#3b82f6';
     const noteText = bond.ratingOutlookNote || insights.insightNote || 'Credit profile backed by operational history.';
 
-    const fvCap = bond.totalTradableFV && bond.totalTradableFV > 0
-      ? bond.totalTradableFV
-      : Infinity;
-    const effectiveCap = Math.min(fvCap, MAX_COMPANY_CAP);
+    const unitPrice = getUnitPrice(bond);
+    const fvCap = bond.totalTradableFV && bond.totalTradableFV > 0 ? bond.totalTradableFV : Infinity;
+    const effectiveCap = Math.max(baseCompanyCap, unitPrice);
+    const finalCap = Math.min(fvCap, effectiveCap);
+
+    const currentUnits = Math.floor(bond.allocatedAmount / unitPrice);
+    const maxUnits = Math.floor(finalCap / unitPrice);
 
     const capText = fvCap < Infinity
-      ? `${formatCurrency(fvCap)} (Cap: 15% / ${formatCurrency(MAX_COMPANY_CAP)})`
-      : `15% Cap (${formatCurrency(MAX_COMPANY_CAP)})`;
+      ? `${formatCurrency(fvCap)} (Cap: 15% / ${formatCurrency(baseCompanyCap)})`
+      : `15% Cap (${formatCurrency(baseCompanyCap)})`;
 
     tr.innerHTML = `
       <td style="padding: 0.6rem 0.5rem;">
@@ -1483,24 +1528,49 @@ customizeAllocBtn.addEventListener('click', () => {
         <div style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-top: 0.1rem;" title="${noteText}">💡 ${noteText}</div>
       </td>
       <td style="padding: 0.6rem 0.5rem; font-size: 0.82rem;">${capText}</td>
-      <td style="padding: 0.6rem 0.5rem; text-align: right;">
-        <input type="number" class="alloc-input" data-isin="${bond.isin}" data-issuer="${bond.issuer}" data-max="${effectiveCap}" value="${bond.allocatedAmount}" min="0" max="${effectiveCap}" step="${STEP}" style="width: 130px; text-align: right; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 6px; color: var(--text-primary); padding: 0.35rem 0.5rem; font-family: var(--font-sans); font-size: 0.88rem; font-weight: 600;" />
+      <td style="padding: 0.6rem 0.5rem; text-align: right; white-space: nowrap;">
+        <div style="display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem;">
+          <input type="number" class="qty-input" data-isin="${bond.isin}" data-issuer="${bond.issuer}" data-unit="${unitPrice}" data-max="${maxUnits}" value="${currentUnits}" min="0" max="${maxUnits}" step="1" style="width: 60px; text-align: center; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 6px; color: var(--text-primary); padding: 0.35rem 0.5rem; font-family: var(--font-sans); font-size: 0.88rem; font-weight: 600;" />
+          <span style="font-size: 0.75rem; color: var(--text-secondary);">units</span>
+        </div>
+        <div class="alloc-display" style="margin-top: 0.3rem; font-size: 0.82rem; font-weight: 600; color: var(--text-primary);">${formatCurrency(currentUnits * unitPrice)}</div>
+        <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 0.1rem;">@ ${formatCurrency(unitPrice)}</div>
       </td>
     `;
+    
+    // Make the row clickable to view bond details
+    tr.style.cursor = 'pointer';
+    tr.title = 'Click to view full bond details';
+    tr.addEventListener('mouseenter', () => { tr.style.background = 'rgba(255,255,255,0.04)'; });
+    tr.addEventListener('mouseleave', () => { tr.style.background = ''; });
+    tr.addEventListener('click', (e) => {
+      // Don't open modal if they click inside the input field
+      if ((e.target as HTMLElement).tagName.toLowerCase() === 'input') return;
+      
+      const fullBond = activeInventory.find(b => b.isin === bond.isin) ?? bond;
+      openBondDetailModal(fullBond);
+    });
+
     allocModalRows.appendChild(tr);
   });
 
   const updateModalSummary = () => {
-    const inputs = allocModalRows.querySelectorAll('.alloc-input') as NodeListOf<HTMLInputElement>;
+    const inputs = allocModalRows.querySelectorAll('.qty-input') as NodeListOf<HTMLInputElement>;
     let currentSum = 0;
     inputs.forEach(inp => {
-      currentSum += parseFloat(inp.value) || 0;
+      const qty = parseInt(inp.value) || 0;
+      const unitPrice = parseFloat(inp.getAttribute('data-unit') || '0');
+      const alloc = qty * unitPrice;
+      currentSum += alloc;
+
+      const display = inp.parentElement?.parentElement?.querySelector('.alloc-display') as HTMLDivElement;
+      if (display) display.textContent = formatCurrency(alloc);
     });
 
     allocModalSummary.textContent = `${formatCurrency(currentSum)} / ${formatCurrency(targetTotal)}`;
-    if (Math.abs(currentSum - targetTotal) > 1) {
+    if (currentSum > targetTotal) {
       allocModalSummary.style.color = '#ef4444';
-      allocModalError.textContent = `Total allocated must equal target (${formatCurrency(targetTotal)}). Current difference: ${formatCurrency(currentSum - targetTotal)}`;
+      allocModalError.textContent = `Total allocated cannot exceed target (${formatCurrency(targetTotal)}). Current excess: ${formatCurrency(currentSum - targetTotal)}`;
       allocModalError.style.display = 'block';
     } else {
       allocModalSummary.style.color = 'var(--accent-green)';
@@ -1508,14 +1578,14 @@ customizeAllocBtn.addEventListener('click', () => {
     }
   };
 
-  allocModalRows.querySelectorAll('.alloc-input').forEach(inp => {
+  allocModalRows.querySelectorAll('.qty-input').forEach(inp => {
     inp.addEventListener('input', (e) => {
       const input = e.target as HTMLInputElement;
-      let val = parseFloat(input.value) || 0;
-      const maxCap = parseFloat(input.getAttribute('data-max') || '100000000');
+      let val = parseInt(input.value) || 0;
+      const maxUnits = parseInt(input.getAttribute('data-max') || '9999');
 
-      if (val > maxCap) {
-        val = maxCap;
+      if (val > maxUnits) {
+        val = maxUnits;
         input.value = val.toString();
       }
       updateModalSummary();
@@ -1534,56 +1604,74 @@ allocModalAuto.addEventListener('click', () => {
   if (!latestSummary) return;
 
   const targetTotal = parseFloat(amountInput.value) || 1000000;
-  const inputs = Array.from(allocModalRows.querySelectorAll('.alloc-input')) as HTMLInputElement[];
-  const STEP = 10000;
+  const inputs = Array.from(allocModalRows.querySelectorAll('.qty-input')) as HTMLInputElement[];
 
   let currentSum = 0;
-  inputs.forEach(inp => { currentSum += parseFloat(inp.value) || 0; });
+  inputs.forEach(inp => { 
+    const qty = parseInt(inp.value) || 0;
+    const unitPrice = parseFloat(inp.getAttribute('data-unit') || '0');
+    currentSum += qty * unitPrice;
+  });
 
   let diff = targetTotal - currentSum;
-  if (Math.abs(diff) < STEP) return;
+  if (diff <= 0) return;
 
-  if (diff > 0) {
-    // Distribute remaining to highest yielding uncapped bonds
-    const bondMap = new Map(latestSummary.selectedBonds.map(b => [b.isin, b]));
-    inputs.sort((a, b) => {
-      const yA = bondMap.get(a.getAttribute('data-isin') || '')?.yield || 0;
-      const yB = bondMap.get(b.getAttribute('data-isin') || '')?.yield || 0;
-      return yB - yA;
-    });
+  // Distribute remaining to highest yielding uncapped bonds
+  const bondMap = new Map(latestSummary.selectedBonds.map(b => [b.isin, b]));
+  inputs.sort((a, b) => {
+    const yA = bondMap.get(a.getAttribute('data-isin') || '')?.yield || 0;
+    const yB = bondMap.get(b.getAttribute('data-isin') || '')?.yield || 0;
+    return yB - yA;
+  });
 
-    for (const inp of inputs) {
-      if (diff < STEP) break;
-      const currentVal = parseFloat(inp.value) || 0;
-      const maxCap = parseFloat(inp.getAttribute('data-max') || '100000000');
-      const addable = Math.min(diff, Math.floor((maxCap - currentVal) / STEP) * STEP);
+  for (const inp of inputs) {
+    if (diff <= 0) break;
+    let currentQty = parseInt(inp.value) || 0;
+    const maxUnits = parseInt(inp.getAttribute('data-max') || '9999');
+    const unitPrice = parseFloat(inp.getAttribute('data-unit') || '0');
+    
+    if (unitPrice === 0) continue;
 
-      if (addable >= STEP) {
-        inp.value = (currentVal + addable).toString();
-        diff -= addable;
-      }
+    // How many more units can we buy for this bond?
+    const maxAddableByCap = maxUnits - currentQty;
+    const maxAddableByCash = Math.floor(diff / unitPrice);
+    
+    const unitsToAdd = Math.min(maxAddableByCap, maxAddableByCash);
+
+    if (unitsToAdd > 0) {
+      currentQty += unitsToAdd;
+      inp.value = currentQty.toString();
+      diff -= unitsToAdd * unitPrice;
+      
+      const display = inp.parentElement?.parentElement?.querySelector('.alloc-display') as HTMLDivElement;
+      if (display) display.textContent = formatCurrency(currentQty * unitPrice);
     }
   }
 
-  // Trigger input event to re-evaluate sum
-  inputs[0]?.dispatchEvent(new Event('input'));
+  // update the modal summary
+  const summarySum = targetTotal - diff; // new total
+  allocModalSummary.textContent = `${formatCurrency(summarySum)} / ${formatCurrency(targetTotal)}`;
+  allocModalSummary.style.color = 'var(--accent-green)';
+  allocModalError.style.display = 'none';
 });
 
 allocModalSave.addEventListener('click', () => {
   const targetTotal = parseFloat(amountInput.value) || 1000000;
-  const inputs = allocModalRows.querySelectorAll('.alloc-input') as NodeListOf<HTMLInputElement>;
+  const inputs = allocModalRows.querySelectorAll('.qty-input') as NodeListOf<HTMLInputElement>;
   let currentSum = 0;
   const tempMap = new Map<string, number>();
 
   inputs.forEach(inp => {
     const isin = inp.getAttribute('data-isin') || '';
-    const val = parseFloat(inp.value) || 0;
+    const qty = parseInt(inp.value) || 0;
+    const unitPrice = parseFloat(inp.getAttribute('data-unit') || '0');
+    const val = qty * unitPrice;
     currentSum += val;
     tempMap.set(isin, val);
   });
 
-  if (Math.abs(currentSum - targetTotal) > 1) {
-    alert(`Total allocated amount (${formatCurrency(currentSum)}) does not match target investment (${formatCurrency(targetTotal)}). Please adjust allocations or click 'Auto-Distribute Remaining'.`);
+  if (currentSum > targetTotal) {
+    alert(`Total allocated amount (${formatCurrency(currentSum)}) exceeds target investment (${formatCurrency(targetTotal)}). Please adjust quantities.`);
     return;
   }
 
@@ -1595,5 +1683,12 @@ allocModalSave.addEventListener('click', () => {
 });
 
 targetQuarterlyCashflowInput.addEventListener('input', () => {
+  updateDashboard();
+});
+document.getElementById('relax-bbb-cap')?.addEventListener('change', () => {
+  updateDashboard();
+});
+
+window.addEventListener('portfolio-overrides-changed', () => {
   updateDashboard();
 });
