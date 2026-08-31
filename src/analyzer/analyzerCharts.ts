@@ -83,6 +83,10 @@ function aggregateHoldings(holdings: PortfolioHolding[], mode: ChartViewMode): C
     .sort((a, b) => b.value - a.value);
 }
 
+export function getChartAggregatedItems(holdings: PortfolioHolding[], mode: ChartViewMode = currentMode): ChartAggItem[] {
+  return aggregateHoldings(holdings, mode);
+}
+
 function renderChart(
   canvasId: string,
   holdings: PortfolioHolding[],
@@ -102,6 +106,48 @@ function renderChart(
   const labels = items.map(i => i.label);
   const data = items.map(i => i.value);
   const bgColors = items.map((_, idx) => COLOR_PALETTE[idx % COLOR_PALETTE.length]);
+
+  // Also populate HTML summary pills if container exists
+  const pillsContainer = document.getElementById('analyzer-chart-pills');
+  if (pillsContainer) {
+    pillsContainer.innerHTML = `
+      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem;">
+        ${items.map((item, idx) => {
+          const isSelected = activeDrilldownFilter && activeDrilldownFilter.value === item.label;
+          const color = bgColors[idx];
+          return `
+            <button data-drilldown-label="${item.label}" class="chart-drilldown-pill" style="
+              display: flex; align-items: center; gap: 0.5rem;
+              background: ${isSelected ? 'rgba(212,175,55,0.25)' : 'rgba(255,255,255,0.05)'};
+              border: 1px solid ${isSelected ? '#d4af37' : 'rgba(255,255,255,0.15)'};
+              border-radius: 8px; padding: 0.35rem 0.75rem; color: #ffffff; cursor: pointer;
+              transition: all 0.15s ease; text-align: left;
+            ">
+              <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: ${color};"></span>
+              <span style="font-weight: 600; font-size: 0.82rem; color: #f8fafc;">${item.label}</span>
+              <span style="font-size: 0.78rem; font-weight: 700; color: #38bdf8;">₹${(item.value / 100000).toFixed(2)}L</span>
+              <span style="font-size: 0.74rem; background: rgba(255,255,255,0.12); padding: 1px 6px; border-radius: 4px; color: #facc15; font-weight: 700;">${item.percentage.toFixed(1)}%</span>
+            </button>
+          `;
+        }).join('')}
+      </div>
+    `;
+
+    pillsContainer.querySelectorAll('.chart-drilldown-pill').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = (e.target as HTMLElement).closest('.chart-drilldown-pill') as HTMLElement;
+        const label = target?.getAttribute('data-drilldown-label');
+        if (label) {
+          if (activeDrilldownFilter && activeDrilldownFilter.value === label) {
+            activeDrilldownFilter = null;
+          } else {
+            activeDrilldownFilter = { mode: currentMode, value: label };
+          }
+          onDrilldownChange(activeDrilldownFilter);
+        }
+      });
+    });
+  }
 
   chartInstance = new Chart(canvas, {
     type: 'doughnut',
@@ -124,10 +170,10 @@ function renderChart(
         legend: {
           position: 'right',
           labels: {
-            color: '#cbd5e1',
-            font: { size: 11, family: 'Inter, sans-serif' },
-            boxWidth: 12,
-            padding: 10,
+            color: '#f8fafc', // Bright crisp white for high contrast
+            font: { size: 12, family: 'Inter, sans-serif', weight: 600 },
+            boxWidth: 14,
+            padding: 12,
             generateLabels: (chart) => {
               const dataset = chart.data.datasets[0];
               const total = (dataset.data as number[]).reduce((a, b) => a + b, 0);
@@ -135,10 +181,11 @@ function renderChart(
                 const val = (dataset.data[idx] as number) || 0;
                 const pct = total > 0 ? ((val / total) * 100).toFixed(1) : '0';
                 return {
-                  text: `${lbl} (${pct}%)`,
+                  text: `${lbl} — ₹${(val / 100000).toFixed(2)}L (${pct}%)`,
                   fillStyle: (dataset.backgroundColor as string[])[idx],
-                  strokeStyle: '#0f172a',
-                  lineWidth: 1,
+                  strokeStyle: '#1e293b',
+                  lineWidth: 1.5,
+                  fontColor: '#ffffff',
                   hidden: false,
                   index: idx
                 };
@@ -147,18 +194,21 @@ function renderChart(
           }
         },
         tooltip: {
-          backgroundColor: 'rgba(15, 23, 42, 0.95)',
-          titleColor: '#d4af37',
-          bodyColor: '#fff',
-          borderColor: 'rgba(212, 175, 55, 0.3)',
-          borderWidth: 1,
+          backgroundColor: 'rgba(15, 23, 42, 0.98)',
+          titleColor: '#fbbf24',
+          bodyColor: '#ffffff',
+          bodyFont: { size: 13, weight: 600 },
+          titleFont: { size: 13, weight: 700 },
+          borderColor: 'rgba(212, 175, 55, 0.5)',
+          borderWidth: 1.5,
           padding: 12,
+          boxPadding: 6,
           callbacks: {
             label: (ctx) => {
               const val = ctx.raw as number;
               const total = (ctx.dataset.data as number[]).reduce((a, b) => a + b, 0);
               const pct = total > 0 ? ((val / total) * 100).toFixed(1) : '0';
-              return ` Amount: ₹${(val / 100000).toFixed(2)}L (${pct}%) [Click to Drilldown]`;
+              return ` Value: ₹${(val / 100000).toFixed(2)} Lakhs (${pct}%) — Click to Drilldown`;
             }
           }
         }

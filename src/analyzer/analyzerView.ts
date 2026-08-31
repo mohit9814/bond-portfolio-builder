@@ -181,29 +181,29 @@ function renderAnalysisResults() {
     ` : ''}
 
     <!-- Clickable & Drillable Allocation Pie Chart Section -->
-    <div class="table-card" style="padding: 1.5rem;">
+    <div class="table-card" style="padding: 1.5rem; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.12);">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
         <div>
-          <h3 style="margin: 0; font-size: 1.15rem; color: var(--accent-gold); display: flex; align-items: center; gap: 0.5rem;">
+          <h3 style="margin: 0; font-size: 1.2rem; color: #fbbf24; display: flex; align-items: center; gap: 0.5rem; font-weight: 700;">
             📊 Interactive Drillable Portfolio Allocation
           </h3>
-          <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0.25rem 0 0 0;">
-            Click on any chart slice or legend to drill down and filter the holdings roster below
+          <p style="font-size: 0.85rem; color: #e2e8f0; margin: 0.35rem 0 0 0; font-weight: 500;">
+            Click on any chart segment or legend item to drill down and filter the portfolio holdings below
           </p>
         </div>
 
-        <!-- 4 View Mode Pills -->
-        <div style="display: flex; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 10px; padding: 3px; gap: 4px; flex-wrap: wrap;">
-          <button id="chart-mode-promoter" class="btn" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; border: none; ${currentChartMode === 'promoter' ? 'background: var(--accent-gold); color: #000; font-weight: 700;' : 'background: transparent; color: var(--text-secondary);'}">
+        <!-- 4 View Mode Pills with High-Contrast Text -->
+        <div style="display: flex; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.18); border-radius: 10px; padding: 4px; gap: 6px; flex-wrap: wrap;">
+          <button id="chart-mode-promoter" class="btn" style="padding: 0.4rem 0.85rem; font-size: 0.82rem; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; ${currentChartMode === 'promoter' ? 'background: #d4af37; color: #0f172a; font-weight: 800; border: 1px solid #d4af37;' : 'background: rgba(255,255,255,0.06); color: #f8fafc; font-weight: 600; border: 1px solid rgba(255,255,255,0.15);'}">
             🏢 Promoter / Co.
           </button>
-          <button id="chart-mode-industry" class="btn" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; border: none; ${currentChartMode === 'industry' ? 'background: var(--accent-gold); color: #000; font-weight: 700;' : 'background: transparent; color: var(--text-secondary);'}">
+          <button id="chart-mode-industry" class="btn" style="padding: 0.4rem 0.85rem; font-size: 0.82rem; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; ${currentChartMode === 'industry' ? 'background: #d4af37; color: #0f172a; font-weight: 800; border: 1px solid #d4af37;' : 'background: rgba(255,255,255,0.06); color: #f8fafc; font-weight: 600; border: 1px solid rgba(255,255,255,0.15);'}">
             🏭 Sector / Industry
           </button>
-          <button id="chart-mode-bond" class="btn" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; border: none; ${currentChartMode === 'bond' ? 'background: var(--accent-gold); color: #000; font-weight: 700;' : 'background: transparent; color: var(--text-secondary);'}">
+          <button id="chart-mode-bond" class="btn" style="padding: 0.4rem 0.85rem; font-size: 0.82rem; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; ${currentChartMode === 'bond' ? 'background: #d4af37; color: #0f172a; font-weight: 800; border: 1px solid #d4af37;' : 'background: rgba(255,255,255,0.06); color: #f8fafc; font-weight: 600; border: 1px solid rgba(255,255,255,0.15);'}">
             🎯 Individual Bond
           </button>
-          <button id="chart-mode-rating" class="btn" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; border: none; ${currentChartMode === 'rating' ? 'background: var(--accent-gold); color: #000; font-weight: 700;' : 'background: transparent; color: var(--text-secondary);'}">
+          <button id="chart-mode-rating" class="btn" style="padding: 0.4rem 0.85rem; font-size: 0.82rem; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; ${currentChartMode === 'rating' ? 'background: #d4af37; color: #0f172a; font-weight: 800; border: 1px solid #d4af37;' : 'background: rgba(255,255,255,0.06); color: #f8fafc; font-weight: 600; border: 1px solid rgba(255,255,255,0.15);'}">
             ⭐ Credit Rating Tier
           </button>
         </div>
@@ -213,12 +213,14 @@ function renderAnalysisResults() {
         <canvas id="analyzer-allocation-chart"></canvas>
       </div>
 
+      <div id="analyzer-chart-pills"></div>
+
       ${drilldownFilter ? `
-        <div style="margin-top: 1rem; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 0.6rem 1rem; display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-size: 0.84rem; color: #38bdf8;">
-            🔍 <strong>Active Drilldown Filter:</strong> ${drilldownFilter.mode.toUpperCase()} = <strong>"${drilldownFilter.value}"</strong>
+        <div style="margin-top: 1rem; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 8px; padding: 0.65rem 1rem; display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
+          <span style="font-size: 0.88rem; color: #ffffff;">
+            🔍 <strong style="color: #38bdf8;">Active Drilldown Filter:</strong> ${drilldownFilter.mode.toUpperCase()} = <strong style="color: #fbbf24;">"${drilldownFilter.value}"</strong>
           </span>
-          <button id="clear-drilldown-btn" class="btn" style="background: rgba(255,255,255,0.1); color: #fff; padding: 0.25rem 0.75rem; font-size: 0.75rem;">
+          <button id="clear-drilldown-btn" class="btn" style="background: rgba(239, 68, 68, 0.25); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); padding: 0.3rem 0.85rem; font-size: 0.78rem; font-weight: 600; border-radius: 6px; cursor: pointer;">
             ✕ Clear Filter
           </button>
         </div>
