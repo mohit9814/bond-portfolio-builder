@@ -64,7 +64,7 @@ function aggregateHoldings(holdings: PortfolioHolding[], mode: ChartViewMode): C
     let key = '';
     if (mode === 'industry') key = h.sector || 'Other Sector';
     else if (mode === 'promoter') key = h.parentGroup || 'Independent';
-    else if (mode === 'bond') key = `${h.securityName} (${h.isin.slice(-5)})`;
+    else if (mode === 'bond') key = h.readableName || h.securityName;
     else if (mode === 'rating') key = h.rating || 'Unrated';
 
     const curr = map.get(key) || { total: 0, count: 0 };

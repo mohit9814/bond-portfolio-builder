@@ -29,10 +29,11 @@ export function openRatingEvidenceModal(holding: PortfolioHolding) {
             <span style="font-family: monospace; font-size: 0.85rem; color: var(--accent-gold); background: rgba(212,175,55,0.1); padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(212,175,55,0.25);">
               ${holding.isin}
             </span>
-            <h3 style="margin: 0; font-size: 1.25rem; color: #fff;">${holding.securityName}</h3>
+            <h3 style="margin: 0; font-size: 1.25rem; color: #fff; font-weight: 700;">${holding.readableName || holding.securityName}</h3>
           </div>
-          <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.35rem;">
-            Issuer: <strong>${holding.issuerName}</strong> • Parent: <strong>${holding.parentGroup}</strong> • Sector: <strong>${holding.sector}</strong>
+          <div style="font-size: 0.85rem; color: #cbd5e1; margin-top: 0.35rem;">
+            Issuer: <strong style="color: #38bdf8;">${holding.issuerName}</strong> • Parent: <strong style="color: #93c5fd;">${holding.parentGroup}</strong> • Sector: <strong style="color: #e2e8f0;">${holding.sector}</strong>
+            ${holding.rawSecurityName ? ` • <span style="font-family: monospace; font-size: 0.75rem; color: #94a3b8;">(${holding.rawSecurityName})</span>` : ''}
           </div>
         </div>
         <button id="close-rating-evidence-btn" style="background: none; border: none; font-size: 1.5rem; color: var(--text-secondary); cursor: pointer; padding: 0 0.5rem; line-height: 1;">✕</button>

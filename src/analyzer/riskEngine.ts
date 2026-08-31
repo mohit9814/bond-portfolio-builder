@@ -164,13 +164,14 @@ export function generateExitRecommendations(
   const recommendations: ExitRecommendation[] = [];
 
   holdings.forEach(h => {
-    const secLower = h.securityName.toLowerCase();
+    const secLower = ((h.rawSecurityName || '') + ' ' + h.securityName + ' ' + h.issuerName).toLowerCase();
 
     // Condition 1: Credit deterioration & Group Overconcentration (EFSL multiple holdings with negative outlook)
     if (secLower.includes('efsl') && (h.ratingTrend === 'deteriorating' || assessment.groupExposures.find(g => g.parentGroup.includes('Edelweiss'))?.percentage! > 20)) {
       recommendations.push({
         isin: h.isin,
         securityName: h.securityName,
+        readableName: h.readableName,
         issuerName: h.issuerName,
         parentGroup: h.parentGroup,
         qty: h.qty,
@@ -191,6 +192,7 @@ export function generateExitRecommendations(
       recommendations.push({
         isin: h.isin,
         securityName: h.securityName,
+        readableName: h.readableName,
         issuerName: h.issuerName,
         parentGroup: h.parentGroup,
         qty: h.qty,
@@ -211,6 +213,7 @@ export function generateExitRecommendations(
       recommendations.push({
         isin: h.isin,
         securityName: h.securityName,
+        readableName: h.readableName,
         issuerName: h.issuerName,
         parentGroup: h.parentGroup,
         qty: h.qty,
@@ -231,6 +234,7 @@ export function generateExitRecommendations(
       recommendations.push({
         isin: h.isin,
         securityName: h.securityName,
+        readableName: h.readableName,
         issuerName: h.issuerName,
         parentGroup: h.parentGroup,
         qty: h.qty,
@@ -332,6 +336,7 @@ export function generateMaturityReinvestmentSchedule(
     return {
       isin: h.isin,
       securityName: h.securityName,
+      readableName: h.readableName,
       issuerName: h.issuerName,
       maturityDate: h.maturityDate,
       monthsAway: h.monthsToMaturity,

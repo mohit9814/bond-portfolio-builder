@@ -31,6 +31,8 @@ export interface PortfolioHolding {
   srNo: number;
   isin: string;
   securityName: string;
+  readableName: string;
+  rawSecurityName?: string;
   qty: number;
   faceValue: number;
   estimatedMarketValue: number;
@@ -90,6 +92,7 @@ export type ExitCategory =
 export interface ExitRecommendation {
   isin: string;
   securityName: string;
+  readableName?: string;
   issuerName: string;
   parentGroup: string;
   qty: number;
@@ -116,6 +119,7 @@ export interface AddRecommendation {
 export interface MaturityReinvestmentItem {
   isin: string;
   securityName: string;
+  readableName?: string;
   issuerName: string;
   maturityDate: string;
   monthsAway: number;

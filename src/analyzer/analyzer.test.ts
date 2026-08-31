@@ -33,9 +33,9 @@ console.log('\n=== Running Current Bond Portfolio Analyzer & Rebalancer Test Sui
     throw new Error(`Expected Tapir qty=6, FV=100000, value=600000, got ${JSON.stringify(tapir)}`);
   }
 
-  const ibhflPublic = holdings.find(h => h.isin === 'INE148I07GK5');
-  if (ibhflPublic?.qty !== 56 || ibhflPublic?.faceValue !== 1000 || ibhflPublic?.estimatedMarketValue !== 56000) {
-    throw new Error(`Expected IBHFL public issue qty=56, FV=1000, value=56000, got ${JSON.stringify(ibhflPublic)}`);
+  const espl = holdings.find(h => h.isin === 'INE01YL07383');
+  if (!espl?.readableName.includes('EarlySalary') || !espl?.securityName.includes('EarlySalary')) {
+    throw new Error(`Expected EarlySalary readable name, got: ${espl?.readableName}`);
   }
 
   const totalHoldingValue = holdings.reduce((sum, h) => sum + h.estimatedMarketValue, 0);

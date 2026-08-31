@@ -250,12 +250,12 @@ function renderAnalysisResults() {
             <div style="background: rgba(239, 68, 68, 0.04); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 10px; padding: 1rem; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
               <div style="flex: 1; min-width: 280px;">
                 <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.35rem; flex-wrap: wrap;">
-                  <span style="font-family: monospace; font-weight: 700; font-size: 0.85rem; color: #fff;">${e.isin}</span>
-                  <span style="font-weight: 600; color: #e2e8f0; font-size: 0.88rem;">${e.securityName}</span>
+                  <span style="font-family: monospace; font-weight: 700; font-size: 0.85rem; color: var(--accent-gold);">${e.isin}</span>
+                  <span style="font-weight: 700; color: #ffffff; font-size: 0.92rem;">${e.readableName || e.securityName}</span>
                   <span style="font-size: 0.72rem; background: ${e.severity === 'HIGH' ? 'rgba(239,68,68,0.2)' : 'rgba(245,158,11,0.2)'}; color: ${e.severity === 'HIGH' ? '#f87171' : '#fbbf24'}; padding: 1px 7px; border-radius: 6px; font-weight: 700;">
                     ${e.severity} SEVERITY
                   </span>
-                  <span style="font-size: 0.72rem; background: rgba(255,255,255,0.08); color: var(--text-secondary); padding: 1px 7px; border-radius: 6px;">
+                  <span style="font-size: 0.72rem; background: rgba(255,255,255,0.08); color: #cbd5e1; padding: 1px 7px; border-radius: 6px;">
                     ${e.category.replace(/_/g, ' ')}
                   </span>
                   <button onclick="window.openRatingEvidenceByIsin('${e.isin}')" class="btn" style="background: rgba(59,130,246,0.2); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); padding: 1px 8px; font-size: 0.72rem; border-radius: 6px;">
@@ -356,8 +356,8 @@ function renderAnalysisResults() {
                   <div style="font-size: 0.72rem; color: var(--text-secondary);">${m.monthsAway.toFixed(1)} months away</div>
                 </td>
                 <td>
-                  <div style="font-weight: 600; color: #fff;">${m.securityName}</div>
-                  <div style="font-family: monospace; font-size: 0.72rem; color: var(--text-secondary);">${m.isin}</div>
+                  <div style="font-weight: 700; color: #fff; font-size: 0.88rem;">${m.readableName || m.securityName}</div>
+                  <div style="font-family: monospace; font-size: 0.72rem; color: var(--text-secondary);">${m.isin} • ${m.issuerName}</div>
                 </td>
                 <td style="font-weight: 700; color: #fff;">
                   ₹${(m.cashInflowAmount / 100000).toFixed(2)}L
@@ -422,8 +422,13 @@ function renderAnalysisResults() {
                   <td>${h.srNo}</td>
                   <td style="font-family: monospace; font-weight: 600;">${h.isin}</td>
                   <td>
-                    <div style="font-weight: 600; color: #fff;">${h.securityName}</div>
-                    <div style="font-size: 0.75rem; color: var(--text-secondary);">${h.issuerName}</div>
+                    <div style="font-weight: 700; color: #ffffff; font-size: 0.88rem; margin-bottom: 2px;">
+                      ${h.readableName || h.securityName}
+                    </div>
+                    <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
+                      <span style="font-size: 0.72rem; color: #94a3b8; font-family: monospace;">Raw: ${h.rawSecurityName || h.isin}</span>
+                      <span style="font-size: 0.72rem; background: rgba(56,189,248,0.12); color: #38bdf8; padding: 0 5px; border-radius: 3px;">${h.issuerName}</span>
+                    </div>
                   </td>
                   <td><span style="font-size: 0.82rem; color: #93c5fd;">${h.parentGroup}</span></td>
                   <td><span style="font-size: 0.8rem; color: var(--text-secondary);">${h.sector}</span></td>

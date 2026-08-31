@@ -152,11 +152,15 @@ export function parsePortfolioInput(rawText: string, referenceInventory: Default
 
     const rating = matchedBond ? matchedBond.rating : knowledge.rating;
     const ratingTrend = matchedBond?.ratingTrend || knowledge.ratingTrend;
+    const issuerName = matchedBond?.issuer || knowledge.displayName;
+    const readableName = formatReadableSecurityName(row.securityName, row.isin, knowledge, couponPct, matDate);
 
     const holding: PortfolioHolding = {
       srNo: row.srNo,
       isin: row.isin,
-      securityName: row.securityName,
+      securityName: readableName, // Primary readable title
+      readableName,
+      rawSecurityName: row.securityName, // Kept for reference
       qty: row.qty,
       faceValue: faceVal,
       estimatedMarketValue: estVal,
@@ -168,7 +172,7 @@ export function parsePortfolioInput(rawText: string, referenceInventory: Default
       rating,
       ratingAgency: knowledge.ratingAgency,
       ratingTrend,
-      issuerName: matchedBond?.issuer || knowledge.displayName,
+      issuerName,
       parentGroup: knowledge.parentGroup,
       sector: knowledge.sector,
       isSecured: !row.securityName.toLowerCase().includes('unsecured'),
@@ -184,6 +188,49 @@ export function parsePortfolioInput(rawText: string, referenceInventory: Default
     ...h,
     weightPercent: totalValue > 0 ? (h.estimatedMarketValue / totalValue) * 100 : 0
   }));
+}
+
+export function formatReadableSecurityName(
+  rawSecName: string,
+  isin: string,
+  knowledge: { displayName: string },
+  couponPct: number,
+  matDate: string
+): string {
+  const isinUpper = isin.toUpperCase();
+  const year = matDate.split('-')[0];
+
+  const KNOWN_READABLE_NAMES: Record<string, string> = {
+    'INE00DJ07052': 'Tapir Constructions Ltd (Embassy Group)',
+    'INE01YL07383': 'EarlySalary Services Pvt Ltd (Fibe)',
+    'INE0BUS07BQ9': 'Indel Money Ltd',
+    'INE0BUS07BR7': 'Indel Money Ltd',
+    'INE0JZO07032': 'Lucina Land Development Ltd (Embassy)',
+    'INE0NES07329': 'Keertana Finserv Ltd',
+    'INE148I07GK5': 'Sammaan Capital Ltd (formerly Indiabulls HFC)',
+    'INE148I07GL3': 'Sammaan Capital Ltd (Series VI)',
+    'INE244L08034': 'Sammaan Finserve Ltd (formerly ICCL)',
+    'INE244L08059': 'Satin Finserv Ltd (SFIL)',
+    'INE413U08093': 'IIFL Samasta Finance Ltd',
+    'INE477L08147': 'IIFL Home Finance Ltd (IIHFL)',
+    'INE528L07115': 'EAAA India Alternatives Ltd (Edelweiss Alts)',
+    'INE530B08110': 'IIFL Finance Ltd',
+    'INE530L07509': 'Nido Home Finance Ltd (Edelweiss Housing)',
+    'INE530L07566': 'Nido Home Finance Ltd (Edelweiss Housing)',
+    'INE532F07DG1': 'Edelweiss Financial Services Ltd (EFSL)',
+    'INE532F07FI2': 'Edelweiss Financial Services Ltd (EFSL)',
+    'INE532F07GE9': 'Edelweiss Financial Services Ltd (EFSL)',
+    'INE549K07EF5': 'Muthoot Fincorp Ltd',
+    'INE549K07EU4': 'Muthoot Fincorp Ltd'
+  };
+
+  const baseName = KNOWN_READABLE_NAMES[isinUpper] || knowledge.displayName || rawSecName;
+  const couponText = couponPct === 0 ? 'Zero Coupon' : `${couponPct.toFixed(2)}%`;
+  
+  if (year && year !== '2027') {
+    return `${baseName} • ${couponText} (${year})`;
+  }
+  return `${baseName} • ${couponText}`;
 }
 
 /**
