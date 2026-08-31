@@ -173,6 +173,36 @@ console.log('\n=== Running Current Bond Portfolio Analyzer & Rebalancer Test Sui
   console.log(`Test 6 — Maturity Radar & Reinvestment: ${maturities.length} upcoming maturities mapped with automated reinvestment plans ✓`);
 }
 
-console.log('\nAll 6 Current Bond Portfolio Analyzer Test Suites Passed Successfully! ✓\n');
+// Test 7: 2-Tier Sector Hierarchy & Sub-Category Merging (Zero Duplicates)
+{
+  const holdings = parsePortfolioInput(SAMPLE_PORTFOLIO_RAW, DEFAULT_INVENTORY);
+  const broadSectors = new Set(holdings.map(h => h.broadSector));
+  
+  // Must match only the clean unified broad sectors (no fragmented duplicates like 'Affordable Housing Finance' vs 'Housing Finance')
+  const expectedSectors = new Set([
+    'Real Estate & Infrastructure',
+    'Consumer Lending & MSME (Fintech)',
+    'Gold Loans & Microfinance (MFI)',
+    'Housing Finance & Mortgages (HFC)',
+    'Diversified Financials & Asset Mgmt'
+  ]);
+
+  for (const s of broadSectors) {
+    if (!expectedSectors.has(s)) {
+      throw new Error(`Unexpected fragmented or duplicate broad sector: "${s}"`);
+    }
+  }
+
+  // Check sub-sectors exist for holdings
+  const hfcHoldings = holdings.filter(h => h.broadSector === 'Housing Finance & Mortgages (HFC)');
+  const hfcSubSectors = new Set(hfcHoldings.map(h => h.subSector));
+  if (!hfcSubSectors.has('Affordable Housing Finance') || !hfcSubSectors.has('Retail Home Mortgages') || !hfcSubSectors.has('Commercial Mortgages & LAP')) {
+    throw new Error(`Missing expected HFC sub-sectors: ${Array.from(hfcSubSectors).join(', ')}`);
+  }
+
+  console.log(`Test 7 — 2-Tier Sector Hierarchy: 5 clean merged broad sectors verified with zero duplicates (${hfcSubSectors.size} HFC sub-categories drilldown verified) ✓`);
+}
+
+console.log('\nAll 7 Current Bond Portfolio Analyzer Test Suites Passed Successfully! ✓\n');
 
 

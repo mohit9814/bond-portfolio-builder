@@ -16,6 +16,8 @@ export interface IssuerKnowledge {
   displayName: string;
   parentGroup: string;
   sector: string;
+  broadSector?: string;
+  subSector?: string;
   rating: string;
   ratingAgency: string;
   ratingTrend: RatingTrend;
@@ -47,6 +49,8 @@ export interface PortfolioHolding {
   issuerName: string;
   parentGroup: string;
   sector: string;
+  broadSector: string;
+  subSector: string;
   isSecured: boolean;
   weightPercent: number;
   historicalRatings?: HistoricalRating[];

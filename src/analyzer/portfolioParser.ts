@@ -175,6 +175,8 @@ export function parsePortfolioInput(rawText: string, referenceInventory: Default
       issuerName,
       parentGroup: knowledge.parentGroup,
       sector: knowledge.sector,
+      broadSector: knowledge.broadSector || knowledge.sector,
+      subSector: knowledge.subSector || 'General Debt',
       isSecured: !row.securityName.toLowerCase().includes('unsecured'),
       weightPercent: 0, // populated below
       historicalRatings: knowledge.historicalRatings || []

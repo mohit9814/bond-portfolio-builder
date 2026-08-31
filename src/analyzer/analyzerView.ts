@@ -216,9 +216,10 @@ function renderAnalysisResults() {
       <div id="analyzer-chart-pills"></div>
 
       ${drilldownFilter ? `
-        <div style="margin-top: 1rem; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 8px; padding: 0.65rem 1rem; display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
+        <div style="margin-top: 1rem; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 8px; padding: 0.65rem 1rem; display: flex; justify-content: space-between; align-items: center; color: #ffffff; flex-wrap: wrap; gap: 0.5rem;">
           <span style="font-size: 0.88rem; color: #ffffff;">
             🔍 <strong style="color: #38bdf8;">Active Drilldown Filter:</strong> ${drilldownFilter.mode.toUpperCase()} = <strong style="color: #fbbf24;">"${drilldownFilter.value}"</strong>
+            ${drilldownFilter.subValue ? ` → Sub-Category: <strong style="color: #34d399;">"${drilldownFilter.subValue}"</strong>` : ''}
           </span>
           <button id="clear-drilldown-btn" class="btn" style="background: rgba(239, 68, 68, 0.25); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); padding: 0.3rem 0.85rem; font-size: 0.78rem; font-weight: 600; border-radius: 6px; cursor: pointer;">
             ✕ Clear Filter
@@ -399,7 +400,7 @@ function renderAnalysisResults() {
               <th>ISIN</th>
               <th>Security / Issuer</th>
               <th>Parent Group</th>
-              <th>Sector</th>
+              <th>Sector & Sub-Category</th>
               <th style="min-width: 80px;">Qty</th>
               <th style="min-width: 120px;">Unit FV (₹)</th>
               <th>Est. Value (₹)</th>
@@ -411,10 +412,14 @@ function renderAnalysisResults() {
           <tbody>
             ${currentHoldings.map((h, idx) => {
               const isFilteredOut = drilldownFilter ? (
-                (drilldownFilter.mode === 'industry' && h.sector !== drilldownFilter.value) ||
+                (drilldownFilter.mode === 'industry' && (
+                  drilldownFilter.subValue
+                    ? h.subSector !== drilldownFilter.subValue
+                    : (h.broadSector !== drilldownFilter.value && h.sector !== drilldownFilter.value)
+                )) ||
                 (drilldownFilter.mode === 'promoter' && h.parentGroup !== drilldownFilter.value) ||
                 (drilldownFilter.mode === 'rating' && h.rating !== drilldownFilter.value) ||
-                (drilldownFilter.mode === 'bond' && !drilldownFilter.value.includes(h.isin.slice(-5)))
+                (drilldownFilter.mode === 'bond' && (h.readableName !== drilldownFilter.value && !drilldownFilter.value.includes(h.isin.slice(-5))))
               ) : false;
 
               return `
@@ -431,7 +436,10 @@ function renderAnalysisResults() {
                     </div>
                   </td>
                   <td><span style="font-size: 0.82rem; color: #93c5fd;">${h.parentGroup}</span></td>
-                  <td><span style="font-size: 0.8rem; color: var(--text-secondary);">${h.sector}</span></td>
+                  <td>
+                    <div style="font-size: 0.82rem; font-weight: 600; color: #e2e8f0;">${h.broadSector || h.sector}</div>
+                    <div style="font-size: 0.72rem; color: #94a3b8;">${h.subSector || 'General Debt'}</div>
+                  </td>
                   <td>
                     <input type="number" min="1" step="1" value="${h.qty}" data-holding-idx="${idx}" class="holding-qty-input" style="width: 70px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-glass); border-radius: 6px; padding: 4px 6px; color: #fff; font-size: 0.82rem;" />
                   </td>

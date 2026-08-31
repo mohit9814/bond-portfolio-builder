@@ -31,7 +31,9 @@ export const CORE_ISSUER_REGISTRY: Record<string, IssuerKnowledge> = {
     companyKey: 'tapir',
     displayName: 'Tapir Constructions Ltd',
     parentGroup: 'Embassy / Sammaan Group',
-    sector: 'Real Estate & Infrastructure Development',
+    sector: 'Real Estate & Infrastructure',
+    broadSector: 'Real Estate & Infrastructure',
+    subSector: 'Commercial & Residential SPV',
     rating: 'IVR A- (CE) / Stable',
     ratingAgency: 'INFOMERICS',
     ratingTrend: 'improving',
@@ -78,7 +80,9 @@ export const CORE_ISSUER_REGISTRY: Record<string, IssuerKnowledge> = {
     companyKey: 'earlysalary',
     displayName: 'Earlysalary Services Pvt Ltd (Fibe)',
     parentGroup: 'Fibe (Social Worth Technologies)',
-    sector: 'Digital Retail Consumer Lending (Fintech)',
+    sector: 'Consumer Lending & MSME (Fintech)',
+    broadSector: 'Consumer Lending & MSME (Fintech)',
+    subSector: 'Digital Retail Salary Advances',
     rating: 'CARE A / CRISIL A-',
     ratingAgency: 'CARE',
     ratingTrend: 'improving',
@@ -122,7 +126,9 @@ export const CORE_ISSUER_REGISTRY: Record<string, IssuerKnowledge> = {
     companyKey: 'espl',
     displayName: 'Earlysalary Services Pvt Ltd (ESPL / Fibe)',
     parentGroup: 'Fibe (Social Worth Technologies)',
-    sector: 'Digital Retail Consumer Lending (Fintech)',
+    sector: 'Consumer Lending & MSME (Fintech)',
+    broadSector: 'Consumer Lending & MSME (Fintech)',
+    subSector: 'Digital Retail Salary Advances',
     rating: 'CARE A',
     ratingAgency: 'CARE',
     ratingTrend: 'improving',
@@ -142,7 +148,9 @@ export const CORE_ISSUER_REGISTRY: Record<string, IssuerKnowledge> = {
     companyKey: 'indel',
     displayName: 'Indel Money Ltd (IML)',
     parentGroup: 'Indel Corporation',
-    sector: 'Gold Loans & Micro-LAP Financing',
+    sector: 'Gold Loans & Microfinance (MFI)',
+    broadSector: 'Gold Loans & Microfinance (MFI)',
+    subSector: 'Gold Loans & Retail LAP',
     rating: 'CRISIL BBB+ / ACUITE A-',
     ratingAgency: 'CRISIL',
     ratingTrend: 'stable',
@@ -186,7 +194,9 @@ export const CORE_ISSUER_REGISTRY: Record<string, IssuerKnowledge> = {
     companyKey: 'lucina',
     displayName: 'Lucina Land Development Ltd (LLDL)',
     parentGroup: 'Embassy / Sammaan Group',
-    sector: 'Real Estate Commercial Land Development',
+    sector: 'Real Estate & Infrastructure',
+    broadSector: 'Real Estate & Infrastructure',
+    subSector: 'Commercial Land Development',
     rating: 'IVR BBB+ (CE) / Stable',
     ratingAgency: 'INFOMERICS',
     ratingTrend: 'stable',
@@ -230,7 +240,9 @@ export const CORE_ISSUER_REGISTRY: Record<string, IssuerKnowledge> = {
     companyKey: 'keertana',
     displayName: 'Keertana Finserv Ltd (KFL)',
     parentGroup: 'Keertana Group (Padmaja Reddy)',
-    sector: 'Rural Microfinance & Gold Loans (MFI)',
+    sector: 'Gold Loans & Microfinance (MFI)',
+    broadSector: 'Gold Loans & Microfinance (MFI)',
+    subSector: 'Rural Microfinance & Gold (JLG)',
     rating: 'CARE A- / CRISIL A-',
     ratingAgency: 'CARE',
     ratingTrend: 'improving',
@@ -250,7 +262,9 @@ export const CORE_ISSUER_REGISTRY: Record<string, IssuerKnowledge> = {
     companyKey: 'sammaan',
     displayName: 'Sammaan Capital Ltd (formerly Indiabulls HFC)',
     parentGroup: 'Sammaan / Indiabulls Group',
-    sector: 'Housing Finance & Retail Mortgages (HFC)',
+    sector: 'Housing Finance & Mortgages (HFC)',
+    broadSector: 'Housing Finance & Mortgages (HFC)',
+    subSector: 'Retail Home Mortgages',
     rating: 'CRISIL AA / ICRA AA',
     ratingAgency: 'CRISIL',
     ratingTrend: 'stable',
@@ -270,7 +284,9 @@ export const CORE_ISSUER_REGISTRY: Record<string, IssuerKnowledge> = {
     companyKey: 'ibhfl',
     displayName: 'Indiabulls Housing Finance Ltd (now Sammaan Capital)',
     parentGroup: 'Sammaan / Indiabulls Group',
-    sector: 'Housing Finance & Retail Mortgages (HFC)',
+    sector: 'Housing Finance & Mortgages (HFC)',
+    broadSector: 'Housing Finance & Mortgages (HFC)',
+    subSector: 'Retail Home Mortgages',
     rating: 'CRISIL AA / CARE AA',
     ratingAgency: 'CRISIL',
     ratingTrend: 'stable',
@@ -290,7 +306,9 @@ export const CORE_ISSUER_REGISTRY: Record<string, IssuerKnowledge> = {
     companyKey: 'iccl',
     displayName: 'Sammaan Finserve Ltd (formerly Indiabulls Commercial Credit)',
     parentGroup: 'Sammaan / Indiabulls Group',
-    sector: 'Commercial Mortgages & LAP',
+    sector: 'Housing Finance & Mortgages (HFC)',
+    broadSector: 'Housing Finance & Mortgages (HFC)',
+    subSector: 'Commercial Mortgages & LAP',
     rating: 'CRISIL AA',
     ratingAgency: 'CRISIL',
     ratingTrend: 'stable',
@@ -310,7 +328,9 @@ export const CORE_ISSUER_REGISTRY: Record<string, IssuerKnowledge> = {
     companyKey: 'satin',
     displayName: 'Satin Finserv Ltd (SFIL)',
     parentGroup: 'Satin Creditcare Group',
-    sector: 'MSME Secured & Business Loans',
+    sector: 'Consumer Lending & MSME (Fintech)',
+    broadSector: 'Consumer Lending & MSME (Fintech)',
+    subSector: 'MSME Secured Business Loans',
     rating: 'ICRA A- / CARE A-',
     ratingAgency: 'ICRA',
     ratingTrend: 'stable',
@@ -330,7 +350,9 @@ export const CORE_ISSUER_REGISTRY: Record<string, IssuerKnowledge> = {
     companyKey: 'iifl_samasta',
     displayName: 'IIFL Samasta Finance Ltd',
     parentGroup: 'IIFL Group (Fairfax / Prem Watsa)',
-    sector: 'Microfinance (MFI / JLG)',
+    sector: 'Gold Loans & Microfinance (MFI)',
+    broadSector: 'Gold Loans & Microfinance (MFI)',
+    subSector: 'Rural Microfinance (JLG / MFI)',
     rating: 'CRISIL AA- / ICRA AA-',
     ratingAgency: 'CRISIL',
     ratingTrend: 'stable',
@@ -350,7 +372,9 @@ export const CORE_ISSUER_REGISTRY: Record<string, IssuerKnowledge> = {
     companyKey: 'iihfl',
     displayName: 'IIFL Home Finance Ltd (IIHFL)',
     parentGroup: 'IIFL Group (Fairfax / Prem Watsa)',
-    sector: 'Affordable Housing Finance (HFC)',
+    sector: 'Housing Finance & Mortgages (HFC)',
+    broadSector: 'Housing Finance & Mortgages (HFC)',
+    subSector: 'Affordable Housing Finance',
     rating: 'CRISIL AA+ / ICRA AA+',
     ratingAgency: 'CRISIL',
     ratingTrend: 'improving',
@@ -370,7 +394,9 @@ export const CORE_ISSUER_REGISTRY: Record<string, IssuerKnowledge> = {
     companyKey: 'iifl_finance',
     displayName: 'IIFL Finance Ltd',
     parentGroup: 'IIFL Group (Fairfax / Prem Watsa)',
-    sector: 'Diversified Retail NBFC (Gold & LAP)',
+    sector: 'Diversified Financials & Asset Mgmt',
+    broadSector: 'Diversified Financials & Asset Mgmt',
+    subSector: 'Diversified Retail NBFC (Gold & LAP)',
     rating: 'CRISIL AA / ICRA AA',
     ratingAgency: 'CRISIL',
     ratingTrend: 'stable',
@@ -390,7 +416,9 @@ export const CORE_ISSUER_REGISTRY: Record<string, IssuerKnowledge> = {
     companyKey: 'eaal',
     displayName: 'EAAA India Alternatives Ltd (formerly Edelweiss Alts)',
     parentGroup: 'Edelweiss Group (Rashesh Shah)',
-    sector: 'Alternative Asset Management & Private Debt',
+    sector: 'Diversified Financials & Asset Mgmt',
+    broadSector: 'Diversified Financials & Asset Mgmt',
+    subSector: 'Alternative Assets & Private Debt',
     rating: 'ICRA A+ / CRISIL A+',
     ratingAgency: 'ICRA',
     ratingTrend: 'stable',
@@ -410,7 +438,9 @@ export const CORE_ISSUER_REGISTRY: Record<string, IssuerKnowledge> = {
     companyKey: 'nido',
     displayName: 'Nido Home Finance Ltd (formerly Edelweiss Housing)',
     parentGroup: 'Edelweiss Group (Rashesh Shah)',
-    sector: 'Affordable Housing Finance',
+    sector: 'Housing Finance & Mortgages (HFC)',
+    broadSector: 'Housing Finance & Mortgages (HFC)',
+    subSector: 'Affordable Housing Finance',
     rating: 'CRISIL A+ / ICRA A+',
     ratingAgency: 'CRISIL',
     ratingTrend: 'stable',
@@ -430,7 +460,9 @@ export const CORE_ISSUER_REGISTRY: Record<string, IssuerKnowledge> = {
     companyKey: 'efsl',
     displayName: 'Edelweiss Financial Services Ltd (EFSL)',
     parentGroup: 'Edelweiss Group (Rashesh Shah)',
-    sector: 'Financial Services Holding Company',
+    sector: 'Diversified Financials & Asset Mgmt',
+    broadSector: 'Diversified Financials & Asset Mgmt',
+    subSector: 'Financial Services Holding Parent',
     rating: 'CRISIL A+ / ICRA A+',
     ratingAgency: 'CRISIL',
     ratingTrend: 'deteriorating',
@@ -450,7 +482,9 @@ export const CORE_ISSUER_REGISTRY: Record<string, IssuerKnowledge> = {
     companyKey: 'muthoot',
     displayName: 'Muthoot Fincorp Ltd (MFCL)',
     parentGroup: 'Muthoot Pappachan Group (Blue Muthoot)',
-    sector: 'Gold Loans & Micro-MSME Lending',
+    sector: 'Gold Loans & Microfinance (MFI)',
+    broadSector: 'Gold Loans & Microfinance (MFI)',
+    subSector: 'Retail Gold Loans',
     rating: 'CRISIL AA- / ICRA AA-',
     ratingAgency: 'CRISIL',
     ratingTrend: 'stable',
@@ -489,38 +523,36 @@ export function getIssuerKnowledge(query: string): IssuerKnowledge {
     // Non-critical cache read error
   }
 
-  // 2. Exact or substring match in Core Registry
+  // 2. Specific Keyword Priority Matching
+  if (q.includes('iccl') || q.includes('finserve') || q.includes('commercial credit') || q.includes('ine244l08034')) {
+    return CORE_ISSUER_REGISTRY['iccl'];
+  }
+  if (q.includes('iihfl') || q.includes('iifl home')) {
+    return CORE_ISSUER_REGISTRY['iihfl'];
+  }
+  if (q.includes('samasta') || (q.includes('iifl') && q.includes('samasta'))) {
+    return CORE_ISSUER_REGISTRY['iifl_samasta'];
+  }
+  if (q.includes('nido') || q.includes('nhfl') || q.includes('edelweiss housing')) {
+    return CORE_ISSUER_REGISTRY['nido'];
+  }
+  if (q.includes('eaaa') || q.includes('eaal') || q.includes('alternatives')) {
+    return CORE_ISSUER_REGISTRY['eaal'];
+  }
+  if (q.includes('tapir')) return CORE_ISSUER_REGISTRY['tapir'];
+  if (q.includes('lucina') || q.includes('lldl')) return CORE_ISSUER_REGISTRY['lucina'];
+  if (q.includes('earlysalary') || q.includes('espl') || q.includes('fibe')) return CORE_ISSUER_REGISTRY['earlysalary'];
+  if (q.includes('indel') || q.includes('iml')) return CORE_ISSUER_REGISTRY['indel'];
+  if (q.includes('keertana') || q.includes('kfl')) return CORE_ISSUER_REGISTRY['keertana'];
+  if (q.includes('satin') || q.includes('sfil')) return CORE_ISSUER_REGISTRY['satin'];
+  if (q.includes('muthoot') || q.includes('mfcl')) return CORE_ISSUER_REGISTRY['muthoot'];
+  if (q.includes('efsl') || (q.includes('edelweiss') && !q.includes('housing') && !q.includes('alternatives'))) return CORE_ISSUER_REGISTRY['efsl'];
+  if (q.includes('sammaan') || q.includes('ibhfl') || q.includes('indiabulls')) return CORE_ISSUER_REGISTRY['sammaan'];
+  if (q.includes('iifl')) return CORE_ISSUER_REGISTRY['iifl_finance'];
+
+  // 3. Exact or substring match in Core Registry
   for (const [k, v] of Object.entries(CORE_ISSUER_REGISTRY)) {
-    if (
-      q.includes(k) ||
-      v.displayName.toLowerCase().includes(q) ||
-      v.companyKey.toLowerCase().includes(q) ||
-      (q.includes('efsl') && k === 'efsl') ||
-      (q.includes('nido') && k === 'nido') ||
-      (q.includes('nhfl') && k === 'nido') ||
-      (q.includes('eaal') && k === 'eaal') ||
-      (q.includes('eaaal') && k === 'eaal') ||
-      (q.includes('iifl') && q.includes('samasta') && k === 'iifl_samasta') ||
-      (q.includes('iihfl') && k === 'iihfl') ||
-      (q.includes('iifl') && k === 'iifl_finance') ||
-      (q.includes('sammaan') && k === 'sammaan') ||
-      (q.includes('ibhfl') && k === 'ibhfl') ||
-      (q.includes('iccl') && k === 'iccl') ||
-      (q.includes('sfil') && k === 'satin') ||
-      (q.includes('satin') && k === 'satin') ||
-      (q.includes('mfcl') && k === 'muthoot') ||
-      (q.includes('muthoot') && k === 'muthoot') ||
-      (q.includes('tapir') && k === 'tapir') ||
-      (q.includes('lucina') && k === 'lucina') ||
-      (q.includes('lldl') && k === 'lucina') ||
-      (q.includes('kfl') && k === 'keertana') ||
-      (q.includes('keertana') && k === 'keertana') ||
-      (q.includes('espl') && k === 'espl') ||
-      (q.includes('earlysalary') && k === 'earlysalary') ||
-      (q.includes('fibe') && k === 'earlysalary') ||
-      (q.includes('indel') && k === 'indel') ||
-      (q.includes('iml') && k === 'indel')
-    ) {
+    if (q.includes(k) || v.displayName.toLowerCase().includes(q) || v.companyKey.toLowerCase().includes(q)) {
       return v;
     }
   }
@@ -530,7 +562,9 @@ export function getIssuerKnowledge(query: string): IssuerKnowledge {
     companyKey: q.slice(0, 12),
     displayName: query || 'Corporate Issuer',
     parentGroup: 'Independent Issuer',
-    sector: 'Financial Services / Corporate',
+    sector: 'Diversified Financials & Asset Mgmt',
+    broadSector: 'Diversified Financials & Asset Mgmt',
+    subSector: 'Corporate Debt Securities',
     rating: 'A / BBB Grade',
     ratingAgency: 'CRISIL/ICRA/CARE',
     ratingTrend: 'stable',
