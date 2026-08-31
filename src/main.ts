@@ -8,6 +8,7 @@ import { openBondDetailModal } from './bondDetailModal';
 import { renderEliminatedSummaryBar } from './eliminatedBondsModal';
 import * as XLSX from 'xlsx';
 import { getCompanyOverrides } from './overridesManager';
+import { initScreener, setScreenerInventory } from './screener';
 
 Chart.register(...registerables);
 
@@ -1054,6 +1055,7 @@ fileInput.addEventListener('change', async (e) => {
 
       activeInventory = parsedBonds;
       (window as any).activeInventory = activeInventory;
+      setScreenerInventory(activeInventory);
       fileStatus.textContent = `✓ Uploaded ${file.name} successfully (${parsedBonds.length} bonds parsed)`;
       fileStatus.style.color = 'var(--accent-green)';
       updateDashboard();
@@ -1691,4 +1693,41 @@ document.getElementById('relax-bbb-cap')?.addEventListener('change', () => {
 
 window.addEventListener('portfolio-overrides-changed', () => {
   updateDashboard();
+});
+
+// --- Screener & Tabs Logic ---
+const tabBuilder = document.getElementById('tab-builder');
+const tabScreener = document.getElementById('tab-screener');
+const builderView = document.getElementById('builder-view');
+const screenerView = document.getElementById('screener-view');
+
+if (tabBuilder && tabScreener && builderView && screenerView) {
+  tabBuilder.addEventListener('click', () => {
+    tabBuilder.classList.add('tab-active');
+    tabScreener.classList.remove('tab-active');
+    tabBuilder.style.color = 'var(--accent-gold)';
+    tabBuilder.style.borderBottom = '2px solid var(--accent-gold)';
+    tabScreener.style.color = 'var(--text-secondary)';
+    tabScreener.style.borderBottom = 'none';
+    
+    builderView.style.display = 'block';
+    screenerView.style.display = 'none';
+  });
+
+  tabScreener.addEventListener('click', () => {
+    tabScreener.classList.add('tab-active');
+    tabBuilder.classList.remove('tab-active');
+    tabScreener.style.color = 'var(--accent-gold)';
+    tabScreener.style.borderBottom = '2px solid var(--accent-gold)';
+    tabBuilder.style.color = 'var(--text-secondary)';
+    tabBuilder.style.borderBottom = 'none';
+    
+    builderView.style.display = 'none';
+    screenerView.style.display = 'block';
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initScreener();
+  setScreenerInventory(activeInventory);
 });

@@ -28,7 +28,14 @@
         </div>
       </header>
 
-      <main class="bento-grid">
+      <!-- Tab Navigation -->
+      <div class="tabs" style="margin-bottom: 1.5rem; display: flex; gap: 1rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">
+        <button id="tab-builder" class="tab-button tab-active" style="background: none; border: none; font-size: 1.1rem; color: var(--accent-gold); font-weight: 600; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent-gold);">Portfolio Builder</button>
+        <button id="tab-screener" class="tab-button" style="background: none; border: none; font-size: 1.1rem; color: var(--text-secondary); font-weight: 500; cursor: pointer; padding: 0.5rem 1rem; transition: color 0.2s;">Bond Screener</button>
+      </div>
+
+      <div id="builder-view">
+        <main class="bento-grid">
         <!-- Control Panel -->
         <aside class="panel">
           <h2>Portfolio Controls</h2>
@@ -421,6 +428,61 @@
 
         </section>
       </main>
+      </div> <!-- end builder-view -->
+
+      <!-- Screener View -->
+      <div id="screener-view" style="display: none;">
+        <div class="panel" style="margin-bottom: 1.5rem;">
+          <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+            <div class="input-group" style="flex: 1; min-width: 200px; margin-bottom: 0;">
+              <label for="screener-search">Search Issuer / ISIN</label>
+              <input type="text" id="screener-search" placeholder="e.g. Muthoot" />
+            </div>
+            <div class="input-group" style="flex: 1; min-width: 150px; margin-bottom: 0;">
+              <label for="screener-min-yield">Min Yield (%)</label>
+              <input type="number" id="screener-min-yield" placeholder="0.0" step="0.1" />
+            </div>
+            <div class="input-group" style="flex: 1; min-width: 150px; margin-bottom: 0;">
+              <label for="screener-max-tenure">Max Tenure (Months)</label>
+              <input type="number" id="screener-max-tenure" placeholder="e.g. 60" />
+            </div>
+            <div class="input-group" style="flex: 1; min-width: 150px; margin-bottom: 0;">
+              <label for="screener-rating">Credit Rating</label>
+              <select id="screener-rating" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 10px; padding: 0.75rem 1rem; color: var(--text-primary); font-family: var(--font-sans); font-size: 1rem; cursor: pointer; outline: none; width: 100%;">
+                <option value="">All Ratings</option>
+                <option value="AAA">AAA</option>
+                <option value="AA">AA (AA+, AA, AA-)</option>
+                <option value="A">A (A+, A, A-)</option>
+                <option value="BBB">BBB & Below</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <div class="panel" style="overflow-x: auto;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h2>Inventory Screener</h2>
+            <div id="screener-count" style="font-size: 0.9rem; color: var(--text-secondary);">Showing 0 bonds</div>
+          </div>
+          <table class="data-table" style="width: 100%; text-align: left; border-collapse: collapse;">
+            <thead>
+              <tr style="border-bottom: 1px solid var(--border-glass);">
+                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold);" data-sort="issuer">Issuer <span></span></th>
+                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold);" data-sort="isin">ISIN <span></span></th>
+                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold);" data-sort="rating">Rating <span></span></th>
+                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold);" data-sort="yield">Yield (YTM) <span></span></th>
+                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold);" data-sort="tenure">Tenure (Mo) <span></span></th>
+                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold);" data-sort="price">Unit Price <span></span></th>
+                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold);" data-sort="tradable">Tradable FV <span></span></th>
+                <th style="padding: 0.75rem; color: var(--accent-gold);">Action</th>
+              </tr>
+            </thead>
+            <tbody id="screener-table-body">
+              <tr><td colspan="8" style="text-align: center; padding: 2rem;">Upload inventory to view bonds.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
     <!-- Sleek Customisation Swap Modal -->
