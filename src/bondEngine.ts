@@ -645,161 +645,152 @@ export function generateBondPortfolio(
   }
 
   // 5. Allocation & Company Clubbing
-  const STEP = 10000;
   const N = selected.length;
   const bondAllocations: Record<string, number> = {};
 
   // Maximum single company allocation limit: 15% of total investment
-  const MAX_COMPANY_CAP = Math.floor((totalInvestment * 0.15) / STEP) * STEP;
+  const baseMaxCompanyCap = totalInvestment * 0.15;
 
   // Track company total allocations to strictly enforce <= 15% cap per issuer
   const companyAllocTotals: Record<string, number> = {};
-  selected.forEach(s => { companyAllocTotals[s.bond.issuer] = 0; });
+  selected.forEach(s => { 
+    companyAllocTotals[s.bond.issuer] = 0; 
+    bondAllocations[s.bond.isin] = 0;
+  });
 
   if (customAllocations && customAllocations.size === N) {
-    // User custom allocation override (capped by totalTradableFV and 15% company limit)
+    // User custom allocation override (capped by totalTradableFV and 15% company limit unless 1 unit exceeds it)
     selected.forEach(s => {
+      const u = getUnitPrice(s.bond);
       let val = customAllocations.get(s.bond.isin) || 0;
-      if (s.bond.totalTradableFV && s.bond.totalTradableFV > 0) {
-        val = Math.min(val, s.bond.totalTradableFV);
-      }
-      val = Math.min(val, MAX_COMPANY_CAP);
+      
+      const fvCap = s.bond.totalTradableFV && s.bond.totalTradableFV > 0 ? s.bond.totalTradableFV : Infinity;
+      const effectiveCompanyCap = Math.max(baseMaxCompanyCap, u); // allow at least 1 unit if it exceeds 15%
+      
+      val = Math.min(val, fvCap);
+      val = Math.min(val, effectiveCompanyCap);
+      
+      // discrete floor
+      val = Math.floor(val / u) * u;
+      
       bondAllocations[s.bond.isin] = val;
       companyAllocTotals[s.bond.issuer] += val;
     });
-  } else if (allocationStrategy === 'smart') {
-    // Smart Weights (Yield Maximizer with Tradable FV & 15% Max Company Capping)
-    const rawEqual = totalInvestment / N;
-    let pool = 0;
-
-    // Initial allocation capped by totalTradableFV and MAX_COMPANY_CAP
-    selected.forEach(s => {
-      let alloc = Math.floor(rawEqual / STEP) * STEP;
-      const fvCap = s.bond.totalTradableFV && s.bond.totalTradableFV > 0
-        ? s.bond.totalTradableFV
-        : Infinity;
-      const effectiveCap = Math.min(fvCap, MAX_COMPANY_CAP);
-
-      if (alloc > effectiveCap) {
-        alloc = Math.floor(effectiveCap / STEP) * STEP;
-      }
-      bondAllocations[s.bond.isin] = alloc;
-      companyAllocTotals[s.bond.issuer] += alloc;
-      pool += (rawEqual - alloc);
-    });
-
-    // Sort selected by yield descending to assign remaining pool to highest yielding uncapped bonds
-    const sortedByYield = [...selected].sort((a, b) => b.bond.yield - a.bond.yield);
-
-    let iterations = 0;
-    while (pool >= STEP && iterations < 500) {
-      let allocatedInPass = false;
-      for (const s of sortedByYield) {
-        if (pool < STEP) break;
-        const currentBondAlloc = bondAllocations[s.bond.isin];
-        const currentCompanyAlloc = companyAllocTotals[s.bond.issuer];
-
-        const fvCap = s.bond.totalTradableFV && s.bond.totalTradableFV > 0
-          ? s.bond.totalTradableFV
-          : Infinity;
-        const companyRemainingCap = MAX_COMPANY_CAP - currentCompanyAlloc;
-        const bondCap = Math.min(fvCap - currentBondAlloc, companyRemainingCap);
-
-        if (bondCap >= STEP) {
-          bondAllocations[s.bond.isin] += STEP;
-          companyAllocTotals[s.bond.issuer] += STEP;
-          pool -= STEP;
-          allocatedInPass = true;
-        }
-      }
-      if (!allocatedInPass) break;
-      iterations++;
-    }
   } else {
-    // Equal Weights (Balanced Strategy with strict Tradable FV & 15% Max Company Capping)
     const rawEqual = totalInvestment / N;
-    let pool = 0;
+    let totalSpent = 0;
 
-    // 1. Initial base allocation capped by totalTradableFV and MAX_COMPANY_CAP
-    selected.forEach(s => {
-      let alloc = Math.floor(rawEqual / STEP) * STEP;
+    let sortedForDistribution = [...selected];
+    if (allocationStrategy === 'smart') {
+      sortedForDistribution.sort((a, b) => b.bond.yield - a.bond.yield); // Highest yield first
+    }
+
+    // 1. Initial base allocation capped by totalTradableFV and company cap
+    sortedForDistribution.forEach(s => {
+      const u = getUnitPrice(s.bond);
+      const effectiveCompanyCap = Math.max(baseMaxCompanyCap, u);
+      
       const fvCap = s.bond.totalTradableFV && s.bond.totalTradableFV > 0
         ? s.bond.totalTradableFV
         : Infinity;
-      const effectiveCap = Math.min(fvCap, MAX_COMPANY_CAP);
-
-      if (alloc > effectiveCap) {
-        alloc = Math.floor(effectiveCap / STEP) * STEP;
+        
+      const maxAllowed = Math.min(fvCap, effectiveCompanyCap);
+      
+      let alloc = Math.floor(rawEqual / u) * u;
+      
+      // zero-allocation deadlock prevention:
+      if (alloc === 0 && rawEqual > 0 && maxAllowed >= u) {
+          alloc = u;
       }
+
+      if (alloc > maxAllowed) {
+        alloc = Math.floor(maxAllowed / u) * u;
+      }
+
+      // Budget clamp
+      if (totalSpent + alloc > totalInvestment) {
+        alloc = Math.floor((totalInvestment - totalSpent) / u) * u;
+      }
+
       bondAllocations[s.bond.isin] = alloc;
       companyAllocTotals[s.bond.issuer] += alloc;
-      pool += (rawEqual - alloc);
+      totalSpent += alloc;
     });
 
-    // 2. Distribute remaining excess pool evenly among uncapped bonds
+    let pool = totalInvestment - totalSpent;
+
+    // 2. Distribute remaining excess pool evenly (or smartly) among uncapped bonds
     let iterations = 0;
-    while (pool >= STEP && iterations < 500) {
-      let allocatedInPass = false;
-      for (let i = 0; i < selected.length; i++) {
-        if (pool < STEP) break;
-        const s = selected[i];
+    let poolChanged = true;
+    while (pool > 0 && poolChanged && iterations < 500) {
+      poolChanged = false;
+      for (const s of sortedForDistribution) {
+        const u = getUnitPrice(s.bond);
+        if (pool < u) continue;
+
         const currentBondAlloc = bondAllocations[s.bond.isin];
         const currentCompanyAlloc = companyAllocTotals[s.bond.issuer];
 
-        const fvCap = s.bond.totalTradableFV && s.bond.totalTradableFV > 0
-          ? s.bond.totalTradableFV
-          : Infinity;
-        const companyRemainingCap = MAX_COMPANY_CAP - currentCompanyAlloc;
-        const bondCap = Math.min(fvCap - currentBondAlloc, companyRemainingCap);
-
-        if (bondCap >= STEP) {
-          bondAllocations[s.bond.isin] += STEP;
-          companyAllocTotals[s.bond.issuer] += STEP;
-          pool -= STEP;
-          allocatedInPass = true;
+        const fvCap = s.bond.totalTradableFV && s.bond.totalTradableFV > 0 ? s.bond.totalTradableFV : Infinity;
+        const effectiveCompanyCap = Math.max(baseMaxCompanyCap, u);
+        
+        const companyRemainingCap = effectiveCompanyCap - currentCompanyAlloc;
+        const bondRemainingCap = fvCap - currentBondAlloc;
+        
+        const maxAdd = Math.min(bondRemainingCap, companyRemainingCap, pool);
+        
+        if (maxAdd >= u) {
+          bondAllocations[s.bond.isin] += u;
+          companyAllocTotals[s.bond.issuer] += u;
+          pool -= u;
+          totalSpent += u;
+          poolChanged = true;
         }
       }
-      if (!allocatedInPass) break;
       iterations++;
     }
   }
 
-  // Fallback Overflow Allocation: If all initial selected bonds hit Tradable FV or 15% Company caps,
-  // continuously draw the next best candidate bonds from candidateBonds to deploy 100% of totalInvestment!
+  // Fallback Overflow Allocation: If all initial selected bonds hit caps, 
+  // continuously draw the next best candidate bonds to deploy 100% of totalInvestment
   let totalAllocatedSoFar = Object.values(bondAllocations).reduce((a, b) => a + b, 0);
   let unallocatedPool = totalInvestment - totalAllocatedSoFar;
-
-  if (unallocatedPool >= STEP) {
-    // Sort remaining candidates by yield descending
+  
+  if (unallocatedPool > 0) {
     const remainingCandidates = candidateBonds.filter(c => !selected.some(s => s.bond.isin === c.isin));
     remainingCandidates.sort((a, b) => b.yield - a.yield);
 
     for (const cand of remainingCandidates) {
-      if (unallocatedPool < STEP) break;
+      const u = getUnitPrice(cand);
+      if (unallocatedPool < u) continue;
 
       const currentCompanyAlloc = companyAllocTotals[cand.issuer] || 0;
-      const companyRemainingCap = MAX_COMPANY_CAP - currentCompanyAlloc;
-      if (companyRemainingCap < STEP) continue;
+      const effectiveCompanyCap = Math.max(baseMaxCompanyCap, u);
+      const companyRemainingCap = effectiveCompanyCap - currentCompanyAlloc;
+      
+      if (companyRemainingCap < u) continue;
 
       const fvCap = cand.totalTradableFV && cand.totalTradableFV > 0 ? cand.totalTradableFV : Infinity;
-      const effectiveCap = Math.min(fvCap, companyRemainingCap);
-      if (effectiveCap < STEP) continue;
+      const maxAllowed = Math.min(fvCap, companyRemainingCap, unallocatedPool);
+      
+      if (maxAllowed < u) continue;
 
-      let alloc = Math.min(unallocatedPool, effectiveCap);
-      alloc = Math.floor(alloc / STEP) * STEP;
+      let alloc = Math.floor(maxAllowed / u) * u;
+      
+      bondAllocations[cand.isin] = alloc;
+      companyAllocTotals[cand.issuer] = currentCompanyAlloc + alloc;
+      unallocatedPool -= alloc;
 
-      if (alloc >= STEP) {
-        bondAllocations[cand.isin] = alloc;
-        companyAllocTotals[cand.issuer] = currentCompanyAlloc + alloc;
-        unallocatedPool -= alloc;
-
-        selected.push({
-          bond: cand,
-          bucketIndex: 0
-        });
-      }
+      selected.push({
+        bond: cand,
+        bucketIndex: 0
+      });
+      
+      if (unallocatedPool <= 0) break;
     }
   }
+
+
 
   // Map allocations back to selected bonds & build company summary
   const selectedBonds: SelectedBond[] = [];
