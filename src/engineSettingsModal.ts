@@ -15,10 +15,15 @@ let context: EngineSettingsContext | null = null;
 
 export function initEngineSettingsModal(ctx: EngineSettingsContext) {
   context = ctx;
-  const modalBtn = document.getElementById('engine-settings-btn');
-  if (modalBtn) {
-    modalBtn.addEventListener('click', openEngineSettingsModal);
-  }
+  const attachTriggers = () => {
+    document.querySelectorAll('[data-action="open-engine-settings"], #engine-settings-btn, #sidebar-engine-settings-btn, #nav-engine-settings-btn').forEach(btn => {
+      btn.removeEventListener('click', openEngineSettingsModal);
+      btn.addEventListener('click', openEngineSettingsModal);
+    });
+  };
+  attachTriggers();
+  // In case DOM nodes change
+  setTimeout(attachTriggers, 100);
 }
 
 export function openEngineSettingsModal() {
@@ -50,10 +55,29 @@ function createModalElement(): HTMLDialogElement {
     width: 90%;
     max-width: 680px;
     max-height: 90vh;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(10px);
     overflow: hidden;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    z-index: 10000;
   `;
+
+  // Close when clicking on dialog backdrop area
+  dialog.addEventListener('click', (e) => {
+    const rect = dialog.getBoundingClientRect();
+    const isInDialog = (
+      rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
+      rect.left <= e.clientX && e.clientX <= rect.left + rect.width
+    );
+    if (!isInDialog) {
+      dialog.close();
+    }
+  });
+
   return dialog;
 }
 

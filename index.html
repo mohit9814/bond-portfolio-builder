@@ -21,7 +21,10 @@
           <h1>Bond Portfolio Architect</h1>
           <p>Optimize yield & match liquidity with structured laddering</p>
         </div>
-        <div style="display: flex; gap: 0.75rem; align-items: center;">
+        <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+          <button id="nav-engine-settings-btn" data-action="open-engine-settings" class="btn" style="background: rgba(212, 175, 55, 0.15); color: var(--accent-gold); border: 1px solid rgba(212, 175, 55, 0.35); font-weight: 600; display: flex; align-items: center; gap: 0.4rem;">
+            ⚙️ Risk Parameters
+          </button>
           <button id="share-proposal" class="btn" style="background: rgba(212, 175, 55, 0.15); color: var(--accent-gold); border-color: rgba(212, 175, 55, 0.3);">Share Proposal</button>
           <button id="export-excel" class="btn" style="background: linear-gradient(135deg, var(--accent-green) 0%, #059669 100%); color: white; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);">Export Excel</button>
           <button id="export-pdf" class="btn">Export PDF</button>
@@ -38,7 +41,12 @@
         <main class="bento-grid">
         <!-- Control Panel -->
         <aside class="panel">
-          <h2>Portfolio Controls</h2>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h2 style="margin: 0;">Portfolio Controls</h2>
+          </div>
+          <button id="sidebar-engine-settings-btn" data-action="open-engine-settings" class="btn" style="width: 100%; margin-bottom: 1.25rem; background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(212, 175, 55, 0.08) 100%); color: var(--accent-gold); border: 1px solid rgba(212, 175, 55, 0.4); font-weight: 700; padding: 0.65rem 0.85rem; font-size: 0.88rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer;">
+            ⚙️ Risk & Allocation Parameters
+          </button>
           
           <div class="input-group">
             <label for="investment-amount">Total Investment</label>
