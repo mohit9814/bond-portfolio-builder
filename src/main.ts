@@ -1512,7 +1512,7 @@ customizeAllocBtn.addEventListener('click', () => {
 
     tr.innerHTML = `
       <td style="padding: 0.6rem 0.5rem;">
-        <div style="font-weight: 700; font-size: 0.88rem;">${bond.issuer}</div>
+        <div class="bond-name-click" style="font-weight: 700; font-size: 0.88rem; color: var(--accent-blue); cursor: pointer;" title="View Bond Details">${bond.issuer}</div>
         <div style="font-size: 0.72rem; color: var(--text-secondary); font-family: monospace;">${bond.isin}</div>
       </td>
       <td style="padding: 0.6rem 0.5rem;">
@@ -1540,18 +1540,15 @@ customizeAllocBtn.addEventListener('click', () => {
       </td>
     `;
     
-    // Make the row clickable to view bond details
-    tr.style.cursor = 'pointer';
-    tr.title = 'Click to view full bond details';
-    tr.addEventListener('mouseenter', () => { tr.style.background = 'rgba(255,255,255,0.04)'; });
-    tr.addEventListener('mouseleave', () => { tr.style.background = ''; });
-    tr.addEventListener('click', (e) => {
-      // Don't open modal if they click inside the input field
-      if ((e.target as HTMLElement).tagName.toLowerCase() === 'input') return;
-      
-      const fullBond = activeInventory.find(b => b.isin === bond.isin) ?? bond;
-      openBondDetailModal(fullBond);
-    });
+    // Make the bond name clickable to view bond details
+    const nameEl = tr.querySelector('.bond-name-click') as HTMLElement;
+    if (nameEl) {
+      nameEl.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const fullBond = activeInventory.find(b => b.isin === bond.isin) ?? bond;
+        openBondDetailModal(fullBond);
+      });
+    }
 
     allocModalRows.appendChild(tr);
   });

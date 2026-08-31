@@ -232,12 +232,13 @@ export function openEliminatedBondsModal(
         return `
           <tr style="border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.1s; cursor: pointer;"
               onmouseenter="this.style.background='rgba(255,255,255,0.03)'"
-              onmouseleave="this.style.background=''"
-              onclick="if(event.target.tagName !== 'BUTTON') window.openBondDetailByIsin('${e.bond.isin}')">
+              onmouseleave="this.style.background=''">
             <td style="padding: 0.6rem 0.75rem; font-family: monospace; font-size: 0.77rem; color: var(--text-secondary);">
               ${e.bond.isin}
             </td>
-            <td style="padding: 0.6rem 0.75rem; font-weight: 600; font-size: 0.85rem; max-width: 200px;">
+            <td style="padding: 0.6rem 0.75rem; font-weight: 600; font-size: 0.85rem; max-width: 200px; cursor: pointer; color: var(--accent-blue);"
+                title="View Bond Details"
+                onclick="if(window.openBondDetailByIsin) window.openBondDetailByIsin('${e.bond.isin}')">
               ${e.bond.issuer}
             </td>
             <td style="padding: 0.6rem 0.75rem; text-align: center;">

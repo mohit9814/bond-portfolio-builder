@@ -140,10 +140,10 @@ export function getMaturityBuckets(minTenure: number, maxTenure: number, targetN
 }
 
 export const getUnitPrice = (bond: DefaultBond): number => {
-  if (bond.faceValue && bond.faceValue > 0) return bond.faceValue;
   if (bond.totalTradableFV && bond.totalTradableQty && bond.totalTradableQty > 0) {
     return Math.floor(bond.totalTradableFV / bond.totalTradableQty);
   }
+  if (bond.faceValue && bond.faceValue > 0) return bond.faceValue;
   return 100000;
 };
 
