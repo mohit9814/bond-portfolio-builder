@@ -1,6 +1,6 @@
 import { DefaultBond } from '../defaultInventory';
 import { PortfolioHolding } from './types';
-import { getIssuerKnowledge } from './issuerKnowledgeDatabase';
+import { getIssuerKnowledge, KNOWN_ISIN_FACE_VALUES } from './issuerKnowledgeDatabase';
 
 export const SAMPLE_PORTFOLIO_RAW = `Sr. No.\tISIN\tSecurity Name\tQty
 1\tINE00DJ07052\tTAPIR CONSTRUCTIONS LTD\t6
@@ -145,7 +145,8 @@ export function parsePortfolioInput(rawText: string, referenceInventory: Default
       monthsToMat = Math.max(0.5, Math.round((diffMs / (1000 * 60 * 60 * 24 * 30.4375)) * 10) / 10);
     }
 
-    const faceVal = matchedBond ? (matchedBond.faceValue || 100000) : getEstimatedFaceValue(row.securityName, row.qty);
+    const isinUpper = row.isin.toUpperCase();
+    const faceVal = KNOWN_ISIN_FACE_VALUES[isinUpper] || (matchedBond?.faceValue) || getEstimatedFaceValue(row.securityName, row.qty);
     const estVal = row.qty * faceVal;
     totalValue += estVal;
 
@@ -171,7 +172,8 @@ export function parsePortfolioInput(rawText: string, referenceInventory: Default
       parentGroup: knowledge.parentGroup,
       sector: knowledge.sector,
       isSecured: !row.securityName.toLowerCase().includes('unsecured'),
-      weightPercent: 0 // populated below
+      weightPercent: 0, // populated below
+      historicalRatings: knowledge.historicalRatings || []
     };
 
     return holding;

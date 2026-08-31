@@ -166,28 +166,8 @@ export function generateExitRecommendations(
   holdings.forEach(h => {
     const secLower = h.securityName.toLowerCase();
 
-    // Condition 1: Real estate development risk / Low credit grade (Tapir, Lucina)
-    if (secLower.includes('tapir') || secLower.includes('lucina') || secLower.includes('lldl')) {
-      recommendations.push({
-        isin: h.isin,
-        securityName: h.securityName,
-        issuerName: h.issuerName,
-        parentGroup: h.parentGroup,
-        qty: h.qty,
-        estimatedValue: h.estimatedMarketValue,
-        couponPercent: h.couponPercent,
-        rating: h.rating,
-        ratingTrend: h.ratingTrend,
-        severity: 'HIGH',
-        category: 'REAL_ESTATE_SECTOR_RISK',
-        rationale: 'High project execution & refinancing risk in commercial real estate SPV. Subordinated asset quality compared to corporate retail credit.',
-        suggestedAction: 'Exit position on secondary market; rotate capital into secured retail/education lenders (e.g. Auxilo, UGro).'
-      });
-      return;
-    }
-
-    // Condition 2: Credit deterioration & Group Overconcentration (EFSL multiple holdings)
-    if (secLower.includes('efsl') && (h.ratingTrend === 'deteriorating' || assessment.groupExposures.find(g => g.parentGroup.includes('Edelweiss'))?.percentage! > 25)) {
+    // Condition 1: Credit deterioration & Group Overconcentration (EFSL multiple holdings with negative outlook)
+    if (secLower.includes('efsl') && (h.ratingTrend === 'deteriorating' || assessment.groupExposures.find(g => g.parentGroup.includes('Edelweiss'))?.percentage! > 20)) {
       recommendations.push({
         isin: h.isin,
         securityName: h.securityName,
@@ -200,13 +180,13 @@ export function generateExitRecommendations(
         ratingTrend: h.ratingTrend,
         severity: 'HIGH',
         category: 'GROUP_OVERCONCENTRATION',
-        rationale: 'Elevated Edelweiss Group parent leverage and multi-ISIN clustering creates disproportionate single-promoter exposure.',
+        rationale: 'Elevated Edelweiss Group parent leverage and multi-ISIN clustering creates disproportionate single-promoter exposure with Negative agency outlook.',
         suggestedAction: 'Trim/Exit to bring total Edelweiss group exposure below 15% prudential ceiling.'
       });
       return;
     }
 
-    // Condition 3: Sub-par coupon yield drag (<= 9.0%) (IBHFL 8.85%, ICCL 8.45%, SFIL 8.80%)
+    // Condition 2: Sub-par coupon yield drag (<= 9.0%) (IBHFL 8.85%, ICCL 8.45%, SFIL 8.80%)
     if (h.couponPercent > 0 && h.couponPercent <= 9.0) {
       recommendations.push({
         isin: h.isin,
@@ -222,6 +202,26 @@ export function generateExitRecommendations(
         category: 'SUBPAR_YIELD',
         rationale: `Sub-par coupon (${h.couponPercent.toFixed(2)}%) delivers low cash yield. Market currently offers 11.0%–12.5% in comparable/higher credit grades.`,
         suggestedAction: 'Sell/Redeem to reinvest in 11.5%+ rated bonds to capture 250-350 bps yield pickup.'
+      });
+      return;
+    }
+
+    // Condition 3: Real estate development land SPV without top-tier guarantee
+    if (secLower.includes('lucina') || secLower.includes('lldl')) {
+      recommendations.push({
+        isin: h.isin,
+        securityName: h.securityName,
+        issuerName: h.issuerName,
+        parentGroup: h.parentGroup,
+        qty: h.qty,
+        estimatedValue: h.estimatedMarketValue,
+        couponPercent: h.couponPercent,
+        rating: h.rating,
+        ratingTrend: h.ratingTrend,
+        severity: 'MEDIUM',
+        category: 'REAL_ESTATE_SECTOR_RISK',
+        rationale: 'Subordinated project land cashflows; high 13.5% coupon compensates for development milestones, but exposure should be prudently capped.',
+        suggestedAction: 'Maintain position if comfortable with project escrow; trim if seeking lower sector cyclicality.'
       });
       return;
     }

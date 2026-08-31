@@ -2,6 +2,15 @@ import { DefaultBond } from '../defaultInventory';
 
 export type RatingTrend = 'improving' | 'stable' | 'deteriorating';
 
+export interface HistoricalRating {
+  agency: string;
+  rating: string;
+  outlook: 'Stable' | 'Positive' | 'Negative' | 'Watch' | 'Under Review' | 'Watch Developing';
+  date: string;
+  commentary: string;
+  creditEnhancement?: string;
+}
+
 export interface IssuerKnowledge {
   companyKey: string;
   displayName: string;
@@ -14,6 +23,7 @@ export interface IssuerKnowledge {
   carPercent?: number; // Capital Adequacy Ratio %
   gnpaPercent?: number; // Gross NPA %
   keyRiskOrStrength: string;
+  historicalRatings?: HistoricalRating[];
   lastUpdated: string;
 }
 
@@ -37,6 +47,7 @@ export interface PortfolioHolding {
   sector: string;
   isSecured: boolean;
   weightPercent: number;
+  historicalRatings?: HistoricalRating[];
 }
 
 export interface GroupExposure {

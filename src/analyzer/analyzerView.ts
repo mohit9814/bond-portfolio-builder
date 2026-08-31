@@ -2,6 +2,8 @@ import { DefaultBond } from '../defaultInventory';
 import { PortfolioHolding, PortfolioRiskAssessment, ExitRecommendation, AddRecommendation, MaturityReinvestmentItem } from './types';
 import { parsePortfolioInput, SAMPLE_PORTFOLIO_RAW } from './portfolioParser';
 import { assessPortfolioRisk, generateExitRecommendations, generateAddRecommendations, generateMaturityReinvestmentSchedule } from './riskEngine';
+import { initDrillableChart, setChartViewMode, clearDrilldownFilter, getActiveDrilldownFilter, ChartViewMode } from './analyzerCharts';
+import { openRatingEvidenceModal } from './ratingEvidenceModal';
 
 let currentInventory: DefaultBond[] = [];
 let currentHoldings: PortfolioHolding[] = [];
@@ -9,6 +11,13 @@ let currentAssessment: PortfolioRiskAssessment | null = null;
 let currentExits: ExitRecommendation[] = [];
 let currentAdds: AddRecommendation[] = [];
 let currentMaturities: MaturityReinvestmentItem[] = [];
+let currentChartMode: ChartViewMode = 'promoter';
+
+// Global hook for inline row buttons
+(window as any).openRatingEvidenceByIsin = (isin: string) => {
+  const holding = currentHoldings.find(h => h.isin === isin);
+  if (holding) openRatingEvidenceModal(holding);
+};
 
 export function setAnalyzerInventory(inventory: DefaultBond[]) {
   currentInventory = inventory;
@@ -35,7 +44,7 @@ function renderAnalyzerLayout() {
               🛡️ Current Bond Portfolio Analyzer & Rebalancer
             </h2>
             <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0.35rem 0 0 0;">
-              Fundamental risk audit, promoter/conglomerate concentration, strategic exits, inventory additions & maturity reinvestment
+              Evidence-based credit ratings, promoter concentration, interactive drilldown analytics, and yield optimization
             </p>
           </div>
           <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
@@ -97,10 +106,20 @@ function attachViewListeners() {
 function analyzePortfolioText(rawText: string) {
   const holdings = parsePortfolioInput(rawText, currentInventory);
   currentHoldings = holdings;
-  currentAssessment = assessPortfolioRisk(holdings);
-  currentExits = generateExitRecommendations(holdings, currentAssessment);
-  currentAdds = generateAddRecommendations(holdings, currentInventory);
-  currentMaturities = generateMaturityReinvestmentSchedule(holdings, currentInventory);
+  recalculatePortfolio();
+}
+
+function recalculatePortfolio() {
+  // Re-weigh based on current estimated values
+  const totalVal = currentHoldings.reduce((sum, h) => sum + h.estimatedMarketValue, 0);
+  currentHoldings.forEach(h => {
+    h.weightPercent = totalVal > 0 ? (h.estimatedMarketValue / totalVal) * 100 : 0;
+  });
+
+  currentAssessment = assessPortfolioRisk(currentHoldings);
+  currentExits = generateExitRecommendations(currentHoldings, currentAssessment);
+  currentAdds = generateAddRecommendations(currentHoldings, currentInventory);
+  currentMaturities = generateMaturityReinvestmentSchedule(currentHoldings, currentInventory);
 
   renderAnalysisResults();
 }
@@ -111,6 +130,7 @@ function renderAnalysisResults() {
 
   const a = currentAssessment;
   const gradeColor = a.healthScore >= 80 ? '#10b981' : a.healthScore >= 65 ? '#f59e0b' : '#ef4444';
+  const drilldownFilter = getActiveDrilldownFilter();
 
   container.innerHTML = `
     <!-- Top Scorecard KPI Grid -->
@@ -121,24 +141,24 @@ function renderAnalysisResults() {
           <span style="font-size: 2rem; font-weight: 800; color: ${gradeColor};">${a.healthScore}/100</span>
           <span style="font-size: 1.2rem; font-weight: 700; background: rgba(255,255,255,0.08); padding: 2px 10px; border-radius: 8px; color: #fff;">Grade ${a.healthGrade}</span>
         </div>
-        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">Based on credit quality & concentration</div>
+        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">Evaluates single-promoter & rating risk</div>
       </div>
 
       <div class="kpi-card">
-        <div class="kpi-label">Total Holdings & Value</div>
-        <div class="kpi-value">₹${(a.totalInvestedAmount / 100000).toFixed(2)} Lakhs</div>
-        <div style="font-size: 0.8rem; color: var(--accent-gold); margin-top: 0.25rem;">${a.totalHoldingsCount} Unique Debt Securities</div>
+        <div class="kpi-label">Total Portfolio Holding Value</div>
+        <div class="kpi-value" style="color: var(--accent-gold);">₹${(a.totalInvestedAmount / 100000).toFixed(2)} Lakhs</div>
+        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem;">${a.totalHoldingsCount} Unique Debt Securities</div>
       </div>
 
       <div class="kpi-card">
         <div class="kpi-label">Weighted Portfolio Yield</div>
         <div class="kpi-value" style="color: #38bdf8;">${a.weightedYieldPercent.toFixed(2)}%</div>
-        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">Avg Maturity: ${(a.averageDurationMonths / 12).toFixed(1)} yrs (${a.averageDurationMonths.toFixed(0)}m)</div>
+        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">Avg Duration: ${(a.averageDurationMonths / 12).toFixed(1)} yrs (${a.averageDurationMonths.toFixed(0)}m)</div>
       </div>
 
       <div class="kpi-card">
         <div class="kpi-label">Rating Trajectory Breakdown</div>
-        <div style="display: flex; gap: 0.4rem; margin-top: 0.4rem; font-size: 0.75rem;">
+        <div style="display: flex; gap: 0.4rem; margin-top: 0.4rem; font-size: 0.75rem; flex-wrap: wrap;">
           <span style="background: rgba(16,185,129,0.2); color: #34d399; padding: 2px 6px; border-radius: 4px;">📈 ${a.ratingTrendBreakdown.improvingPercent.toFixed(0)}% Impr</span>
           <span style="background: rgba(59,130,246,0.2); color: #60a5fa; padding: 2px 6px; border-radius: 4px;">⚖️ ${a.ratingTrendBreakdown.stablePercent.toFixed(0)}% Stbl</span>
           <span style="background: rgba(239,68,68,0.2); color: #f87171; padding: 2px 6px; border-radius: 4px;">📉 ${a.ratingTrendBreakdown.deterioratingPercent.toFixed(0)}% Det</span>
@@ -150,7 +170,7 @@ function renderAnalysisResults() {
     ${a.highRiskAlerts.length > 0 ? `
       <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 12px; padding: 1.1rem; display: flex; flex-direction: column; gap: 0.5rem;">
         <div style="font-weight: 700; color: #f87171; font-size: 0.92rem; display: flex; align-items: center; gap: 0.4rem;">
-          ⚠️ Risk Assessment Findings & Vulnerabilities:
+          ⚠️ Risk Assessment Findings & Concentration Alerts:
         </div>
         ${a.highRiskAlerts.map(alert => `
           <div style="font-size: 0.84rem; color: #fca5a5; line-height: 1.4; padding-left: 0.5rem; border-left: 2px solid #ef4444;">
@@ -160,32 +180,49 @@ function renderAnalysisResults() {
       </div>
     ` : ''}
 
-    <!-- Conglomerate / Promoter Group Concentration -->
-    <div class="table-card">
-      <h3 style="margin-bottom: 0.8rem; display: flex; align-items: center; justify-content: space-between;">
-        <span>🏢 Promoter & Conglomerate Group Exposure</span>
-        <span style="font-size: 0.78rem; font-weight: normal; color: var(--text-secondary);">Prudential Group Cap: 20%</span>
-      </h3>
-      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.85rem;">
-        ${a.groupExposures.map(g => {
-          const barColor = g.percentage > 30 ? '#ef4444' : g.percentage > 20 ? '#f59e0b' : '#3b82f6';
-          return `
-            <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: 10px; padding: 0.85rem;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-                <span style="font-weight: 600; font-size: 0.88rem; color: #fff;">${g.parentGroup}</span>
-                <span style="font-weight: 700; font-size: 0.9rem; color: ${barColor};">${g.percentage.toFixed(1)}%</span>
-              </div>
-              <div style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; margin-bottom: 0.4rem;">
-                <div style="width: ${Math.min(100, g.percentage)}%; height: 100%; background: ${barColor}; border-radius: 3px;"></div>
-              </div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary);">
-                <span>${g.holdingCount} Holdings (${g.isins.length} ISINs)</span>
-                <span>₹${(g.totalAmount / 100000).toFixed(2)} Lakhs</span>
-              </div>
-            </div>
-          `;
-        }).join('')}
+    <!-- Clickable & Drillable Allocation Pie Chart Section -->
+    <div class="table-card" style="padding: 1.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+        <div>
+          <h3 style="margin: 0; font-size: 1.15rem; color: var(--accent-gold); display: flex; align-items: center; gap: 0.5rem;">
+            📊 Interactive Drillable Portfolio Allocation
+          </h3>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0.25rem 0 0 0;">
+            Click on any chart slice or legend to drill down and filter the holdings roster below
+          </p>
+        </div>
+
+        <!-- 4 View Mode Pills -->
+        <div style="display: flex; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 10px; padding: 3px; gap: 4px; flex-wrap: wrap;">
+          <button id="chart-mode-promoter" class="btn" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; border: none; ${currentChartMode === 'promoter' ? 'background: var(--accent-gold); color: #000; font-weight: 700;' : 'background: transparent; color: var(--text-secondary);'}">
+            🏢 Promoter / Co.
+          </button>
+          <button id="chart-mode-industry" class="btn" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; border: none; ${currentChartMode === 'industry' ? 'background: var(--accent-gold); color: #000; font-weight: 700;' : 'background: transparent; color: var(--text-secondary);'}">
+            🏭 Sector / Industry
+          </button>
+          <button id="chart-mode-bond" class="btn" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; border: none; ${currentChartMode === 'bond' ? 'background: var(--accent-gold); color: #000; font-weight: 700;' : 'background: transparent; color: var(--text-secondary);'}">
+            🎯 Individual Bond
+          </button>
+          <button id="chart-mode-rating" class="btn" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; border: none; ${currentChartMode === 'rating' ? 'background: var(--accent-gold); color: #000; font-weight: 700;' : 'background: transparent; color: var(--text-secondary);'}">
+            ⭐ Credit Rating Tier
+          </button>
+        </div>
       </div>
+
+      <div style="position: relative; height: 280px; width: 100%;">
+        <canvas id="analyzer-allocation-chart"></canvas>
+      </div>
+
+      ${drilldownFilter ? `
+        <div style="margin-top: 1rem; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 0.6rem 1rem; display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.84rem; color: #38bdf8;">
+            🔍 <strong>Active Drilldown Filter:</strong> ${drilldownFilter.mode.toUpperCase()} = <strong>"${drilldownFilter.value}"</strong>
+          </span>
+          <button id="clear-drilldown-btn" class="btn" style="background: rgba(255,255,255,0.1); color: #fff; padding: 0.25rem 0.75rem; font-size: 0.75rem;">
+            ✕ Clear Filter
+          </button>
+        </div>
+      ` : ''}
     </div>
 
     <!-- Section 1: Bonds to Exit (Sell / Reallocate) -->
@@ -196,7 +233,7 @@ function renderAnalysisResults() {
             🚨 Strategic Exit Recommendations (${currentExits.length} Securities)
           </h3>
           <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0.2rem 0 0 0;">
-            Holdings flagged for credit deterioration, real estate project exposure, or sub-par yield drag
+            Holdings flagged for credit deterioration, multi-holding single group concentration, or sub-par yield drag
           </p>
         </div>
       </div>
@@ -219,6 +256,9 @@ function renderAnalysisResults() {
                   <span style="font-size: 0.72rem; background: rgba(255,255,255,0.08); color: var(--text-secondary); padding: 1px 7px; border-radius: 6px;">
                     ${e.category.replace(/_/g, ' ')}
                   </span>
+                  <button onclick="window.openRatingEvidenceByIsin('${e.isin}')" class="btn" style="background: rgba(59,130,246,0.2); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); padding: 1px 8px; font-size: 0.72rem; border-radius: 6px;">
+                    📜 View Agency Evidence
+                  </button>
                 </div>
                 <div style="font-size: 0.82rem; color: #fca5a5; margin-bottom: 0.4rem;">
                   <strong>Risk Rationale:</strong> ${e.rationale}
@@ -262,7 +302,7 @@ function renderAnalysisResults() {
                 </div>
                 <span style="font-size: 1.1rem; font-weight: 800; color: #34d399;">${(a.projectedYield).toFixed(2)}%</span>
               </div>
-              <div style="display: flex; gap: 0.4rem; margin-bottom: 0.5rem; font-size: 0.75rem;">
+              <div style="display: flex; gap: 0.4rem; margin-bottom: 0.5rem; font-size: 0.75rem; flex-wrap: wrap;">
                 <span style="background: rgba(16,185,129,0.15); color: #34d399; padding: 1px 6px; border-radius: 4px; font-weight: 600;">Rating: ${a.rating}</span>
                 <span style="background: rgba(255,255,255,0.06); color: #cbd5e1; padding: 1px 6px; border-radius: 4px;">Tenure: ${a.targetTenureMonths.toFixed(0)}m</span>
                 <span style="background: rgba(59,130,246,0.15); color: #93c5fd; padding: 1px 6px; border-radius: 4px;">${a.sector}</span>
@@ -338,9 +378,17 @@ function renderAnalysisResults() {
       </div>
     </div>
 
-    <!-- Complete Holdings Detail Table -->
+    <!-- Complete Holdings Detail Table with Inline Face Value & Qty Editing -->
     <div class="table-card">
-      <h3 style="margin-bottom: 0.8rem;">📋 Complete Portfolio Holdings Roster (${currentHoldings.length} Securities)</h3>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; flex-wrap: wrap; gap: 0.5rem;">
+        <div>
+          <h3 style="margin: 0;">📋 Complete Portfolio Holdings Roster (${currentHoldings.length} Securities)</h3>
+          <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0.2rem 0 0 0;">
+            Edit Unit Face Value or Qty inline to customize holding values • Click 📜 Evidence to inspect agency reports
+          </p>
+        </div>
+      </div>
+
       <div style="overflow-x: auto;">
         <table>
           <thead>
@@ -350,48 +398,125 @@ function renderAnalysisResults() {
               <th>Security / Issuer</th>
               <th>Parent Group</th>
               <th>Sector</th>
-              <th>Qty</th>
-              <th>Est. Value</th>
+              <th style="min-width: 80px;">Qty</th>
+              <th style="min-width: 120px;">Unit FV (₹)</th>
+              <th>Est. Value (₹)</th>
               <th>Weight</th>
               <th>Coupon</th>
-              <th>Maturity</th>
-              <th>Rating</th>
-              <th>Trend</th>
+              <th>Rating & Evidence</th>
             </tr>
           </thead>
           <tbody>
-            ${currentHoldings.map(h => `
-              <tr>
-                <td>${h.srNo}</td>
-                <td style="font-family: monospace; font-weight: 600;">${h.isin}</td>
-                <td>
-                  <div style="font-weight: 600; color: #fff;">${h.securityName}</div>
-                  <div style="font-size: 0.75rem; color: var(--text-secondary);">${h.issuerName}</div>
-                </td>
-                <td><span style="font-size: 0.82rem; color: #93c5fd;">${h.parentGroup}</span></td>
-                <td><span style="font-size: 0.8rem; color: var(--text-secondary);">${h.sector}</span></td>
-                <td>${h.qty}</td>
-                <td style="font-weight: 600; color: #fff;">₹${(h.estimatedMarketValue / 100000).toFixed(2)}L</td>
-                <td>${h.weightPercent.toFixed(1)}%</td>
-                <td>${h.couponPercent.toFixed(2)}%</td>
-                <td>${h.maturityDate}</td>
-                <td><span style="font-size: 0.8rem; font-weight: 600;">${h.rating}</span></td>
-                <td>
-                  <span style="font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; font-weight: 600; ${
-                    h.ratingTrend === 'improving' ? 'background: rgba(16,185,129,0.2); color: #34d399;' :
-                    h.ratingTrend === 'deteriorating' ? 'background: rgba(239,68,68,0.2); color: #f87171;' :
-                    'background: rgba(59,130,246,0.2); color: #60a5fa;'
-                  }">
-                    ${h.ratingTrend}
-                  </span>
-                </td>
-              </tr>
-            `).join('')}
+            ${currentHoldings.map((h, idx) => {
+              const isFilteredOut = drilldownFilter ? (
+                (drilldownFilter.mode === 'industry' && h.sector !== drilldownFilter.value) ||
+                (drilldownFilter.mode === 'promoter' && h.parentGroup !== drilldownFilter.value) ||
+                (drilldownFilter.mode === 'rating' && h.rating !== drilldownFilter.value) ||
+                (drilldownFilter.mode === 'bond' && !drilldownFilter.value.includes(h.isin.slice(-5)))
+              ) : false;
+
+              return `
+                <tr style="${isFilteredOut ? 'opacity: 0.25; filter: grayscale(80%);' : ''}">
+                  <td>${h.srNo}</td>
+                  <td style="font-family: monospace; font-weight: 600;">${h.isin}</td>
+                  <td>
+                    <div style="font-weight: 600; color: #fff;">${h.securityName}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary);">${h.issuerName}</div>
+                  </td>
+                  <td><span style="font-size: 0.82rem; color: #93c5fd;">${h.parentGroup}</span></td>
+                  <td><span style="font-size: 0.8rem; color: var(--text-secondary);">${h.sector}</span></td>
+                  <td>
+                    <input type="number" min="1" step="1" value="${h.qty}" data-holding-idx="${idx}" class="holding-qty-input" style="width: 70px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-glass); border-radius: 6px; padding: 4px 6px; color: #fff; font-size: 0.82rem;" />
+                  </td>
+                  <td>
+                    <input type="number" min="1000" step="1000" value="${h.faceValue}" data-holding-idx="${idx}" class="holding-fv-input" style="width: 95px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-glass); border-radius: 6px; padding: 4px 6px; color: #fff; font-size: 0.82rem;" />
+                  </td>
+                  <td style="font-weight: 700; color: #fff; white-space: nowrap;">
+                    ₹${(h.estimatedMarketValue / 100000).toFixed(2)}L
+                  </td>
+                  <td>${h.weightPercent.toFixed(1)}%</td>
+                  <td>${h.couponPercent.toFixed(2)}%</td>
+                  <td>
+                    <div style="display: flex; align-items: center; gap: 0.4rem;">
+                      <span style="font-size: 0.8rem; font-weight: 700;">${h.rating}</span>
+                      <button onclick="window.openRatingEvidenceByIsin('${h.isin}')" class="btn" style="background: rgba(212,175,55,0.15); color: var(--accent-gold); border: 1px solid rgba(212,175,55,0.3); padding: 2px 7px; font-size: 0.72rem; border-radius: 4px;" title="View Rating Agency Historical Reports">
+                        📜 Evidence
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              `;
+            }).join('')}
           </tbody>
         </table>
       </div>
     </div>
   `;
+
+  // Attach Chart & Interactive Handlers
+  initDrillableChart('analyzer-allocation-chart', currentHoldings, (_filter) => {
+    renderAnalysisResults();
+  });
+
+  attachResultInteractions();
+}
+
+function attachResultInteractions() {
+  // Chart Mode Switchers
+  const btnPromoter = document.getElementById('chart-mode-promoter');
+  const btnIndustry = document.getElementById('chart-mode-industry');
+  const btnBond = document.getElementById('chart-mode-bond');
+  const btnRating = document.getElementById('chart-mode-rating');
+  const btnClearDrilldown = document.getElementById('clear-drilldown-btn');
+
+  btnPromoter?.addEventListener('click', () => {
+    currentChartMode = 'promoter';
+    setChartViewMode('promoter', 'analyzer-allocation-chart', currentHoldings, () => renderAnalysisResults());
+  });
+
+  btnIndustry?.addEventListener('click', () => {
+    currentChartMode = 'industry';
+    setChartViewMode('industry', 'analyzer-allocation-chart', currentHoldings, () => renderAnalysisResults());
+  });
+
+  btnBond?.addEventListener('click', () => {
+    currentChartMode = 'bond';
+    setChartViewMode('bond', 'analyzer-allocation-chart', currentHoldings, () => renderAnalysisResults());
+  });
+
+  btnRating?.addEventListener('click', () => {
+    currentChartMode = 'rating';
+    setChartViewMode('rating', 'analyzer-allocation-chart', currentHoldings, () => renderAnalysisResults());
+  });
+
+  btnClearDrilldown?.addEventListener('click', () => {
+    clearDrilldownFilter('analyzer-allocation-chart', currentHoldings, () => renderAnalysisResults());
+  });
+
+  // Inline Qty & Face Value Editing
+  document.querySelectorAll('.holding-qty-input').forEach(el => {
+    el.addEventListener('change', (e) => {
+      const idx = parseInt((e.target as HTMLElement).getAttribute('data-holding-idx') || '-1', 10);
+      const val = parseInt((e.target as HTMLInputElement).value, 10) || 1;
+      if (idx >= 0 && idx < currentHoldings.length) {
+        currentHoldings[idx].qty = val;
+        currentHoldings[idx].estimatedMarketValue = val * currentHoldings[idx].faceValue;
+        recalculatePortfolio();
+      }
+    });
+  });
+
+  document.querySelectorAll('.holding-fv-input').forEach(el => {
+    el.addEventListener('change', (e) => {
+      const idx = parseInt((e.target as HTMLElement).getAttribute('data-holding-idx') || '-1', 10);
+      const val = parseFloat((e.target as HTMLInputElement).value) || 1000;
+      if (idx >= 0 && idx < currentHoldings.length) {
+        currentHoldings[idx].faceValue = val;
+        currentHoldings[idx].estimatedMarketValue = currentHoldings[idx].qty * val;
+        recalculatePortfolio();
+      }
+    });
+  });
 }
 
 function exportRebalancingReport() {
