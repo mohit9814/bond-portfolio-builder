@@ -28,6 +28,13 @@ const REASON_META: Record<EliminationReason, ReasonMeta> = {
     bgColor: 'rgba(239,68,68,0.12)',
     description: 'Total tradable face value is ₹0 — inventory is empty for this bond.'
   },
+  TICKET_SIZE_TOO_LARGE: {
+    label: 'Unit Price Exceeds Single Issuer Cap',
+    icon: '⚖️',
+    color: '#ec4899',
+    bgColor: 'rgba(236,72,153,0.12)',
+    description: 'Physical unit ticket price exceeds the maximum single-issuer allocation limit for this portfolio size to protect diversification.'
+  },
   BBB_TENOR_VIOLATION: {
     label: 'BBB > 12-Month Cap',
     icon: '⚠️',

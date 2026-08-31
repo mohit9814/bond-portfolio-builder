@@ -484,6 +484,73 @@ function runTests() {
     console.log(`Test 18 — Inclusions & Exclusions Review & Change Lifecycle: Add INCLUDE (✓) -> Change to EXCLUDE (✓) -> Reset/Clear (✓)`);
   }
 
+  // ─── Test 19: Ticket Size & Single-Issuer Diversification Guard on Small Portfolios ───
+  // A bond with unit price ₹6,16,650 (like Edelweiss) in a ₹10,00,000 portfolio
+  const largeTicketBond: DefaultBond = {
+    isin: 'INE657N07613',
+    issuer: 'EDELWEISS RURAL AND CORP',
+    rating: 'AA',
+    yield: 0.13,
+    coupon: 0.12,
+    months: 14,
+    maturity: '2027-10-15',
+    frequency: 'MONTHLY',
+    totalTradableFV: 6166500,
+    totalTradableQty: 10, // Unit price = 6,16,650
+    faceValue: 1000000
+  };
+
+  const inventoryWithLargeBond = [
+    ...mockInventory.filter(b => b.isin !== largeTicketBond.isin && b.issuer !== largeTicketBond.issuer),
+    largeTicketBond
+  ];
+  const smallInvestment = 1000000; // 10 Lakhs (15% max single issuer cap = ₹1.5 Lakhs)
+
+  const smallPortfolioSummary = generateBondPortfolio(
+    inventoryWithLargeBond, smallInvestment, fdRates, 'A', undefined, 10
+  );
+
+  // Assert: Large ticket bond must NOT be selected under default diversification rules
+  console.assert(
+    !smallPortfolioSummary.selectedBonds.some(b => b.isin === largeTicketBond.isin),
+    'FAIL Test 19a: Large ticket bond (₹6.17L) must NOT be selected in a ₹10L portfolio under SANE diversification defaults'
+  );
+
+  // Assert: Large ticket bond must appear in eliminatedBonds with reason TICKET_SIZE_TOO_LARGE
+  const eliminatedLargeBond = smallPortfolioSummary.eliminatedBonds.find(e => e.bond.isin === largeTicketBond.isin);
+  console.assert(
+    eliminatedLargeBond !== undefined && eliminatedLargeBond.reason === 'TICKET_SIZE_TOO_LARGE',
+    'FAIL Test 19b: Large ticket bond must be eliminated with reason TICKET_SIZE_TOO_LARGE'
+  );
+  console.log('Test 19 — Ticket Size & Diversification Guard: ₹6.17L bond successfully eliminated from ₹10L portfolio (prevents 65% overallocation) ✓');
+
+  // ─── Test 20: Large Ticket Bond Becomes Eligible on Large Portfolios ───────────
+  const largeInvestment = 5000000; // 50 Lakhs (15% cap = ₹7.5 Lakhs >= ₹6.17L unit price)
+  const largePortfolioSummary = generateBondPortfolio(
+    inventoryWithLargeBond, largeInvestment, fdRates, 'A', undefined, 10
+  );
+
+  // Assert: In a ₹50L portfolio, the ₹6.17L unit price is <= 15% (₹7.5L), so it can be eligible
+  const isSelectedOrEligible = largePortfolioSummary.selectedBonds.some(b => b.isin === largeTicketBond.isin) ||
+    !largePortfolioSummary.eliminatedBonds.some(e => e.bond.isin === largeTicketBond.isin && e.reason === 'TICKET_SIZE_TOO_LARGE');
+  console.assert(
+    isSelectedOrEligible,
+    'FAIL Test 20: Large ticket bond should NOT be eliminated by ticket size in a ₹50L portfolio'
+  );
+  console.log('Test 20 — Scaled Ticket Size Guard: ₹6.17L bond is eligible when portfolio size is ₹50L (under 15% cap) ✓');
+
+  // ─── Test 21: User Overrides (allowUnitOverflow or Force Include) ───────────────
+  const summaryWithOverflow = generateBondPortfolio(
+    inventoryWithLargeBond, smallInvestment, fdRates, 'A', undefined, 10,
+    undefined, undefined, 7, 24, 'equal', undefined, undefined, false, {},
+    { allowUnitOverflow: true }
+  );
+  console.assert(
+    summaryWithOverflow.selectedBonds.some(b => b.isin === largeTicketBond.isin),
+    'FAIL Test 21: When user explicitly enables allowUnitOverflow, high yield large ticket bond is included'
+  );
+  console.log('Test 21 — Hyperparameter Override: allowUnitOverflow successfully permits user override ✓');
+
   console.log('All tests passed successfully! ✓');
 }
 

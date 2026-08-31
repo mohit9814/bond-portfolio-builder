@@ -74,8 +74,11 @@ export function initScreener() {
     if (!input) return;
     const eventName = input.tagName === 'SELECT' || input.type === 'checkbox' ? 'change' : 'input';
     input.addEventListener(eventName, () => {
-      activeScreenId = null;
-      if (savedScreensSelect) savedScreensSelect.value = '';
+      if (activeScreenId) {
+        activeScreenId = null;
+        if (savedScreensSelect) savedScreensSelect.value = '';
+        renderPresetChips();
+      }
       applyFilters();
     });
   });
@@ -230,19 +233,34 @@ function renderPresetChips() {
   if (!presetChipsContainer) return;
   presetChipsContainer.innerHTML = '';
   PRESET_SCREENS.forEach(preset => {
+    const isActive = activeScreenId === preset.id;
     const chip = document.createElement('button');
-    chip.className = 'preset-chip';
-    chip.style.cssText = 'background: rgba(255,255,255,0.06); border: 1px solid var(--border-glass); color: var(--text-secondary); padding: 0.3rem 0.75rem; border-radius: 20px; font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: all 0.15s; white-space: nowrap;';
-    chip.textContent = preset.name;
-    chip.addEventListener('mouseenter', () => { chip.style.background = 'rgba(212,175,55,0.15)'; chip.style.color = 'var(--accent-gold)'; });
+    chip.className = `preset-chip ${isActive ? 'active' : ''}`;
+    chip.style.cssText = isActive
+      ? 'background: rgba(212, 175, 55, 0.25); border: 1px solid var(--accent-gold); color: #fff; padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: all 0.15s; white-space: nowrap; box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);'
+      : 'background: rgba(255, 255, 255, 0.06); border: 1px solid var(--border-glass); color: var(--text-secondary); padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: all 0.15s; white-space: nowrap;';
+    chip.innerHTML = `${preset.name} ${isActive ? ' <span style="font-size: 0.7rem; opacity: 0.8;">✕</span>' : ''}`;
+    
+    chip.addEventListener('mouseenter', () => {
+      if (!isActive) {
+        chip.style.background = 'rgba(212, 175, 55, 0.15)';
+        chip.style.color = 'var(--accent-gold)';
+      }
+    });
     chip.addEventListener('mouseleave', () => {
-      if (activeScreenId !== preset.id) {
-        chip.style.background = 'rgba(255,255,255,0.06)';
+      if (!isActive) {
+        chip.style.background = 'rgba(255, 255, 255, 0.06)';
         chip.style.color = 'var(--text-secondary)';
       }
     });
     chip.addEventListener('click', () => {
-      loadScreenById(preset.id);
+      if (activeScreenId === preset.id) {
+        // Toggle OFF if already active
+        resetAllFilters();
+      } else {
+        // Activate preset
+        loadScreenById(preset.id);
+      }
     });
     presetChipsContainer.appendChild(chip);
   });
@@ -255,6 +273,7 @@ export function loadScreenById(id: string) {
   activeScreenId = screen.id;
   setFilterState(screen.filters);
   if (savedScreensSelect) savedScreensSelect.value = screen.id;
+  renderPresetChips();
   applyFilters();
 }
 
@@ -296,6 +315,7 @@ export function resetAllFilters() {
   activeScreenId = null;
   if (savedScreensSelect) savedScreensSelect.value = '';
   setFilterState({});
+  renderPresetChips();
   applyFilters();
 }
 

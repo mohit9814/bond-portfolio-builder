@@ -10,6 +10,8 @@ import * as XLSX from 'xlsx';
 import { getCompanyOverrides } from './overridesManager';
 import { initScreener, setScreenerInventory } from './screener';
 import { initOverridesModal, openOverridesModal, updateOverridesBadge } from './overridesModal';
+import { getEngineHyperparameters } from './engineSettingsManager';
+import { initEngineSettingsModal, openEngineSettingsModal } from './engineSettingsModal';
 
 Chart.register(...registerables);
 
@@ -31,6 +33,7 @@ let latestSummary: PortfolioSummary | null = null;
   if (fullBond) openBondDetailModal(fullBond);
 };
 (window as any).openOverridesModal = openOverridesModal;
+(window as any).openEngineSettingsModal = openEngineSettingsModal;
 
 let growthChartInstance: Chart | null = null;
 let ladderChartInstance: Chart | null = null;
@@ -156,7 +159,7 @@ function updateDashboard() {
   const summary = generateBondPortfolio(
     activeInventory, amount, getFdRateConfig(), minRating, targetYield, numIssuers,
     excludedIsins, manualReplacements, minTenure, maxTenure, strategy, customAllocations,
-    targetQuarterlyCashflowPct, relaxBBBCap, getCompanyOverrides()
+    targetQuarterlyCashflowPct, relaxBBBCap, getCompanyOverrides(), getEngineHyperparameters()
   );
   latestSummary = summary;
   renderKPIs(summary);
@@ -1749,4 +1752,13 @@ document.addEventListener('DOMContentLoaded', () => {
     getManualReplacements: () => manualReplacements,
     onUpdate: () => updateDashboard()
   });
+  initEngineSettingsModal({
+    getCurrentInvestment: () => parseFloat(amountInput.value) || 1000000,
+    onUpdate: () => updateDashboard()
+  });
 });
+
+window.addEventListener('engine-hyperparameters-changed', () => {
+  updateDashboard();
+});
+

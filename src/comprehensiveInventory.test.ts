@@ -229,13 +229,13 @@ function runComprehensiveInventoryTestSuite() {
                   `FAIL [${fileName} | ₹${amount}]: Found ${zeroAllocCompanies.length} companies with 0% weight!`
                 );
 
-                // 3. STRICT 15% SINGLE COMPANY WEIGHT CAP
+                // 3. STRICT SINGLE COMPANY WEIGHT CAP (15% or 1/N equal weight)
                 const STEP = 10000;
-                const maxCompanyCapAllowed = amount * 0.15;
+                const maxCompanyCapAllowed = Math.max(amount * 0.15, amount / targetIssuers);
                 summary.companyAllocations.forEach(c => {
                   console.assert(
                     c.amount <= maxCompanyCapAllowed + 100000, // allow 1 unit overflow if unit price is large
-                    `FAIL [${fileName} | ₹${amount}]: Company ${c.company} allocation ₹${c.amount} exceeded 15% cap ₹${maxCompanyCapAllowed}!`
+                    `FAIL [${fileName} | ₹${amount}]: Company ${c.company} allocation ₹${c.amount} exceeded cap ₹${maxCompanyCapAllowed}!`
                   );
                 });
 

@@ -1,4 +1,5 @@
 import { DefaultBond } from './defaultInventory';
+import { EngineHyperparameters, DEFAULT_HYPERPARAMETERS } from './engineSettingsManager';
 
 export interface SelectedBond extends DefaultBond {
   allocationPercent: number;
@@ -85,6 +86,7 @@ export type EliminationReason =
   | 'USER_EXCLUDE'         // Alias for manual exclusion
   | 'ILLIQUID_QTY'         // Total Tradable Qty = 0 or blank
   | 'ILLIQUID_FV'          // Total Tradable FV = 0 or blank
+  | 'TICKET_SIZE_TOO_LARGE' // Unit price exceeds single issuer cap (diversification rule)
   | 'BBB_TENOR_VIOLATION'  // BBB-rated bond with tenure > 12 months (regulatory risk cap)
   | 'BELOW_MIN_RATING'     // Rating below user-specified minimum
   | 'NOT_SELECTED';        // Passed all filters but not chosen by the optimizer (runner-up)
@@ -162,8 +164,16 @@ export function generateBondPortfolio(
   customAllocations?: Map<string, number>,
   targetQuarterlyCashflowPct?: number,
   relaxBBBCap: boolean = false,
-  companyOverrides: Record<string, { action: string; justification: string }> = {}
+  companyOverrides: Record<string, { action: string; justification: string }> = {},
+  hyperparameters: Partial<EngineHyperparameters> = {}
 ): PortfolioSummary {
+  const hp: EngineHyperparameters = {
+    ...DEFAULT_HYPERPARAMETERS,
+    ...hyperparameters
+  };
+
+  const maxPossibleStandardBonds = Math.floor(totalInvestment / 100000) || 1;
+
   // 1. Define buckets dynamically based on minTenure, maxTenure, and targetNumIssuers
   const buckets = getMaturityBuckets(minTenure, maxTenure, targetNumIssuers);
 
@@ -303,15 +313,34 @@ export function generateBondPortfolio(
     return true;
   });
 
-  // ─── Stage 5: BBB > 12-month tenor cap ───────────────────────────────────
+  // ─── Stage 4b: Physical Unit Ticket Size & Diversification Guard ─────────
+  const maxSingleIssuerCap = Math.max(
+    totalInvestment * (hp.maxSingleIssuerPct / 100),
+    totalInvestment / Math.min(targetNumIssuers, maxPossibleStandardBonds)
+  );
+  candidateBonds = candidateBonds.filter(b => {
+    const u = getUnitPrice(b);
+    // If company is explicitly force-included by user, bypass ticket size guard
+    if (companyOverrides[b.issuer]?.action === 'INCLUDE') return true;
+    // If user explicitly enabled allowUnitOverflow, allow it
+    if (hp.allowUnitOverflow) return true;
+
+    if (u > maxSingleIssuerCap) {
+      return eliminate(b, 'TICKET_SIZE_TOO_LARGE',
+        `Physical unit ticket price ₹${(u / 100000).toFixed(2)}L exceeds max single issuer cap of ${hp.maxSingleIssuerPct}% (₹${(maxSingleIssuerCap / 100000).toFixed(2)}L) for a ₹${(totalInvestment / 100000).toFixed(2)}L portfolio. Diversification rule.`);
+    }
+    return true;
+  });
+
+  // ─── Stage 5: BBB > Tenor Cap (Configurable, Sane Default: 12m) ──────────
   candidateBonds = candidateBonds.filter(b => {
     const symbol = getCleanRatingSymbol(b.rating);
     const isBetterThanBBB = symbol.includes('SOVEREIGN') || symbol.includes('GOI') ||
                             symbol.includes('AAA') || symbol.includes('AA') ||
                             symbol.includes('A');
-    if (!isBetterThanBBB && b.months > 12.0 && !relaxBBBCap) {
+    if (!isBetterThanBBB && b.months > hp.maxBBBTenorMonths && !relaxBBBCap) {
       return eliminate(b, 'BBB_TENOR_VIOLATION',
-        `Rating ${b.rating} (BBB tier) with tenure ${b.months.toFixed(1)}m exceeds the 12-month cap for sub-A bonds. Regulatory risk management rule.`);
+        `Rating ${b.rating} (BBB tier) with tenure ${b.months.toFixed(1)}m exceeds the ${hp.maxBBBTenorMonths}-month cap for sub-A bonds. Regulatory risk management rule.`);
     }
     return true;
   });
@@ -483,7 +512,7 @@ export function generateBondPortfolio(
   //   portfolio yield by more than CF_YIELD_TOLERANCE.
   // ─────────────────────────────────────────────────────────────────────────
   if (targetQuarterlyCashflowPct && targetQuarterlyCashflowPct > 0 && selected.length > 0) {
-    const CF_YIELD_TOLERANCE = 0.005; // Allow up to 0.5% yield drop to gain cashflow coverage
+    const CF_YIELD_TOLERANCE = (hp.cashflowYieldTolerancePct || 0.5) / 100; // Configurable yield drop tolerance
 
     /** Returns the payment interval months (0 = ON MATURITY). */
     const getInterval = (frequency: string): number => {
@@ -650,10 +679,13 @@ export function generateBondPortfolio(
   const N = selected.length;
   const bondAllocations: Record<string, number> = {};
 
-  // Maximum single company allocation limit: 15% of total investment
-  const baseMaxCompanyCap = totalInvestment * 0.15;
+  // Maximum single company allocation limit: configurable percentage of total investment (Sane default: 15%)
+  const baseMaxCompanyCap = Math.max(
+    totalInvestment * (hp.maxSingleIssuerPct / 100),
+    totalInvestment / Math.min(targetNumIssuers, maxPossibleStandardBonds)
+  );
 
-  // Track company total allocations to strictly enforce <= 15% cap per issuer
+  // Track company total allocations to strictly enforce single issuer cap
   const companyAllocTotals: Record<string, number> = {};
   selected.forEach(s => { 
     companyAllocTotals[s.bond.issuer] = 0; 
@@ -661,13 +693,16 @@ export function generateBondPortfolio(
   });
 
   if (customAllocations && customAllocations.size === N) {
-    // User custom allocation override (capped by totalTradableFV and 15% company limit unless 1 unit exceeds it)
+    // User custom allocation override (capped by totalTradableFV and company limit)
     selected.forEach(s => {
       const u = getUnitPrice(s.bond);
       let val = customAllocations.get(s.bond.isin) || 0;
       
       const fvCap = s.bond.totalTradableFV && s.bond.totalTradableFV > 0 ? s.bond.totalTradableFV : Infinity;
-      const effectiveCompanyCap = Math.max(baseMaxCompanyCap, u); // allow at least 1 unit if it exceeds 15%
+      const isForceIncluded = companyOverrides[s.bond.issuer]?.action === 'INCLUDE';
+      const effectiveCompanyCap = (hp.allowUnitOverflow || isForceIncluded)
+        ? Math.max(baseMaxCompanyCap, u)
+        : baseMaxCompanyCap;
       
       val = Math.min(val, fvCap);
       val = Math.min(val, effectiveCompanyCap);
@@ -690,7 +725,10 @@ export function generateBondPortfolio(
     // 1. Initial base allocation capped by totalTradableFV and company cap
     sortedForDistribution.forEach(s => {
       const u = getUnitPrice(s.bond);
-      const effectiveCompanyCap = Math.max(baseMaxCompanyCap, u);
+      const isForceIncluded = companyOverrides[s.bond.issuer]?.action === 'INCLUDE';
+      const effectiveCompanyCap = (hp.allowUnitOverflow || isForceIncluded)
+        ? Math.max(baseMaxCompanyCap, u)
+        : baseMaxCompanyCap;
       
       const fvCap = s.bond.totalTradableFV && s.bond.totalTradableFV > 0
         ? s.bond.totalTradableFV
@@ -734,7 +772,10 @@ export function generateBondPortfolio(
         const currentCompanyAlloc = companyAllocTotals[s.bond.issuer];
 
         const fvCap = s.bond.totalTradableFV && s.bond.totalTradableFV > 0 ? s.bond.totalTradableFV : Infinity;
-        const effectiveCompanyCap = Math.max(baseMaxCompanyCap, u);
+        const isForceIncluded = companyOverrides[s.bond.issuer]?.action === 'INCLUDE';
+        const effectiveCompanyCap = (hp.allowUnitOverflow || isForceIncluded)
+          ? Math.max(baseMaxCompanyCap, u)
+          : baseMaxCompanyCap;
         
         const companyRemainingCap = effectiveCompanyCap - currentCompanyAlloc;
         const bondRemainingCap = fvCap - currentBondAlloc;

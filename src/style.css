@@ -547,3 +547,26 @@ select option {
 #bond-detail-modal-overlay div::-webkit-scrollbar { width: 5px; }
 #bond-detail-modal-overlay div::-webkit-scrollbar-track { background: transparent; }
 #bond-detail-modal-overlay div::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+
+/* Dark readable styling for select elements, optgroups, and options */
+select, select optgroup, select option {
+  background-color: #111827 !important;
+  color: #f3f4f6 !important;
+}
+
+#saved-screens-select {
+  background-color: #111827 !important;
+  color: #ffffff !important;
+}
+
+#saved-screens-select optgroup {
+  background-color: #0f172a !important;
+  color: var(--accent-gold) !important;
+  font-weight: 700 !important;
+}
+
+#saved-screens-select option {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
