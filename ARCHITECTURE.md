@@ -141,4 +141,3 @@ To decouple the frontend UI from the engine, the system should ideally emit Doma
 - **Zero-Allocation Deadlock**: An edge case where strict percentage caps prevent buying even a single unit of a bond.
 - **Smart Strategy**: Allocation prioritizing highest yield.
 - **Balanced Strategy**: Allocation aiming for equal capital distribution among selected bonds.
-
