@@ -437,57 +437,174 @@
 
       <!-- Screener View -->
       <div id="screener-view" style="display: none;">
-        <div class="panel" style="margin-bottom: 1.5rem;">
-          <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-            <div class="input-group" style="flex: 1; min-width: 200px; margin-bottom: 0;">
-              <label for="screener-search">Search Issuer / ISIN</label>
-              <input type="text" id="screener-search" placeholder="e.g. Muthoot" />
+        <!-- Top Toolbar & Saved Screens -->
+        <div class="panel" style="margin-bottom: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+            <div>
+              <h2 style="margin: 0; font-size: 1.35rem; color: var(--accent-gold); display: flex; align-items: center; gap: 0.5rem;">
+                🔍 Advanced Bond Screener
+              </h2>
+              <p style="margin: 0.25rem 0 0 0; font-size: 0.85rem; color: var(--text-secondary);">
+                Filter, search, sort, and save institutional fixed-income screening queries
+              </p>
             </div>
-            <div class="input-group" style="flex: 1; min-width: 150px; margin-bottom: 0;">
-              <label for="screener-min-yield">Min Yield (%)</label>
-              <input type="number" id="screener-min-yield" placeholder="0.0" step="0.1" />
+            
+            <!-- Saved Screens & Actions Group -->
+            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+              <select id="saved-screens-select" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.5rem 0.85rem; color: #fff; font-size: 0.85rem; outline: none; cursor: pointer; min-width: 200px;">
+                <option value="">📂 Load Saved Screen...</option>
+              </select>
+              <button id="save-screen-btn" class="btn" style="padding: 0.5rem 0.85rem; font-size: 0.82rem; background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.4); display: flex; align-items: center; gap: 0.35rem;">
+                💾 Save Screen
+              </button>
+              <button id="delete-screen-btn" class="btn" style="padding: 0.5rem 0.85rem; font-size: 0.82rem; background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);" title="Delete current custom saved screen">
+                🗑️
+              </button>
+              <button id="screener-export-csv" class="btn" style="padding: 0.5rem 0.85rem; font-size: 0.82rem; background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); display: flex; align-items: center; gap: 0.35rem;">
+                📥 Export CSV
+              </button>
+              <button id="screener-reset-filters" class="btn" style="padding: 0.5rem 0.85rem; font-size: 0.82rem; background: transparent; border: 1px solid var(--border-glass); color: var(--text-secondary);">
+                ↺ Reset
+              </button>
             </div>
-            <div class="input-group" style="flex: 1; min-width: 150px; margin-bottom: 0;">
-              <label for="screener-max-tenure">Max Tenure (Months)</label>
-              <input type="number" id="screener-max-tenure" placeholder="e.g. 60" />
+          </div>
+
+          <!-- Quick Preset Chips -->
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 0.75rem;">
+            <span style="font-size: 0.75rem; color: var(--accent-gold); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">⚡ Quick Presets:</span>
+            <div id="preset-chips-container" style="display: flex; gap: 0.4rem; flex-wrap: wrap;"></div>
+          </div>
+
+          <!-- Primary Filters Row -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.75rem; align-items: flex-end;">
+            <div class="input-group" style="margin-bottom: 0;">
+              <label for="screener-search" style="font-size: 0.8rem;">Search Issuer / ISIN</label>
+              <input type="text" id="screener-search" placeholder="e.g. Muthoot, INE..." style="padding: 0.55rem 0.75rem; font-size: 0.85rem;" />
             </div>
-            <div class="input-group" style="flex: 1; min-width: 150px; margin-bottom: 0;">
-              <label for="screener-rating">Credit Rating</label>
-              <select id="screener-rating" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 10px; padding: 0.75rem 1rem; color: var(--text-primary); font-family: var(--font-sans); font-size: 1rem; cursor: pointer; outline: none; width: 100%;">
+            <div class="input-group" style="margin-bottom: 0;">
+              <label for="screener-min-yield" style="font-size: 0.8rem;">Min Yield (%)</label>
+              <input type="number" id="screener-min-yield" placeholder="e.g. 10.5" step="0.1" style="padding: 0.55rem 0.75rem; font-size: 0.85rem;" />
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+              <label for="screener-max-yield" style="font-size: 0.8rem;">Max Yield (%)</label>
+              <input type="number" id="screener-max-yield" placeholder="e.g. 14.0" step="0.1" style="padding: 0.55rem 0.75rem; font-size: 0.85rem;" />
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+              <label for="screener-min-tenure" style="font-size: 0.8rem;">Min Tenure (Mo)</label>
+              <input type="number" id="screener-min-tenure" placeholder="e.g. 6" style="padding: 0.55rem 0.75rem; font-size: 0.85rem;" />
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+              <label for="screener-max-tenure" style="font-size: 0.8rem;">Max Tenure (Mo)</label>
+              <input type="number" id="screener-max-tenure" placeholder="e.g. 36" style="padding: 0.55rem 0.75rem; font-size: 0.85rem;" />
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+              <label for="screener-rating" style="font-size: 0.8rem;">Credit Rating Tier</label>
+              <select id="screener-rating" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.55rem 0.75rem; color: var(--text-primary); font-size: 0.85rem; outline: none; width: 100%;">
                 <option value="">All Ratings</option>
-                <option value="AAA">AAA</option>
-                <option value="AA">AA (AA+, AA, AA-)</option>
-                <option value="A">A (A+, A, A-)</option>
-                <option value="BBB">BBB & Below</option>
+                <option value="AAA">AAA Only</option>
+                <option value="AA_OR_BETTER">AA & Above (AAA, AA)</option>
+                <option value="AA">AA Category (AA+, AA, AA-)</option>
+                <option value="A_OR_BETTER">A & Above (AAA, AA, A)</option>
+                <option value="A">A Category (A+, A, A-)</option>
+                <option value="BBB">BBB Category</option>
+                <option value="SUB_BBB">High Yield / Sub-BBB</option>
               </select>
             </div>
           </div>
+
+          <!-- Advanced Filters Collapsible Panel -->
+          <div id="screener-advanced-panel" style="display: none; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.75rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px dashed rgba(255, 255, 255, 0.1);">
+            <div class="input-group" style="margin-bottom: 0;">
+              <label for="screener-min-coupon" style="font-size: 0.8rem;">Min Coupon (%)</label>
+              <input type="number" id="screener-min-coupon" placeholder="e.g. 9.5" step="0.1" style="padding: 0.55rem 0.75rem; font-size: 0.85rem;" />
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+              <label for="screener-max-coupon" style="font-size: 0.8rem;">Max Coupon (%)</label>
+              <input type="number" id="screener-max-coupon" placeholder="e.g. 13.0" step="0.1" style="padding: 0.55rem 0.75rem; font-size: 0.85rem;" />
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+              <label for="screener-sector" style="font-size: 0.8rem;">Sector / Industry</label>
+              <select id="screener-sector" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.55rem 0.75rem; color: var(--text-primary); font-size: 0.85rem; outline: none; width: 100%;">
+                <option value="">All Sectors</option>
+              </select>
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+              <label for="screener-frequency" style="font-size: 0.8rem;">Coupon Frequency</label>
+              <select id="screener-frequency" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.55rem 0.75rem; color: var(--text-primary); font-size: 0.85rem; outline: none; width: 100%;">
+                <option value="">All Frequencies</option>
+                <option value="MONTHLY">Monthly</option>
+                <option value="QUARTERLY">Quarterly</option>
+                <option value="SEMI">Semi-Annual</option>
+                <option value="ANNUAL">Annual</option>
+                <option value="ON_MATURITY">On Maturity (Cumulative)</option>
+              </select>
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+              <label for="screener-max-price" style="font-size: 0.8rem;">Max Unit Price</label>
+              <select id="screener-max-price" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.55rem 0.75rem; color: var(--text-primary); font-size: 0.85rem; outline: none; width: 100%;">
+                <option value="">No Price Cap</option>
+                <option value="10000">≤ ₹10,000 (Micro Lot)</option>
+                <option value="50000">≤ ₹50,000</option>
+                <option value="100000">≤ ₹1,00,000 (Retail)</option>
+                <option value="200000">≤ ₹2,00,000</option>
+                <option value="500000">≤ ₹5,00,000</option>
+                <option value="1000000">≤ ₹10,00,000 (HNI)</option>
+              </select>
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+              <label for="screener-min-tradable-fv" style="font-size: 0.8rem;">Min Available Tradable</label>
+              <select id="screener-min-tradable-fv" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.55rem 0.75rem; color: var(--text-primary); font-size: 0.85rem; outline: none; width: 100%;">
+                <option value="">Any Liquidity</option>
+                <option value="500000">≥ ₹5 Lakhs</option>
+                <option value="1000000">≥ ₹10 Lakhs</option>
+                <option value="2500000">≥ ₹25 Lakhs</option>
+                <option value="5000000">≥ ₹50 Lakhs</option>
+                <option value="10000000">≥ ₹1 Crore</option>
+              </select>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem;">
+              <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; cursor: pointer; color: var(--text-secondary);">
+                <input type="checkbox" id="screener-guarantor-only" style="accent-color: var(--accent-gold);" /> Guaranteed Only
+              </label>
+            </div>
+          </div>
+
+          <!-- Drawer Toggle & Active Filters Chips -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+            <div id="active-filters-chips" style="display: flex; gap: 0.35rem; flex-wrap: wrap; align-items: center;"></div>
+            <button id="screener-toggle-advanced" style="background: none; border: none; color: var(--accent-gold); font-size: 0.8rem; cursor: pointer; font-weight: 600; padding: 0.2rem 0.5rem; margin-left: auto;">
+              ▼ More Filters
+            </button>
+          </div>
         </div>
         
+        <!-- Screener Results Table Panel -->
         <div class="panel" style="overflow-x: auto;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-            <h2>Inventory Screener</h2>
-            <div id="screener-count" style="font-size: 0.9rem; color: var(--text-secondary);">Showing 0 bonds</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <div id="screener-count" style="font-size: 0.9rem; color: var(--accent-gold); font-weight: 600;">Showing 0 bonds</div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary);">Click on any column header to sort • Click Issuer to open insights</div>
           </div>
           <table class="data-table" style="width: 100%; text-align: left; border-collapse: collapse;">
             <thead>
               <tr style="border-bottom: 1px solid var(--border-glass);">
-                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold);" data-sort="issuer">Issuer <span></span></th>
-                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold);" data-sort="isin">ISIN <span></span></th>
-                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold);" data-sort="rating">Rating <span></span></th>
-                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold);" data-sort="yield">Yield (YTM) <span></span></th>
-                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold);" data-sort="tenure">Tenure (Mo) <span></span></th>
-                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold);" data-sort="price">Unit Price <span></span></th>
-                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold);" data-sort="tradable">Tradable FV <span></span></th>
-                <th style="padding: 0.75rem; color: var(--accent-gold);">Action</th>
+                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold); white-space: nowrap;" data-sort="issuer">Issuer & Sector <span>↕</span></th>
+                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold); white-space: nowrap;" data-sort="isin">ISIN <span>↕</span></th>
+                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold); white-space: nowrap;" data-sort="rating">Rating <span>↕</span></th>
+                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold); white-space: nowrap;" data-sort="coupon">Coupon / Freq <span>↕</span></th>
+                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold); white-space: nowrap;" data-sort="yield">Offer Yield (YTM) <span>▼</span></th>
+                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold); white-space: nowrap;" data-sort="months">Tenure / Maturity <span>↕</span></th>
+                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold); white-space: nowrap;" data-sort="price">Unit Price <span>↕</span></th>
+                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold); white-space: nowrap;" data-sort="totalTradableFV">Tradable FV <span>↕</span></th>
+                <th style="padding: 0.75rem; color: var(--accent-gold); text-align: right; white-space: nowrap;">Portfolio Action</th>
               </tr>
             </thead>
             <tbody id="screener-table-body">
-              <tr><td colspan="8" style="text-align: center; padding: 2rem;">Upload inventory to view bonds.</td></tr>
+              <tr><td colspan="9" style="text-align: center; padding: 2rem;">Upload inventory to view bonds.</td></tr>
             </tbody>
           </table>
         </div>
       </div>
+      </div> <!-- end views wrapper -->
     </div>
 
     <!-- Sleek Customisation Swap Modal -->
