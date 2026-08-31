@@ -9,6 +9,7 @@ import { renderEliminatedSummaryBar } from './eliminatedBondsModal';
 import * as XLSX from 'xlsx';
 import { getCompanyOverrides } from './overridesManager';
 import { initScreener, setScreenerInventory } from './screener';
+import { initOverridesModal, openOverridesModal, updateOverridesBadge } from './overridesModal';
 
 Chart.register(...registerables);
 
@@ -29,6 +30,7 @@ let latestSummary: PortfolioSummary | null = null;
   const fullBond = activeInventory.find(b => b.isin === isin);
   if (fullBond) openBondDetailModal(fullBond);
 };
+(window as any).openOverridesModal = openOverridesModal;
 
 let growthChartInstance: Chart | null = null;
 let ladderChartInstance: Chart | null = null;
@@ -166,6 +168,7 @@ function updateDashboard() {
   renderCharts(summary);
   // Show the screening transparency bar above the portfolio table
   renderEliminatedSummaryBar(summary.eliminatedBonds, activeInventory.length, eliminatedSummaryContainer);
+  updateOverridesBadge();
 }
 
 function renderQuarterlyTable(summary: PortfolioSummary) {
@@ -1740,4 +1743,10 @@ if (tabBuilder && tabScreener && builderView && screenerView) {
 document.addEventListener('DOMContentLoaded', () => {
   initScreener();
   setScreenerInventory(activeInventory);
+  initOverridesModal({
+    getActiveInventory: () => activeInventory,
+    getExcludedIsins: () => excludedIsins,
+    getManualReplacements: () => manualReplacements,
+    onUpdate: () => updateDashboard()
+  });
 });

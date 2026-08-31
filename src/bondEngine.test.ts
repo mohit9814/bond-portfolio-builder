@@ -434,6 +434,56 @@ function runTests() {
     }
   }
 
+  // ─── Test 18: Inclusions & Exclusions Review and Modification Lifecycle ───
+  // Step 1: Find a bond that is normally NOT selected in default run
+  const defaultSummary = generateBondPortfolio(mockInventory, investment, fdRates, 'A', undefined, 10);
+  const unselectedBond = mockInventory.find(b => 
+    !defaultSummary.selectedBonds.some(sb => sb.issuer === b.issuer) &&
+    isCandidateEligible(b)
+  );
+  console.assert(unselectedBond !== undefined, 'FAIL Test 18 setup: Need an unselected candidate bond');
+
+  if (unselectedBond) {
+    // Step 2: User adds bond's company to Force INCLUSION list
+    const overridesWithInclude: Record<string, { action: string; justification: string }> = {
+      [unselectedBond.issuer]: { action: 'INCLUDE', justification: 'User reviewed and added to inclusion list' }
+    };
+    const summaryWithInclusion = generateBondPortfolio(
+      mockInventory, investment, fdRates, 'A', undefined, 10,
+      undefined, undefined, 7, 24, 'equal', undefined, undefined, false, overridesWithInclude
+    );
+
+    console.assert(
+      summaryWithInclusion.selectedBonds.some(b => b.issuer === unselectedBond.issuer),
+      `FAIL Test 18a: Company ${unselectedBond.issuer} must be present after adding to inclusion list`
+    );
+
+    // Step 3: User reviews list and changes status from INCLUDE to EXCLUDE
+    const overridesWithExclude: Record<string, { action: string; justification: string }> = {
+      [unselectedBond.issuer]: { action: 'EXCLUDE', justification: 'User changed status to exclude' }
+    };
+    const summaryWithExclusion = generateBondPortfolio(
+      mockInventory, investment, fdRates, 'A', undefined, 10,
+      undefined, undefined, 7, 24, 'equal', undefined, undefined, false, overridesWithExclude
+    );
+
+    console.assert(
+      !summaryWithExclusion.selectedBonds.some(b => b.issuer === unselectedBond.issuer),
+      `FAIL Test 18b: Company ${unselectedBond.issuer} must be absent after changing to exclusion list`
+    );
+
+    // Step 4: User clears the override list (back to neutral auto-optimization)
+    const summaryCleared = generateBondPortfolio(
+      mockInventory, investment, fdRates, 'A', undefined, 10,
+      undefined, undefined, 7, 24, 'equal', undefined, undefined, false, {}
+    );
+    console.assert(
+      summaryCleared.selectedBonds.length >= 7,
+      'FAIL Test 18c: Portfolio generation works after clearing overrides'
+    );
+    console.log(`Test 18 — Inclusions & Exclusions Review & Change Lifecycle: Add INCLUDE (✓) -> Change to EXCLUDE (✓) -> Reset/Clear (✓)`);
+  }
+
   console.log('All tests passed successfully! ✓');
 }
 
