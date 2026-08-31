@@ -133,3 +133,67 @@ export interface MaturityReinvestmentItem {
   reinvestmentYield: number;
   yieldPickup: number; // Reinvestment Yield - Current Coupon
 }
+
+export interface BreadcrumbStep {
+  level: number;
+  label: string;
+  mode: string;
+  key: string;
+}
+
+export interface DrilldownFilter {
+  mode: 'industry' | 'promoter' | 'rating' | 'bond';
+  value: string;
+  subValue?: string;
+  parentCategory?: string;
+}
+
+export interface HierarchicalDrilldownState {
+  mode: 'industry' | 'promoter' | 'rating' | 'bond';
+  path: BreadcrumbStep[];
+  activeHoldingIsin?: string;
+}
+
+export type BondRecommendationVerdict =
+  | 'HOLD'
+  | 'EXIT_AND_ROTATE'
+  | 'TRIM_CONCENTRATION'
+  | 'REINVEST_ON_MATURITY';
+
+export interface ReplacementOption {
+  bond: DefaultBond;
+  projectedYield: number;
+  yieldPickup: number;
+  diversificationReason: string;
+  ratingBoost: boolean;
+}
+
+export interface BondDeepInsight {
+  holding: PortfolioHolding;
+  verdict: BondRecommendationVerdict;
+  verdictReason: string;
+  portfolioGroupConcentrationPct: number;
+  portfolioSectorConcentrationPct: number;
+  yieldSpreadVsPortfolioAvg: number;
+  suitableReplacements: ReplacementOption[];
+}
+
+export interface AdoptedRebalanceAction {
+  id: string;
+  sellHolding: PortfolioHolding;
+  buyBond: DefaultBond;
+  replacementValue: number;
+  yieldPickup: number;
+  rationale: string;
+  adoptedAt: string;
+}
+
+export interface PortfolioRebalancePlan {
+  actions: AdoptedRebalanceAction[];
+  projectedTotalValue: number;
+  originalWeightedYield: number;
+  projectedWeightedYield: number;
+  yieldDelta: number;
+  originalHealthScore: number;
+  projectedHealthScore: number;
+}

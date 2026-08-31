@@ -348,3 +348,96 @@ export function generateMaturityReinvestmentSchedule(
     };
   });
 }
+
+/**
+ * Generate contextual deep-dive insights for a specific bond holding in the portfolio.
+ * Evaluates the bond in the context of the entire portfolio (concentration, yield drag, rating trajectory).
+ */
+export function generateBondDeepInsight(
+  targetHolding: PortfolioHolding,
+  allHoldings: PortfolioHolding[],
+  availableInventory: DefaultBond[],
+  assessment?: PortfolioRiskAssessment | null
+): import('./types').BondDeepInsight {
+  const totalVal = allHoldings.reduce((sum, h) => sum + h.estimatedMarketValue, 0);
+  const avgYield = assessment?.weightedYieldPercent || (allHoldings.reduce((s, h) => s + (h.yieldPercent * h.estimatedMarketValue), 0) / (totalVal || 1));
+
+  // 1. Group & Sector Concentration Context
+  const groupHoldings = allHoldings.filter(h => (h.parentGroup || 'Independent') === (targetHolding.parentGroup || 'Independent'));
+  const groupTotalVal = groupHoldings.reduce((sum, h) => sum + h.estimatedMarketValue, 0);
+  const groupConcentrationPct = totalVal > 0 ? (groupTotalVal / totalVal) * 100 : 0;
+
+  const sectorHoldings = allHoldings.filter(h => (h.broadSector || h.sector) === (targetHolding.broadSector || targetHolding.sector));
+  const sectorTotalVal = sectorHoldings.reduce((sum, h) => sum + h.estimatedMarketValue, 0);
+  const sectorConcentrationPct = totalVal > 0 ? (sectorTotalVal / totalVal) * 100 : 0;
+
+  const yieldSpread = targetHolding.yieldPercent - avgYield;
+
+  // 2. Determine Strategic Verdict & Rationale
+  let verdict: import('./types').BondRecommendationVerdict = 'HOLD';
+  let verdictReason = '';
+
+  if (targetHolding.monthsToMaturity <= 6) {
+    verdict = 'REINVEST_ON_MATURITY';
+    verdictReason = `Redeems in ${targetHolding.monthsToMaturity.toFixed(1)} months. Cash inflow of ₹${(targetHolding.estimatedMarketValue / 100000).toFixed(2)}L should be earmarked for immediate reinvestment into high-yield alternatives.`;
+  } else if (targetHolding.ratingTrend === 'deteriorating') {
+    verdict = 'EXIT_AND_ROTATE';
+    verdictReason = `Credit rating trajectory is deteriorating with negative agency outlook. Reallocating ₹${(targetHolding.estimatedMarketValue / 100000).toFixed(2)}L protects capital from potential rating downgrades and liquidity freezes.`;
+  } else if (groupConcentrationPct > 20) {
+    verdict = 'TRIM_CONCENTRATION';
+    verdictReason = `Belongs to ${targetHolding.parentGroup} which accounts for ${groupConcentrationPct.toFixed(1)}% of your total portfolio (${groupHoldings.length} holdings). Reducing position de-risks group exposure without sacrificing return.`;
+  } else if (targetHolding.couponPercent < 9.0 && yieldSpread < -1.2) {
+    verdict = 'EXIT_AND_ROTATE';
+    verdictReason = `Legacy coupon of ${targetHolding.couponPercent.toFixed(2)}% is lagging portfolio average by ${Math.abs(yieldSpread).toFixed(2)}%. Capital can be rotated into higher-yielding secured paper (+2.5% to +3.5% pickup).`;
+  } else {
+    verdict = 'HOLD';
+    verdictReason = `Strong credit profile (${targetHolding.rating} / ${targetHolding.ratingTrend}) with healthy coupon of ${targetHolding.couponPercent.toFixed(2)}%. Well within risk and diversification tolerance limits.`;
+  }
+
+  // 3. Find Context-Aware Replacements
+  const existingIsins = new Set(allHoldings.map(h => h.isin.toUpperCase()));
+  const existingGroups = new Set(allHoldings.map(h => (h.parentGroup || '').toLowerCase()));
+
+  const candidateBonds = availableInventory.filter(b => {
+    if (existingIsins.has(b.isin.toUpperCase())) return false;
+    const bIssuer = (b.issuer || '').toLowerCase();
+    if (targetHolding.parentGroup && bIssuer.includes(targetHolding.parentGroup.toLowerCase())) return false;
+    return b.yield >= 0.108 && b.months >= 12;
+  }).sort((a, b) => b.yield - a.yield);
+
+  const suitableReplacements: import('./types').ReplacementOption[] = [];
+  const pickedIssuers = new Set<string>();
+
+  for (const cand of candidateBonds) {
+    if (suitableReplacements.length >= 3) break;
+    const candKey = cand.issuer.toLowerCase().split(' ')[0];
+    if (pickedIssuers.has(candKey)) continue;
+
+    const candYieldPct = cand.yield * 100;
+    const yieldPickup = candYieldPct - (targetHolding.yieldPercent || targetHolding.couponPercent);
+
+    let diversificationReason = `Boosts annual return by +${yieldPickup.toFixed(2)}% while diversifying into ${cand.sector || 'Financial Services'}.`;
+    if (!existingGroups.has(candKey)) {
+      diversificationReason = `Zero overlap with current promoter groups. Expands portfolio diversification into high-grade ${cand.rating} paper (+${yieldPickup.toFixed(2)}% pickup).`;
+    }
+
+    suitableReplacements.push({
+      bond: cand,
+      projectedYield: candYieldPct,
+      yieldPickup,
+      diversificationReason,
+      ratingBoost: cand.rating.includes('AAA') || (cand.rating.includes('AA') && !targetHolding.rating.includes('AA'))
+    });
+    pickedIssuers.add(candKey);
+  }
+
+  return {
+    holding: targetHolding,
+    verdict,
+    verdictReason,
+    portfolioGroupConcentrationPct: groupConcentrationPct,
+    portfolioSectorConcentrationPct: sectorConcentrationPct,
+    yieldSpreadVsPortfolioAvg: yieldSpread,
+    suitableReplacements
+  };
+}

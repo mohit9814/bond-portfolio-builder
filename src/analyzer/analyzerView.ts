@@ -4,6 +4,13 @@ import { parsePortfolioInput, SAMPLE_PORTFOLIO_RAW } from './portfolioParser';
 import { assessPortfolioRisk, generateExitRecommendations, generateAddRecommendations, generateMaturityReinvestmentSchedule } from './riskEngine';
 import { initDrillableChart, setChartViewMode, clearDrilldownFilter, getActiveDrilldownFilter, ChartViewMode } from './analyzerCharts';
 import { openRatingEvidenceModal } from './ratingEvidenceModal';
+import { openBondInsightModal } from './bondInsightModal';
+import {
+  calculateRebalancePlanImpact,
+  clearRebalancingPlan,
+  generateRebalancePlanCsvContent,
+  removeAdoptedAction
+} from './rebalancingPlanManager';
 
 let currentInventory: DefaultBond[] = [];
 let currentHoldings: PortfolioHolding[] = [];
@@ -13,10 +20,27 @@ let currentAdds: AddRecommendation[] = [];
 let currentMaturities: MaturityReinvestmentItem[] = [];
 let currentChartMode: ChartViewMode = 'promoter';
 
-// Global hook for inline row buttons
+// Global hooks for inline row buttons
 (window as any).openRatingEvidenceByIsin = (isin: string) => {
   const holding = currentHoldings.find(h => h.isin === isin);
   if (holding) openRatingEvidenceModal(holding);
+};
+
+(window as any).openBondInsightByIsin = (isin: string) => {
+  const holding = currentHoldings.find(h => h.isin === isin);
+  if (holding) {
+    openBondInsightModal(holding, currentHoldings, currentInventory, currentAssessment, () => recalculatePortfolio());
+  }
+};
+
+(window as any).removeAdoptedRebalanceAction = (id: string) => {
+  removeAdoptedAction(id);
+  recalculatePortfolio();
+};
+
+(window as any).clearActiveRebalancePlan = () => {
+  clearRebalancingPlan();
+  recalculatePortfolio();
 };
 
 export function setAnalyzerInventory(inventory: DefaultBond[]) {
@@ -381,13 +405,128 @@ function renderAnalysisResults() {
       </div>
     </div>
 
+    <!-- Section 4: Adopted Portfolio Rebalancing Action Plan (Live Comparison) -->
+    ${(() => {
+      const plan = calculateRebalancePlanImpact(currentHoldings, currentAssessment);
+      return `
+        <div class="table-card" style="border-top: 3px solid #d4af37; background: rgba(30, 41, 59, 0.5);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+              <h3 style="color: #fbbf24; margin: 0; display: flex; align-items: center; gap: 0.5rem; font-size: 1.15rem;">
+                📋 Active Portfolio Rebalancing Action Plan (${plan.actions.length} Adopted Swaps)
+              </h3>
+              <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0.2rem 0 0 0;">
+                Tailored replacement swaps chosen to maximize risk-adjusted yields and eliminate concentration risks
+              </p>
+            </div>
+            ${plan.actions.length > 0 ? `
+              <div style="display: flex; gap: 0.5rem;">
+                <button id="download-rebalance-plan-btn" class="btn" style="background: rgba(16,185,129,0.2); color: #34d399; border: 1px solid rgba(16,185,129,0.4); padding: 0.35rem 0.85rem; font-size: 0.8rem; font-weight: 700; border-radius: 6px; cursor: pointer;">
+                  📥 Download Plan (CSV)
+                </button>
+                <button onclick="window.clearActiveRebalancePlan()" class="btn" style="background: rgba(239,68,68,0.2); color: #fca5a5; border: 1px solid rgba(239,68,68,0.4); padding: 0.35rem 0.75rem; font-size: 0.8rem; border-radius: 6px; cursor: pointer;">
+                  ↺ Clear Plan
+                </button>
+              </div>
+            ` : ''}
+          </div>
+
+          ${plan.actions.length === 0 ? `
+            <div style="background: rgba(0,0,0,0.25); border: 1px dashed rgba(255,255,255,0.15); border-radius: 10px; padding: 1.25rem; text-align: center; color: #cbd5e1; font-size: 0.85rem;">
+              💡 <strong>No swaps adopted yet.</strong> Click on any bond in the chart or table below (or click <strong>🔍 Insights & Rebalance</strong>) to review comprehensive intelligence and adopt high-yield, risk-reducing swaps into your plan.
+            </div>
+          ` : `
+            <!-- Live Before vs After Impact KPIs -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.85rem; margin-bottom: 1.25rem;">
+              <div style="background: rgba(0,0,0,0.35); border: 1px solid var(--border-glass); border-radius: 10px; padding: 0.85rem;">
+                <div style="font-size: 0.72rem; color: var(--text-secondary);">Weighted Portfolio Yield</div>
+                <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-top: 0.2rem;">
+                  <span style="font-size: 1.15rem; font-weight: 800; color: #34d399;">${plan.projectedWeightedYield.toFixed(2)}%</span>
+                  <span style="font-size: 0.78rem; color: #94a3b8;">was ${plan.originalWeightedYield.toFixed(2)}%</span>
+                  <span style="font-size: 0.74rem; background: rgba(16,185,129,0.2); color: #34d399; padding: 1px 5px; border-radius: 4px; font-weight: 700;">
+                    ${plan.yieldDelta >= 0 ? '+' : ''}${plan.yieldDelta.toFixed(2)}% Net
+                  </span>
+                </div>
+              </div>
+
+              <div style="background: rgba(0,0,0,0.35); border: 1px solid var(--border-glass); border-radius: 10px; padding: 0.85rem;">
+                <div style="font-size: 0.72rem; color: var(--text-secondary);">Est. Annual Coupon Income</div>
+                <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-top: 0.2rem;">
+                  <span style="font-size: 1.15rem; font-weight: 800; color: #fbbf24;">
+                    ₹${((plan.projectedTotalValue * (plan.projectedWeightedYield / 100)) / 100000).toFixed(2)}L
+                  </span>
+                  <span style="font-size: 0.78rem; color: #94a3b8;">/ year</span>
+                </div>
+              </div>
+
+              <div style="background: rgba(0,0,0,0.35); border: 1px solid var(--border-glass); border-radius: 10px; padding: 0.85rem;">
+                <div style="font-size: 0.72rem; color: var(--text-secondary);">Projected Health Score</div>
+                <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-top: 0.2rem;">
+                  <span style="font-size: 1.15rem; font-weight: 800; color: #38bdf8;">${plan.projectedHealthScore}/100</span>
+                  <span style="font-size: 0.78rem; color: #94a3b8;">was ${plan.originalHealthScore}/100</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Adopted Swaps Table -->
+            <div style="overflow-x: auto;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Sell Position</th>
+                    <th>Capital Reallocated</th>
+                    <th>Recommended Replacement (Buy)</th>
+                    <th>Projected Yield</th>
+                    <th>Yield Pickup</th>
+                    <th>Strategic Justification</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${plan.actions.map(action => `
+                    <tr>
+                      <td>
+                        <div style="font-weight: 700; color: #f87171; font-size: 0.85rem;">${action.sellHolding.readableName || action.sellHolding.securityName}</div>
+                        <div style="font-family: monospace; font-size: 0.72rem; color: var(--text-secondary);">${action.sellHolding.isin} • ${action.sellHolding.rating}</div>
+                      </td>
+                      <td style="font-weight: 700; color: #fff;">
+                        ₹${(action.replacementValue / 100000).toFixed(2)}L
+                      </td>
+                      <td>
+                        <div style="font-weight: 700; color: #34d399; font-size: 0.85rem;">${action.buyBond.issuer}</div>
+                        <div style="font-family: monospace; font-size: 0.72rem; color: var(--text-secondary);">${action.buyBond.isin} • ${action.buyBond.rating}</div>
+                      </td>
+                      <td style="font-weight: 700; color: #34d399;">
+                        ${(action.buyBond.yield * 100).toFixed(2)}%
+                      </td>
+                      <td style="font-weight: 700; color: ${action.yieldPickup >= 0 ? '#10b981' : '#f87171'};">
+                        ${action.yieldPickup >= 0 ? '+' : ''}${action.yieldPickup.toFixed(2)}%
+                      </td>
+                      <td style="font-size: 0.8rem; color: #cbd5e1; max-width: 320px;">
+                        ${action.rationale}
+                      </td>
+                      <td>
+                        <button onclick="window.removeAdoptedRebalanceAction('${action.id}')" class="btn" style="background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.35); padding: 3px 8px; font-size: 0.75rem; border-radius: 4px; cursor: pointer;">
+                          ✕ Remove
+                        </button>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          `}
+        </div>
+      `;
+    })()}
+
     <!-- Complete Holdings Detail Table with Inline Face Value & Qty Editing -->
     <div class="table-card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; flex-wrap: wrap; gap: 0.5rem;">
         <div>
           <h3 style="margin: 0;">📋 Complete Portfolio Holdings Roster (${currentHoldings.length} Securities)</h3>
           <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0.2rem 0 0 0;">
-            Edit Unit Face Value or Qty inline to customize holding values • Click 📜 Evidence to inspect agency reports
+            Click 🔍 Insights to inspect deep fundamentals, credit history, and personalized rebalancing recommendations
           </p>
         </div>
       </div>
@@ -406,7 +545,7 @@ function renderAnalysisResults() {
               <th>Est. Value (₹)</th>
               <th>Weight</th>
               <th>Coupon</th>
-              <th>Rating & Evidence</th>
+              <th>Rating & Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -414,10 +553,14 @@ function renderAnalysisResults() {
               const isFilteredOut = drilldownFilter ? (
                 (drilldownFilter.mode === 'industry' && (
                   drilldownFilter.subValue
-                    ? h.subSector !== drilldownFilter.subValue
+                    ? (h.subSector !== drilldownFilter.subValue || (h.broadSector !== drilldownFilter.value && h.sector !== drilldownFilter.value))
                     : (h.broadSector !== drilldownFilter.value && h.sector !== drilldownFilter.value)
                 )) ||
-                (drilldownFilter.mode === 'promoter' && h.parentGroup !== drilldownFilter.value) ||
+                (drilldownFilter.mode === 'promoter' && (
+                  drilldownFilter.subValue
+                    ? (h.parentGroup !== drilldownFilter.value || h.subSector !== drilldownFilter.subValue)
+                    : (h.parentGroup !== drilldownFilter.value)
+                )) ||
                 (drilldownFilter.mode === 'rating' && h.rating !== drilldownFilter.value) ||
                 (drilldownFilter.mode === 'bond' && (h.readableName !== drilldownFilter.value && !drilldownFilter.value.includes(h.isin.slice(-5))))
               ) : false;
@@ -452,8 +595,11 @@ function renderAnalysisResults() {
                   <td>${h.weightPercent.toFixed(1)}%</td>
                   <td>${h.couponPercent.toFixed(2)}%</td>
                   <td>
-                    <div style="display: flex; align-items: center; gap: 0.4rem;">
+                    <div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
                       <span style="font-size: 0.8rem; font-weight: 700;">${h.rating}</span>
+                      <button onclick="window.openBondInsightByIsin('${h.isin}')" class="btn" style="background: rgba(56,189,248,0.2); color: #38bdf8; border: 1px solid rgba(56,189,248,0.4); padding: 2px 7px; font-size: 0.72rem; font-weight: 700; border-radius: 4px;" title="Inspect bond intelligence & personalized rebalance swaps">
+                        🔍 Insights
+                      </button>
                       <button onclick="window.openRatingEvidenceByIsin('${h.isin}')" class="btn" style="background: rgba(212,175,55,0.15); color: var(--accent-gold); border: 1px solid rgba(212,175,55,0.3); padding: 2px 7px; font-size: 0.72rem; border-radius: 4px;" title="View Rating Agency Historical Reports">
                         📜 Evidence
                       </button>
@@ -469,9 +615,16 @@ function renderAnalysisResults() {
   `;
 
   // Attach Chart & Interactive Handlers
-  initDrillableChart('analyzer-allocation-chart', currentHoldings, (_filter) => {
-    renderAnalysisResults();
-  });
+  initDrillableChart(
+    'analyzer-allocation-chart',
+    currentHoldings,
+    (_filter) => {
+      renderAnalysisResults();
+    },
+    (holding) => {
+      openBondInsightModal(holding, currentHoldings, currentInventory, currentAssessment, () => recalculatePortfolio());
+    }
+  );
 
   attachResultInteractions();
 }
@@ -483,6 +636,7 @@ function attachResultInteractions() {
   const btnBond = document.getElementById('chart-mode-bond');
   const btnRating = document.getElementById('chart-mode-rating');
   const btnClearDrilldown = document.getElementById('clear-drilldown-btn');
+  const btnDownloadPlan = document.getElementById('download-rebalance-plan-btn');
 
   btnPromoter?.addEventListener('click', () => {
     currentChartMode = 'promoter';
@@ -506,6 +660,19 @@ function attachResultInteractions() {
 
   btnClearDrilldown?.addEventListener('click', () => {
     clearDrilldownFilter('analyzer-allocation-chart', currentHoldings, () => renderAnalysisResults());
+  });
+
+  btnDownloadPlan?.addEventListener('click', () => {
+    const plan = calculateRebalancePlanImpact(currentHoldings, currentAssessment);
+    const csvContent = generateRebalancePlanCsvContent(plan, currentHoldings);
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `adopted-portfolio-rebalance-plan-${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   });
 
   // Inline Qty & Face Value Editing
@@ -540,6 +707,8 @@ function exportRebalancingReport() {
     return;
   }
 
+  const plan = calculateRebalancePlanImpact(currentHoldings, currentAssessment);
+
   const rows = [
     ['PORTFOLIO REBALANCING & RISK REPORT'],
     ['Generated Date', new Date().toISOString().split('T')[0]],
@@ -547,6 +716,9 @@ function exportRebalancingReport() {
     ['Total Value (₹ Lakhs)', ((currentAssessment?.totalInvestedAmount || 0) / 100000).toFixed(2)],
     ['Health Score', `${currentAssessment?.healthScore}/100 (Grade ${currentAssessment?.healthGrade})`],
     ['Weighted Yield', `${currentAssessment?.weightedYieldPercent.toFixed(2)}%`],
+    ['Adopted Rebalancing Swaps', plan.actions.length.toString()],
+    ['Projected Rebalanced Yield', `${plan.projectedWeightedYield.toFixed(2)}%`],
+    ['Net Yield Delta', `${plan.yieldDelta >= 0 ? '+' : ''}${plan.yieldDelta.toFixed(2)}%`],
     [],
     ['--- SECTION 1: STRATEGIC EXITS ---'],
     ['ISIN', 'Security Name', 'Parent Group', 'Est Value (₹)', 'Severity', 'Category', 'Rationale', 'Action']
@@ -596,6 +768,24 @@ function exportRebalancingReport() {
     ]);
   });
 
+  if (plan.actions.length > 0) {
+    rows.push([]);
+    rows.push(['--- SECTION 4: ADOPTED REBALANCING ACTIONS ---']);
+    rows.push(['Sell ISIN', 'Sell Security', 'Capital Reallocated (₹)', 'Buy ISIN', 'Buy Issuer', 'Projected Yield (%)', 'Yield Pickup (%)', 'Rationale']);
+    plan.actions.forEach(a => {
+      rows.push([
+        a.sellHolding.isin,
+        `"${a.sellHolding.readableName || a.sellHolding.securityName}"`,
+        a.replacementValue.toString(),
+        a.buyBond.isin,
+        `"${a.buyBond.issuer}"`,
+        (a.buyBond.yield * 100).toFixed(2),
+        `${a.yieldPickup >= 0 ? '+' : ''}${a.yieldPickup.toFixed(2)}%`,
+        `"${a.rationale}"`
+      ]);
+    });
+  }
+
   const csvContent = rows.map(r => r.join(',')).join('\n');
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
@@ -606,3 +796,4 @@ function exportRebalancingReport() {
   link.click();
   document.body.removeChild(link);
 }
+

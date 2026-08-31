@@ -5,8 +5,16 @@ import {
   assessPortfolioRisk,
   generateExitRecommendations,
   generateAddRecommendations,
-  generateMaturityReinvestmentSchedule
+  generateMaturityReinvestmentSchedule,
+  generateBondDeepInsight
 } from './riskEngine';
+import {
+  adoptRebalanceAction,
+  removeAdoptedAction,
+  calculateRebalancePlanImpact,
+  generateRebalancePlanCsvContent,
+  clearRebalancingPlan
+} from './rebalancingPlanManager';
 
 // Mock localStorage for Node test runner
 const mockStore: Record<string, string> = {};
@@ -203,6 +211,59 @@ console.log('\n=== Running Current Bond Portfolio Analyzer & Rebalancer Test Sui
   console.log(`Test 7 — 2-Tier Sector Hierarchy: 5 clean merged broad sectors verified with zero duplicates (${hfcSubSectors.size} HFC sub-categories drilldown verified) ✓`);
 }
 
-console.log('\nAll 7 Current Bond Portfolio Analyzer Test Suites Passed Successfully! ✓\n');
+// Test 8: Contextual Deep Insights & Rebalancing Action Plan
+{
+  const holdings = parsePortfolioInput(SAMPLE_PORTFOLIO_RAW, DEFAULT_INVENTORY);
+  const assessment = assessPortfolioRisk(holdings);
+
+  // 1. Verify Deep Insight for EFSL holding (should recommend EXIT_AND_ROTATE)
+  const efslHolding = holdings.find(h => h.isin === 'INE532F07DG1')!;
+  const efslInsight = generateBondDeepInsight(efslHolding, holdings, DEFAULT_INVENTORY, assessment);
+  
+  if (efslInsight.verdict !== 'EXIT_AND_ROTATE') {
+    throw new Error(`Expected EFSL verdict to be EXIT_AND_ROTATE, got ${efslInsight.verdict}`);
+  }
+  if (efslInsight.suitableReplacements.length === 0) {
+    throw new Error('Expected suitable replacements for EFSL bond');
+  }
+
+  // 2. Adopt Swap Action into Rebalancing Plan
+  clearRebalancingPlan();
+  const repBond = efslInsight.suitableReplacements[0].bond;
+  const action = adoptRebalanceAction(efslHolding, repBond, efslInsight.suitableReplacements[0].diversificationReason);
+
+  if (action.yieldPickup <= 0) {
+    throw new Error(`Expected positive yield pickup from swap, got ${action.yieldPickup}`);
+  }
+
+  const plan = calculateRebalancePlanImpact(holdings, assessment);
+  if (plan.actions.length !== 1) {
+    throw new Error(`Expected 1 adopted action, got ${plan.actions.length}`);
+  }
+  if (plan.projectedWeightedYield <= plan.originalWeightedYield) {
+    throw new Error(`Projected yield (${plan.projectedWeightedYield}%) should exceed original (${plan.originalWeightedYield}%)`);
+  }
+  if (plan.projectedHealthScore < plan.originalHealthScore) {
+    throw new Error('Projected health score should improve after de-risking swap');
+  }
+
+  // 3. Generate CSV Export
+  const csv = generateRebalancePlanCsvContent(plan, holdings);
+  if (!csv.includes('PORTFOLIO STRATEGIC REBALANCING & SWAP RECOMMENDATIONS') || !csv.includes(efslHolding.isin) || !csv.includes(repBond.isin)) {
+    throw new Error('CSV content missing critical rebalancing headers or ISINs');
+  }
+
+  // 4. Test Action Removal
+  removeAdoptedAction(action.id);
+  const clearedPlan = calculateRebalancePlanImpact(holdings, assessment);
+  if (clearedPlan.actions.length !== 0) {
+    throw new Error('Expected 0 actions after removal');
+  }
+
+  console.log(`Test 8 — Contextual Deep Insights & Rebalance Action Plan: Verified EFSL strategic exit, ${action.yieldPickup.toFixed(2)}% net yield pickup on swap, health score boost (${plan.originalHealthScore} → ${plan.projectedHealthScore}), and CSV export ✓`);
+}
+
+console.log('\nAll 8 Current Bond Portfolio Analyzer Test Suites Passed Successfully! ✓\n');
+
 
 

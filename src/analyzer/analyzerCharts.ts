@@ -1,20 +1,20 @@
 import { Chart, registerables } from 'chart.js';
-import { PortfolioHolding } from './types';
+import { DrilldownFilter, PortfolioHolding } from './types';
 
 Chart.register(...registerables);
 
 export type ChartViewMode = 'industry' | 'promoter' | 'bond' | 'rating';
 
-export interface DrilldownFilter {
-  mode: ChartViewMode;
-  value: string;
-  subValue?: string;
-  parentCategory?: string;
+export interface HierarchyCrumb {
+  level: number;
+  label: string;
+  key: string;
 }
 
 let chartInstance: Chart | null = null;
 let currentMode: ChartViewMode = 'promoter';
-let activeDrilldownFilter: DrilldownFilter | null = null;
+let currentPath: HierarchyCrumb[] = [];
+let onBondInspectCallback: ((holding: PortfolioHolding) => void) | null = null;
 
 const COLOR_PALETTE = [
   '#d4af37', '#38bdf8', '#34d399', '#f59e0b', '#a78bfa',
@@ -24,17 +24,21 @@ const COLOR_PALETTE = [
 
 interface ChartAggItem {
   label: string;
+  key: string;
   value: number;
   count: number;
   percentage: number;
-  isSubCategory?: boolean;
+  isLeafBond?: boolean;
+  holding?: PortfolioHolding;
 }
 
 export function initDrillableChart(
   canvasId: string,
   holdings: PortfolioHolding[],
-  onDrilldownChange: (filter: DrilldownFilter | null) => void
+  onDrilldownChange: (filter: DrilldownFilter | null) => void,
+  onBondInspect?: (holding: PortfolioHolding) => void
 ) {
+  if (onBondInspect) onBondInspectCallback = onBondInspect;
   renderChart(canvasId, holdings, onDrilldownChange);
 }
 
@@ -45,7 +49,7 @@ export function setChartViewMode(
   onDrilldownChange: (filter: DrilldownFilter | null) => void
 ) {
   currentMode = mode;
-  activeDrilldownFilter = null;
+  currentPath = [];
   onDrilldownChange(null);
   renderChart(canvasId, holdings, onDrilldownChange);
 }
@@ -55,88 +59,201 @@ export function clearDrilldownFilter(
   holdings: PortfolioHolding[],
   onDrilldownChange: (filter: DrilldownFilter | null) => void
 ) {
-  activeDrilldownFilter = null;
+  currentPath = [];
   onDrilldownChange(null);
   renderChart(canvasId, holdings, onDrilldownChange);
 }
 
+export function jumpToBreadcrumbLevel(
+  targetLevel: number,
+  canvasId: string,
+  holdings: PortfolioHolding[],
+  onDrilldownChange: (filter: DrilldownFilter | null) => void
+) {
+  if (targetLevel < 0) {
+    currentPath = [];
+    onDrilldownChange(null);
+  } else {
+    currentPath = currentPath.slice(0, targetLevel + 1);
+    const filter = getActiveDrilldownFilter();
+    onDrilldownChange(filter);
+  }
+  renderChart(canvasId, holdings, onDrilldownChange);
+}
+
 export function getActiveDrilldownFilter(): DrilldownFilter | null {
-  return activeDrilldownFilter;
+  if (currentPath.length === 0) return null;
+
+  if (currentMode === 'industry') {
+    return {
+      mode: 'industry',
+      value: currentPath[0]?.key || '',
+      subValue: currentPath[1]?.key || undefined
+    };
+  }
+  if (currentMode === 'promoter') {
+    return {
+      mode: 'promoter',
+      value: currentPath[0]?.key || '',
+      subValue: currentPath[1]?.key || undefined
+    };
+  }
+  if (currentMode === 'rating') {
+    return {
+      mode: 'rating',
+      value: currentPath[0]?.key || ''
+    };
+  }
+  if (currentMode === 'bond') {
+    return {
+      mode: 'bond',
+      value: currentPath[0]?.key || ''
+    };
+  }
+  return null;
+}
+
+export function getChartCurrentPath(): HierarchyCrumb[] {
+  return [...currentPath];
 }
 
 export function getChartCurrentMode(): ChartViewMode {
   return currentMode;
 }
 
-function aggregateHoldings(
-  holdings: PortfolioHolding[],
-  mode: ChartViewMode,
-  filter: DrilldownFilter | null
-): ChartAggItem[] {
-  const map = new Map<string, { total: number; count: number }>();
-  
-  // In industry mode, check if we are drilling into sub-categories of a broad sector
-  if (mode === 'industry' && filter && filter.mode === 'industry' && filter.value) {
-    const relevantHoldings = holdings.filter(
-      h => (h.broadSector === filter.value || h.sector === filter.value)
-    );
-    const totalVal = relevantHoldings.reduce((sum, h) => sum + h.estimatedMarketValue, 0);
+function getScopedHoldings(holdings: PortfolioHolding[]): PortfolioHolding[] {
+  if (currentPath.length === 0) return holdings;
 
-    relevantHoldings.forEach(h => {
-      const key = h.subSector || 'General Sub-Sector';
-      const curr = map.get(key) || { total: 0, count: 0 };
-      curr.total += h.estimatedMarketValue;
-      curr.count += 1;
-      map.set(key, curr);
+  if (currentMode === 'industry') {
+    const broad = currentPath[0]?.key;
+    const sub = currentPath[1]?.key;
+    return holdings.filter(h => {
+      const broadMatch = (h.broadSector === broad || h.sector === broad);
+      if (!sub) return broadMatch;
+      return broadMatch && (h.subSector === sub);
     });
-
-    return Array.from(map.entries())
-      .map(([label, data]) => ({
-        label,
-        value: data.total,
-        count: data.count,
-        percentage: totalVal > 0 ? (data.total / totalVal) * 100 : 0,
-        isSubCategory: true
-      }))
-      .sort((a, b) => b.value - a.value);
   }
 
-  const totalVal = holdings.reduce((sum, h) => sum + h.estimatedMarketValue, 0);
+  if (currentMode === 'promoter') {
+    const promoter = currentPath[0]?.key;
+    const sub = currentPath[1]?.key;
+    return holdings.filter(h => {
+      const promoterMatch = (h.parentGroup === promoter);
+      if (!sub) return promoterMatch;
+      return promoterMatch && (h.subSector === sub);
+    });
+  }
 
-  holdings.forEach(h => {
-    let key = '';
-    if (mode === 'industry') {
-      key = h.broadSector || h.sector || 'Other Sector';
-    } else if (mode === 'promoter') {
-      key = h.parentGroup || 'Independent';
-    } else if (mode === 'bond') {
-      key = h.readableName || h.securityName;
-    } else if (mode === 'rating') {
-      key = h.rating || 'Unrated';
+  if (currentMode === 'rating') {
+    const rating = currentPath[0]?.key;
+    return holdings.filter(h => h.rating === rating);
+  }
+
+  return holdings;
+}
+
+function aggregateHoldings(
+  holdings: PortfolioHolding[]
+): ChartAggItem[] {
+  const scoped = getScopedHoldings(holdings);
+  const totalVal = scoped.reduce((sum, h) => sum + h.estimatedMarketValue, 0);
+  const map = new Map<string, { total: number; count: number; holding?: PortfolioHolding }>();
+
+  const currentLevel = currentPath.length;
+
+  if (currentMode === 'industry') {
+    if (currentLevel === 0) {
+      // Level 0: Broad Sectors
+      scoped.forEach(h => {
+        const k = h.broadSector || h.sector || 'Other Sector';
+        const curr = map.get(k) || { total: 0, count: 0 };
+        curr.total += h.estimatedMarketValue;
+        curr.count += 1;
+        map.set(k, curr);
+      });
+    } else if (currentLevel === 1) {
+      // Level 1: Sub-Sectors
+      scoped.forEach(h => {
+        const k = h.subSector || 'General Sub-Sector';
+        const curr = map.get(k) || { total: 0, count: 0 };
+        curr.total += h.estimatedMarketValue;
+        curr.count += 1;
+        map.set(k, curr);
+      });
+    } else {
+      // Level 2: Individual Bonds
+      scoped.forEach(h => {
+        const k = h.readableName || h.securityName;
+        map.set(k, { total: h.estimatedMarketValue, count: 1, holding: h });
+      });
     }
+  } else if (currentMode === 'promoter') {
+    if (currentLevel === 0) {
+      // Level 0: Promoter Groups
+      scoped.forEach(h => {
+        const k = h.parentGroup || 'Independent';
+        const curr = map.get(k) || { total: 0, count: 0 };
+        curr.total += h.estimatedMarketValue;
+        curr.count += 1;
+        map.set(k, curr);
+      });
+    } else if (currentLevel === 1) {
+      // Level 1: Sub-Sectors within this promoter
+      scoped.forEach(h => {
+        const k = h.subSector || 'General';
+        const curr = map.get(k) || { total: 0, count: 0 };
+        curr.total += h.estimatedMarketValue;
+        curr.count += 1;
+        map.set(k, curr);
+      });
+    } else {
+      // Level 2: Individual Bonds
+      scoped.forEach(h => {
+        const k = h.readableName || h.securityName;
+        map.set(k, { total: h.estimatedMarketValue, count: 1, holding: h });
+      });
+    }
+  } else if (currentMode === 'rating') {
+    if (currentLevel === 0) {
+      // Level 0: Rating Tiers
+      scoped.forEach(h => {
+        const k = h.rating || 'Unrated';
+        const curr = map.get(k) || { total: 0, count: 0 };
+        curr.total += h.estimatedMarketValue;
+        curr.count += 1;
+        map.set(k, curr);
+      });
+    } else {
+      // Level 1: Individual Bonds
+      scoped.forEach(h => {
+        const k = h.readableName || h.securityName;
+        map.set(k, { total: h.estimatedMarketValue, count: 1, holding: h });
+      });
+    }
+  } else {
+    // Mode === 'bond': direct bonds
+    scoped.forEach(h => {
+      const k = h.readableName || h.securityName;
+      map.set(k, { total: h.estimatedMarketValue, count: 1, holding: h });
+    });
+  }
 
-    const curr = map.get(key) || { total: 0, count: 0 };
-    curr.total += h.estimatedMarketValue;
-    curr.count += 1;
-    map.set(key, curr);
-  });
+  const isLeafLevel = (currentMode === 'bond') ||
+    (currentMode === 'rating' && currentLevel === 1) ||
+    (currentMode === 'industry' && currentLevel === 2) ||
+    (currentMode === 'promoter' && currentLevel === 2);
 
   return Array.from(map.entries())
-    .map(([label, data]) => ({
-      label,
+    .map(([key, data]) => ({
+      label: key,
+      key,
       value: data.total,
       count: data.count,
       percentage: totalVal > 0 ? (data.total / totalVal) * 100 : 0,
-      isSubCategory: false
+      isLeafBond: isLeafLevel,
+      holding: data.holding
     }))
     .sort((a, b) => b.value - a.value);
-}
-
-export function getChartAggregatedItems(
-  holdings: PortfolioHolding[],
-  mode: ChartViewMode = currentMode
-): ChartAggItem[] {
-  return aggregateHoldings(holdings, mode, activeDrilldownFilter);
 }
 
 function renderChart(
@@ -152,76 +269,101 @@ function renderChart(
     chartInstance = null;
   }
 
-  const items = aggregateHoldings(holdings, currentMode, activeDrilldownFilter);
+  const items = aggregateHoldings(holdings);
   if (items.length === 0) return;
 
-  const isIndustrySubDrilldown = currentMode === 'industry' && activeDrilldownFilter && activeDrilldownFilter.mode === 'industry' && !!activeDrilldownFilter.value;
   const labels = items.map(i => i.label);
   const data = items.map(i => i.value);
   const bgColors = items.map((_, idx) => COLOR_PALETTE[idx % COLOR_PALETTE.length]);
 
-  // Populate HTML summary pills with sub-category navigation
+  // Render Interactive Breadcrumbs and Summary Pills
   const pillsContainer = document.getElementById('analyzer-chart-pills');
   if (pillsContainer) {
-    let drilldownHeaderHtml = '';
-    if (isIndustrySubDrilldown) {
-      drilldownHeaderHtml = `
-        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 0.6rem 1rem; margin-top: 0.8rem; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
-          <div style="font-size: 0.85rem; color: #ffffff;">
-            🏭 Sector Drilldown: <strong style="color: #fbbf24;">${activeDrilldownFilter?.value}</strong>
-            <span style="color: #94a3b8; font-size: 0.78rem; margin-left: 0.4rem;">(${items.length} Sub-Categories • Click any sub-category to filter holdings)</span>
-          </div>
-          <button id="btn-back-to-broad-sectors" class="btn" style="background: rgba(212,175,55,0.2); color: #fbbf24; border: 1px solid rgba(212,175,55,0.4); padding: 3px 10px; font-size: 0.78rem; font-weight: 700; border-radius: 6px; cursor: pointer;">
-            ← Back to All Broad Sectors
+    const rootModeNames: Record<ChartViewMode, string> = {
+      'industry': 'All Broad Sectors',
+      'promoter': 'All Promoter Groups',
+      'rating': 'All Rating Tiers',
+      'bond': 'All Bonds'
+    };
+
+    let breadcrumbHtml = `
+      <div style="display: flex; align-items: center; background: rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 0.5rem 0.85rem; margin-top: 0.85rem; flex-wrap: wrap; gap: 0.35rem;">
+        <span style="font-size: 0.78rem; color: #94a3b8; margin-right: 0.2rem;">Path:</span>
+        <button class="breadcrumb-jump-btn" data-level="-1" style="background: none; border: none; font-size: 0.82rem; font-weight: 700; color: ${currentPath.length === 0 ? '#38bdf8' : '#cbd5e1'}; cursor: pointer; padding: 2px 5px; border-radius: 4px;">
+          ${rootModeNames[currentMode]}
+        </button>
+    `;
+
+    currentPath.forEach((crumb, idx) => {
+      const isLast = idx === currentPath.length - 1;
+      breadcrumbHtml += `
+        <span style="color: #64748b; font-size: 0.8rem;">›</span>
+        <button class="breadcrumb-jump-btn" data-level="${idx}" style="background: none; border: none; font-size: 0.82rem; font-weight: 700; color: ${isLast ? '#fbbf24' : '#cbd5e1'}; cursor: pointer; padding: 2px 5px; border-radius: 4px;">
+          ${crumb.label}
+        </button>
+      `;
+    });
+
+    if (currentPath.length > 0) {
+      breadcrumbHtml += `
+        <div style="margin-left: auto;">
+          <button id="btn-chart-reset-root" class="btn" style="background: rgba(239,68,68,0.18); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); padding: 2px 8px; font-size: 0.75rem; border-radius: 4px; cursor: pointer;">
+            ↺ Reset
           </button>
         </div>
       `;
     }
 
+    breadcrumbHtml += `</div>`;
+
     pillsContainer.innerHTML = `
-      ${drilldownHeaderHtml}
+      ${breadcrumbHtml}
       <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem;">
         ${items.map((item, idx) => {
-          let isSelected = false;
-          if (isIndustrySubDrilldown) {
-            isSelected = activeDrilldownFilter?.subValue === item.label;
-          } else {
-            isSelected = activeDrilldownFilter?.value === item.label;
-          }
           const color = bgColors[idx];
+          const badgeText = item.isLeafBond ? '🔍 Inspect Bond' : '↳ Drill Down';
+          const badgeColor = item.isLeafBond ? '#38bdf8' : '#facc15';
+
           return `
-            <button data-drilldown-label="${item.label}" class="chart-drilldown-pill" style="
+            <button data-drilldown-key="${item.key}" class="chart-drilldown-pill" style="
               display: flex; align-items: center; gap: 0.5rem;
-              background: ${isSelected ? 'rgba(212,175,55,0.25)' : 'rgba(255,255,255,0.05)'};
-              border: 1px solid ${isSelected ? '#d4af37' : 'rgba(255,255,255,0.15)'};
+              background: rgba(255,255,255,0.05);
+              border: 1px solid rgba(255,255,255,0.15);
               border-radius: 8px; padding: 0.35rem 0.75rem; color: #ffffff; cursor: pointer;
               transition: all 0.15s ease; text-align: left;
-            " title="${currentMode === 'industry' && !isIndustrySubDrilldown ? 'Click to drill down into sub-categories' : 'Click to filter portfolio'}">
+            " title="${item.isLeafBond ? 'Click to inspect complete bond intelligence & rebalance recommendations' : 'Click to drill down to next level'}">
               <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: ${color};"></span>
               <span style="font-weight: 600; font-size: 0.82rem; color: #f8fafc;">${item.label}</span>
               <span style="font-size: 0.78rem; font-weight: 700; color: #38bdf8;">₹${(item.value / 100000).toFixed(2)}L</span>
-              <span style="font-size: 0.74rem; background: rgba(255,255,255,0.12); padding: 1px 6px; border-radius: 4px; color: #facc15; font-weight: 700;">${item.percentage.toFixed(1)}%</span>
-              ${currentMode === 'industry' && !isIndustrySubDrilldown ? `<span style="font-size: 0.7rem; color: #94a3b8;">↳ Drill</span>` : ''}
+              <span style="font-size: 0.74rem; background: rgba(255,255,255,0.12); padding: 1px 6px; border-radius: 4px; color: ${badgeColor}; font-weight: 700;">
+                ${item.percentage.toFixed(1)}% • ${badgeText}
+              </span>
             </button>
           `;
         }).join('')}
       </div>
     `;
 
-    // Handle 'Back to All Broad Sectors'
-    const backBtn = document.getElementById('btn-back-to-broad-sectors');
-    backBtn?.addEventListener('click', () => {
-      activeDrilldownFilter = null;
-      onDrilldownChange(null);
-      renderChart(canvasId, holdings, onDrilldownChange);
+    // Attach Breadcrumb Jump Listeners
+    pillsContainer.querySelectorAll('.breadcrumb-jump-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const lvl = parseInt((e.target as HTMLElement).getAttribute('data-level') || '-1', 10);
+        jumpToBreadcrumbLevel(lvl, canvasId, holdings, onDrilldownChange);
+      });
     });
 
+    const resetBtn = document.getElementById('btn-chart-reset-root');
+    resetBtn?.addEventListener('click', () => {
+      clearDrilldownFilter(canvasId, holdings, onDrilldownChange);
+    });
+
+    // Attach Pill Click Listeners
     pillsContainer.querySelectorAll('.chart-drilldown-pill').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const target = (e.target as HTMLElement).closest('.chart-drilldown-pill') as HTMLElement;
-        const label = target?.getAttribute('data-drilldown-label');
-        if (label) {
-          handleDrilldownSelection(label, canvasId, holdings, onDrilldownChange);
+        const key = target?.getAttribute('data-drilldown-key');
+        if (key) {
+          handleItemSelection(key, canvasId, holdings, onDrilldownChange);
         }
       });
     });
@@ -248,7 +390,7 @@ function renderChart(
         legend: {
           position: 'right',
           labels: {
-            color: '#f8fafc', // Bright crisp white for high contrast
+            color: '#f8fafc',
             font: { size: 12, family: 'Inter, sans-serif', weight: 600 },
             boxWidth: 14,
             padding: 12,
@@ -286,10 +428,7 @@ function renderChart(
               const val = ctx.raw as number;
               const total = (ctx.dataset.data as number[]).reduce((a, b) => a + b, 0);
               const pct = total > 0 ? ((val / total) * 100).toFixed(1) : '0';
-              const actionHint = currentMode === 'industry' && !isIndustrySubDrilldown 
-                ? ' — Click to drill into Sub-Categories' 
-                : ' — Click to filter holdings';
-              return ` Value: ₹${(val / 100000).toFixed(2)} Lakhs (${pct}%)${actionHint}`;
+              return ` Value: ₹${(val / 100000).toFixed(2)} Lakhs (${pct}%) — Click to Drilldown / Inspect`;
             }
           }
         }
@@ -297,62 +436,59 @@ function renderChart(
       onClick: (_event, elements) => {
         if (elements.length > 0) {
           const index = elements[0].index;
-          const selectedLabel = labels[index];
-          handleDrilldownSelection(selectedLabel, canvasId, holdings, onDrilldownChange);
+          const selectedKey = items[index]?.key;
+          if (selectedKey) {
+            handleItemSelection(selectedKey, canvasId, holdings, onDrilldownChange);
+          }
         }
       }
     }
   });
 }
 
-function handleDrilldownSelection(
-  selectedLabel: string,
+function handleItemSelection(
+  selectedKey: string,
   canvasId: string,
   holdings: PortfolioHolding[],
   onDrilldownChange: (filter: DrilldownFilter | null) => void
 ) {
-  if (currentMode === 'industry') {
-    // If not yet drilled into a broad sector, entering broad sector sub-drilldown
-    if (!activeDrilldownFilter || activeDrilldownFilter.mode !== 'industry' || !activeDrilldownFilter.value) {
-      activeDrilldownFilter = {
-        mode: 'industry',
-        value: selectedLabel
-      };
-      onDrilldownChange(activeDrilldownFilter);
-      renderChart(canvasId, holdings, onDrilldownChange);
-      return;
-    }
+  const currentLevel = currentPath.length;
 
-    // Already inside a broad sector sub-drilldown
-    if (activeDrilldownFilter.value && !activeDrilldownFilter.subValue) {
-      // User clicked a sub-category
-      activeDrilldownFilter.subValue = selectedLabel;
-      onDrilldownChange(activeDrilldownFilter);
-      renderChart(canvasId, holdings, onDrilldownChange);
-      return;
-    }
+  // Max levels per mode:
+  // Industry: 0 -> Broad, 1 -> Sub-Sector, 2 -> Bond
+  // Promoter: 0 -> Promoter, 1 -> Sub-Sector, 2 -> Bond
+  // Rating: 0 -> Rating, 1 -> Bond
+  // Bond: 0 -> Bond
+  const maxLevels: Record<ChartViewMode, number> = {
+    'industry': 2,
+    'promoter': 2,
+    'rating': 1,
+    'bond': 0
+  };
 
-    if (activeDrilldownFilter.subValue === selectedLabel) {
-      // Toggle off specific sub-category back to entire broad sector
-      activeDrilldownFilter.subValue = undefined;
-      onDrilldownChange(activeDrilldownFilter);
-      renderChart(canvasId, holdings, onDrilldownChange);
-      return;
-    } else {
-      // Switch sub-category
-      activeDrilldownFilter.subValue = selectedLabel;
-      onDrilldownChange(activeDrilldownFilter);
-      renderChart(canvasId, holdings, onDrilldownChange);
-      return;
+  const isLeafLevel = currentLevel >= maxLevels[currentMode];
+
+  if (isLeafLevel) {
+    // Look up the specific holding and open the Bond Insight Modal
+    const matchedHolding = holdings.find(h => 
+      (h.readableName || h.securityName) === selectedKey ||
+      h.isin === selectedKey
+    );
+    if (matchedHolding && onBondInspectCallback) {
+      onBondInspectCallback(matchedHolding);
     }
+    return;
   }
 
-  // General non-industry drilldown toggle
-  if (activeDrilldownFilter && activeDrilldownFilter.value === selectedLabel) {
-    activeDrilldownFilter = null;
-  } else {
-    activeDrilldownFilter = { mode: currentMode, value: selectedLabel };
-  }
-  onDrilldownChange(activeDrilldownFilter);
+  // Advance hierarchy down by 1 level
+  currentPath.push({
+    level: currentLevel,
+    label: selectedKey,
+    key: selectedKey
+  });
+
+  const filter = getActiveDrilldownFilter();
+  onDrilldownChange(filter);
   renderChart(canvasId, holdings, onDrilldownChange);
 }
+
