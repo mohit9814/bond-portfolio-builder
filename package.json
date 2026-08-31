@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "test": "npx tsx src/bondEngine.test.ts && npx tsx src/screener.test.ts",
+    "test": "npx tsx src/bondEngine.test.ts && npx tsx src/screener.test.ts && npx tsx src/analyzer/analyzer.test.ts",
     "preview": "vite preview"
   },
   "devDependencies": {

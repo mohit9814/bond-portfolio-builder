@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bond Ladder Portfolio Architect</title>
     <meta name="description" content="Generate a well-diversified bond portfolio maturity ladder and compare returns with Fixed Deposits." />
-    <script type="module" crossorigin src="/assets/index-pvIpXtMa.js"></script>
+    <script type="module" crossorigin src="/assets/index-CMsojdsi.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/index-6MQVPjXe.css">
   </head>
   <body>
@@ -34,9 +34,10 @@
       </header>
 
       <!-- Tab Navigation -->
-      <div class="tabs" style="margin-bottom: 1.5rem; display: flex; gap: 1rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">
+      <div class="tabs" style="margin-bottom: 1.5rem; display: flex; gap: 1rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem; flex-wrap: wrap;">
         <button id="tab-builder" class="tab-button tab-active" style="background: none; border: none; font-size: 1.1rem; color: var(--accent-gold); font-weight: 600; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent-gold);">Portfolio Builder</button>
         <button id="tab-screener" class="tab-button" style="background: none; border: none; font-size: 1.1rem; color: var(--text-secondary); font-weight: 500; cursor: pointer; padding: 0.5rem 1rem; transition: color 0.2s;">Bond Screener</button>
+        <button id="tab-analyzer" class="tab-button" style="background: none; border: none; font-size: 1.1rem; color: var(--text-secondary); font-weight: 500; cursor: pointer; padding: 0.5rem 1rem; transition: color 0.2s;">🛡️ Portfolio Analyzer & Rebalancer</button>
       </div>
 
       <div id="builder-view">
@@ -617,6 +618,9 @@
           </table>
         </div>
       </div>
+
+      <!-- Portfolio Analyzer View -->
+      <div id="analyzer-view" style="display: none;"></div>
       </div> <!-- end views wrapper -->
     </div>
 

@@ -12,6 +12,7 @@ import { initScreener, setScreenerInventory } from './screener';
 import { initOverridesModal, openOverridesModal, updateOverridesBadge } from './overridesModal';
 import { getEngineHyperparameters } from './engineSettingsManager';
 import { initEngineSettingsModal, openEngineSettingsModal } from './engineSettingsModal';
+import { initPortfolioAnalyzer, setAnalyzerInventory } from './analyzer/analyzerView';
 
 Chart.register(...registerables);
 
@@ -1062,6 +1063,7 @@ fileInput.addEventListener('change', async (e) => {
       activeInventory = parsedBonds;
       (window as any).activeInventory = activeInventory;
       setScreenerInventory(activeInventory);
+      setAnalyzerInventory(activeInventory);
       fileStatus.textContent = `✓ Uploaded ${file.name} successfully (${parsedBonds.length} bonds parsed)`;
       fileStatus.style.color = 'var(--accent-green)';
       updateDashboard();
@@ -1711,41 +1713,47 @@ window.addEventListener('portfolio-overrides-changed', () => {
   updateDashboard();
 });
 
-// --- Screener & Tabs Logic ---
+// --- 3-Way Tab Switching Logic ---
 const tabBuilder = document.getElementById('tab-builder');
 const tabScreener = document.getElementById('tab-screener');
+const tabAnalyzer = document.getElementById('tab-analyzer');
 const builderView = document.getElementById('builder-view');
 const screenerView = document.getElementById('screener-view');
+const analyzerView = document.getElementById('analyzer-view');
 
-if (tabBuilder && tabScreener && builderView && screenerView) {
-  tabBuilder.addEventListener('click', () => {
-    tabBuilder.classList.add('tab-active');
-    tabScreener.classList.remove('tab-active');
-    tabBuilder.style.color = 'var(--accent-gold)';
-    tabBuilder.style.borderBottom = '2px solid var(--accent-gold)';
-    tabScreener.style.color = 'var(--text-secondary)';
-    tabScreener.style.borderBottom = 'none';
-    
-    builderView.style.display = 'block';
-    screenerView.style.display = 'none';
-  });
+function switchActiveTab(activeTab: 'builder' | 'screener' | 'analyzer') {
+  const tabs = [
+    { id: 'builder', btn: tabBuilder, view: builderView },
+    { id: 'screener', btn: tabScreener, view: screenerView },
+    { id: 'analyzer', btn: tabAnalyzer, view: analyzerView }
+  ];
 
-  tabScreener.addEventListener('click', () => {
-    tabScreener.classList.add('tab-active');
-    tabBuilder.classList.remove('tab-active');
-    tabScreener.style.color = 'var(--accent-gold)';
-    tabScreener.style.borderBottom = '2px solid var(--accent-gold)';
-    tabBuilder.style.color = 'var(--text-secondary)';
-    tabBuilder.style.borderBottom = 'none';
-    
-    builderView.style.display = 'none';
-    screenerView.style.display = 'block';
+  tabs.forEach(t => {
+    if (!t.btn || !t.view) return;
+    if (t.id === activeTab) {
+      t.btn.classList.add('tab-active');
+      t.btn.style.color = 'var(--accent-gold)';
+      t.btn.style.borderBottom = '2px solid var(--accent-gold)';
+      t.btn.style.fontWeight = '600';
+      t.view.style.display = 'block';
+    } else {
+      t.btn.classList.remove('tab-active');
+      t.btn.style.color = 'var(--text-secondary)';
+      t.btn.style.borderBottom = 'none';
+      t.btn.style.fontWeight = '500';
+      t.view.style.display = 'none';
+    }
   });
 }
+
+tabBuilder?.addEventListener('click', () => switchActiveTab('builder'));
+tabScreener?.addEventListener('click', () => switchActiveTab('screener'));
+tabAnalyzer?.addEventListener('click', () => switchActiveTab('analyzer'));
 
 document.addEventListener('DOMContentLoaded', () => {
   initScreener();
   setScreenerInventory(activeInventory);
+  initPortfolioAnalyzer(activeInventory);
   initOverridesModal({
     getActiveInventory: () => activeInventory,
     getExcludedIsins: () => excludedIsins,
