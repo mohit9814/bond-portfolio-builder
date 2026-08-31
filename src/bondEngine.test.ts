@@ -1,5 +1,5 @@
 import { generateBondPortfolio } from './bondEngine';
-import { DEFAULT_INVENTORY } from './defaultInventory';
+import { DEFAULT_INVENTORY, DefaultBond } from './defaultInventory';
 
 function runTests() {
   console.log('--- Running Bond Selection Engine Tests ---');
@@ -9,9 +9,9 @@ function runTests() {
 
   const today = new Date();
   const mockInventory = DEFAULT_INVENTORY.map((b, idx) => {
-    const monthsAhead = 7 + (idx % 18);
+    const monthsAhead = 8 + (idx % 16);
     const matDate = new Date(today.getTime());
-    matDate.setMonth(matDate.getMonth() + monthsAhead);
+    matDate.setDate(matDate.getDate() + Math.round(monthsAhead * 30.4375));
     return { ...b, maturity: matDate.toISOString().split('T')[0] };
   });
 
@@ -324,6 +324,115 @@ function runTests() {
     summaryNoQcf.quarterlyCashflow === undefined,
     'FAIL Test 14: quarterlyCashflow must be undefined when targetQuarterlyCashflowPct is not provided'
   );
+
+  // ─── Test 15: Swap functionality completely replaces and removes original bond ───
+  const isCandidateEligible = (b: DefaultBond) => {
+    if (b.months < 7 || b.months > 24) return false;
+    const cat = (b.category || '').toLowerCase();
+    if (cat.includes('bundle - flexi') || cat.includes('bundle-flexi')) return false;
+    const symbol = b.rating.toUpperCase();
+    const isBetterThanBBB = symbol.includes('SOVEREIGN') || symbol.includes('GOI') ||
+                            symbol.includes('AAA') || symbol.includes('AA') ||
+                            symbol.includes('A');
+    if (!isBetterThanBBB && b.months > 12.0) return false;
+    return true;
+  };
+
+  const initialSummary = generateBondPortfolio(mockInventory, investment, fdRates, 'ALL', undefined, 10);
+  console.assert(initialSummary.selectedBonds.length >= 7, 'FAIL Test 15 setup: Expected at least 7 bonds');
+  
+  const bondToSwapOut = initialSummary.selectedBonds[0];
+  // Find a suitable candidate bond not in the initial portfolio that is eligible
+  const replacementCand = mockInventory.find(b => 
+    !initialSummary.selectedBonds.some(sb => sb.isin === b.isin) &&
+    !initialSummary.selectedBonds.some(sb => sb.issuer === b.issuer) &&
+    isCandidateEligible(b)
+  );
+  console.assert(replacementCand !== undefined, 'FAIL Test 15 setup: Could not find candidate replacement');
+
+  if (replacementCand) {
+    const swapExcluded = new Set<string>([bondToSwapOut.isin]);
+    const swapReplacements = new Map<number, string>([[bondToSwapOut.bucketIndex, replacementCand.isin]]);
+    const postSwapSummary = generateBondPortfolio(
+      mockInventory, investment, fdRates, 'ALL', undefined, 10,
+      swapExcluded, swapReplacements
+    );
+
+    console.assert(
+      !postSwapSummary.selectedBonds.some(b => b.isin === bondToSwapOut.isin),
+      `FAIL Test 15a: Swapped out bond ${bondToSwapOut.isin} (${bondToSwapOut.issuer}) must NOT be in recommended portfolio`
+    );
+    console.assert(
+      postSwapSummary.selectedBonds.some(b => b.isin === replacementCand.isin),
+      `FAIL Test 15b: Replacement bond ${replacementCand.isin} (${replacementCand.issuer}) must be in recommended portfolio`
+    );
+
+    // Verify 100% capital deployment after swap
+    const postSwapTotal = postSwapSummary.selectedBonds.reduce((s, b) => s + b.allocatedAmount, 0);
+    console.assert(
+      Math.abs(postSwapTotal - investment) < 0.01,
+      `FAIL Test 15c: Post-swap allocated amount ${postSwapTotal} must equal ${investment}`
+    );
+    console.log(`Test 15 — Swap functionality: Swapped out ${bondToSwapOut.issuer} -> Replaced with ${replacementCand.issuer} (Initial bond removed: ✓, New bond present: ✓, 100% Capital Deployed: ✓)`);
+  }
+
+  // ─── Test 16: Swap out bond when issuer has company-wide INCLUDE override ───
+  if (replacementCand) {
+    const companyOverrides: Record<string, { action: string; justification: string }> = {
+      [bondToSwapOut.issuer]: { action: 'INCLUDE', justification: 'User company override' }
+    };
+    const swapExcludedWithOverride = new Set<string>([bondToSwapOut.isin]);
+    const swapReplacementsWithOverride = new Map<number, string>([[bondToSwapOut.bucketIndex, replacementCand.isin]]);
+    const postSwapOverrideSummary = generateBondPortfolio(
+      mockInventory, investment, fdRates, 'ALL', undefined, 10,
+      swapExcludedWithOverride, swapReplacementsWithOverride,
+      7, 24, 'equal', undefined, undefined, false, companyOverrides
+    );
+
+    console.assert(
+      !postSwapOverrideSummary.selectedBonds.some(b => b.isin === bondToSwapOut.isin),
+      `FAIL Test 16: Bond ${bondToSwapOut.isin} must be removed even when its company has an INCLUDE override`
+    );
+    console.log('Test 16 — Swap exclusion priority: Swapped bond removed even with company INCLUDE override ✓');
+  }
+
+  // ─── Test 17: Multiple swaps across different buckets ───
+  if (initialSummary.selectedBonds.length >= 2) {
+    const bondA = initialSummary.selectedBonds[0];
+    const bondB = initialSummary.selectedBonds[1];
+    const unselectedCands = mockInventory.filter(b => 
+      !initialSummary.selectedBonds.some(sb => sb.isin === b.isin) &&
+      !initialSummary.selectedBonds.some(sb => sb.issuer === b.issuer) &&
+      isCandidateEligible(b)
+    );
+
+    if (unselectedCands.length >= 2) {
+      const repA = unselectedCands[0];
+      const repB = unselectedCands[1];
+      const multiSwapExcluded = new Set<string>([bondA.isin, bondB.isin]);
+      const multiSwapReplacements = new Map<number, string>([
+        [bondA.bucketIndex, repA.isin],
+        [bondB.bucketIndex, repB.isin]
+      ]);
+
+      const multiSwapSummary = generateBondPortfolio(
+        mockInventory, investment, fdRates, 'ALL', undefined, 10,
+        multiSwapExcluded, multiSwapReplacements
+      );
+
+      console.assert(
+        !multiSwapSummary.selectedBonds.some(b => b.isin === bondA.isin) &&
+        !multiSwapSummary.selectedBonds.some(b => b.isin === bondB.isin),
+        'FAIL Test 17a: Both swapped-out bonds must be absent from portfolio'
+      );
+      console.assert(
+        multiSwapSummary.selectedBonds.some(b => b.isin === repA.isin) &&
+        multiSwapSummary.selectedBonds.some(b => b.isin === repB.isin),
+        'FAIL Test 17b: Both replacement bonds must be present in portfolio'
+      );
+      console.log('Test 17 — Multi-bucket Swap: Multiple simultaneous swaps across buckets succeed with all initial bonds removed ✓');
+    }
+  }
 
   console.log('All tests passed successfully! ✓');
 }

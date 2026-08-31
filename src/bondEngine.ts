@@ -238,7 +238,7 @@ export function generateBondPortfolio(
   /** Push a bond into the eliminated list and return false (for use in filter callbacks). */
   const eliminate = (bond: DefaultBond, reason: EliminationReason, detail: string): boolean => {
     const override = companyOverrides[bond.issuer];
-    if (override?.action === 'INCLUDE' && reason !== 'ILLIQUID_QTY' && reason !== 'ILLIQUID_FV') {
+    if (override?.action === 'INCLUDE' && reason !== 'ILLIQUID_QTY' && reason !== 'ILLIQUID_FV' && reason !== 'USER_EXCLUDED' && reason !== 'USER_EXCLUDE') {
       return true;
     }
     eliminated.push({ bond, reason, detail });
@@ -385,8 +385,9 @@ export function generateBondPortfolio(
   // Note: Minimum K is enforced to be at least 7 so that no single company exceeds 15% allocation (1/7 = 14.28% <= 15%)
   // Upper bound maxK is capped by available candidate bonds count so we never pick more issuers than available bonds
   const availableCandidateCount = candidateBonds.length;
-  const minK = Math.min(availableCandidateCount, Math.max(7, targetNumIssuers));
-  const maxK = Math.min(25, availableCandidateCount);
+  const targetK = Math.min(availableCandidateCount, Math.max(7, targetNumIssuers));
+  const minK = targetK;
+  const maxK = targetK;
 
   let bestSelected: { bond: DefaultBond; bucketIndex: number }[] = [];
   let maxEvaluatedYield = -1;
@@ -435,6 +436,7 @@ export function generateBondPortfolio(
       let addedInPass = false;
       for (let bIdx = 0; bIdx < tempBuckets.length; bIdx++) {
         if (tempIssuers.size >= K) break;
+        if (attempts === 0 && tempSelected.some(s => s.bucketIndex === bIdx)) continue;
         const list = tempBucketedBonds[bIdx];
         for (const bond of list) {
           if (tryAddTemp(bond, bIdx)) {

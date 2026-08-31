@@ -1197,7 +1197,8 @@ const swapModalCancel = document.getElementById('swap-modal-cancel') as HTMLButt
 function getCurrentBuckets() {
   const minTenure = parseInt(minTenureInput.value) || 7;
   const maxTenure = parseInt(maxTenureInput.value) || 24;
-  return getMaturityBuckets(minTenure, maxTenure);
+  const numIssuers = parseInt(numIssuersInput.value) || 10;
+  return getMaturityBuckets(minTenure, maxTenure, numIssuers);
 }
 
 const getCleanRatingSymbol = (rating: string): string => {
@@ -1353,7 +1354,12 @@ function openSwapModal(isin: string, bucketIdx: number, summary: PortfolioSummar
 swapModalSave.addEventListener('click', () => {
   const selectedIsin = swapBondSelect.value;
   if (selectedIsin && currentSwappingBucketIndex >= 0) {
+    if (currentSwappingIsin && selectedIsin !== currentSwappingIsin) {
+      excludedIsins.add(currentSwappingIsin);
+    }
+    excludedIsins.delete(selectedIsin);
     manualReplacements.set(currentSwappingBucketIndex, selectedIsin);
+    customAllocations.clear();
     swapModal.style.display = 'none';
     updateDashboard();
   }
@@ -1406,7 +1412,13 @@ swapModalSuggest.addEventListener('click', () => {
     });
 
     if (options.length > 0) {
-      manualReplacements.set(currentSwappingBucketIndex, options[0].isin);
+      const selectedIsin = options[0].isin;
+      if (currentSwappingIsin && selectedIsin !== currentSwappingIsin) {
+        excludedIsins.add(currentSwappingIsin);
+      }
+      excludedIsins.delete(selectedIsin);
+      manualReplacements.set(currentSwappingBucketIndex, selectedIsin);
+      customAllocations.clear();
       swapModal.style.display = 'none';
       updateDashboard();
     } else {
@@ -1453,6 +1465,7 @@ swapModalExclude.addEventListener('click', () => {
       }
     }
 
+    customAllocations.clear();
     swapModal.style.display = 'none';
     updateDashboard();
   }
