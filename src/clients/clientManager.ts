@@ -119,6 +119,8 @@ export function saveClient(client: ClientPortfolio): void {
   saveAllClients(clients);
 }
 
+export const updateClient = saveClient;
+
 export function createClient(data: Partial<ClientPortfolio> & { clientName: string }): ClientPortfolio {
   const now = new Date().toISOString();
   const newClient: ClientPortfolio = {

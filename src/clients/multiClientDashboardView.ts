@@ -1,4 +1,5 @@
 import { DefaultBond } from '../defaultInventory';
+import { launchBuilderForClient } from './clientJourney';
 import { getAllClients, setActiveClientId, deleteClient, resetToSampleClients } from './clientManager';
 import { calculateAggregateClientMetrics } from './clientAggregateEngine';
 import { openPurchaseSuggestionsModal } from './purchaseModal';
@@ -165,7 +166,10 @@ export function renderMultiClientDashboard() {
                     </td>
                     <td>
                       <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
-                        <button class="btn switch-client-btn" data-client-id="${c.id}" style="background: rgba(56,189,248,0.2); color: #38bdf8; border: 1px solid rgba(56,189,248,0.4); padding: 3px 8px; font-size: 0.75rem; font-weight: 700; border-radius: 4px; cursor: pointer;">
+                        <button class="btn build-client-prop-btn" data-client-id="${c.id}" style="background: rgba(212,175,55,0.2); color: var(--accent-gold); border: 1px solid rgba(212,175,55,0.4); padding: 3px 8px; font-size: 0.75rem; font-weight: 700; border-radius: 4px; cursor: pointer;">
+      🏗️ Build Proposal
+    </button>
+    <button class="btn switch-client-btn" data-client-id="${c.id}" style="background: rgba(56,189,248,0.2); color: #38bdf8; border: 1px solid rgba(56,189,248,0.4); padding: 3px 8px; font-size: 0.75rem; font-weight: 700; border-radius: 4px; cursor: pointer;">
                           ➔ Switch & Analyze
                         </button>
                         <button class="btn suggest-client-buys-btn" data-client-id="${c.id}" style="background: rgba(16,185,129,0.2); color: #34d399; border: 1px solid rgba(16,185,129,0.4); padding: 3px 8px; font-size: 0.75rem; font-weight: 700; border-radius: 4px; cursor: pointer;">
@@ -373,6 +377,16 @@ export function renderMultiClientDashboard() {
   const exportBtn = document.getElementById('multi-export-csv-btn');
   exportBtn?.addEventListener('click', () => {
     exportMultiClientCsvReport(summary, clients);
+  });
+
+  // Build proposal for client
+  container.querySelectorAll('.build-client-prop-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const clientId = (e.target as HTMLElement).getAttribute('data-client-id');
+      if (clientId) {
+        launchBuilderForClient(clientId);
+      }
+    });
   });
 
   // Switch to client buttons

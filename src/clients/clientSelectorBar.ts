@@ -8,6 +8,7 @@ import {
 import { DefaultBond } from '../defaultInventory';
 import { openPurchaseSuggestionsModal } from './purchaseModal';
 import { ClientCategory, ClientRiskProfile } from './types';
+import { launchBuilderForClient } from './clientJourney';
 
 export function renderClientSelectorBar(
   containerId: string,
@@ -55,6 +56,9 @@ export function renderClientSelectorBar(
 
       <!-- Right: Action Buttons -->
       <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+        <button id="build-proposal-client-btn" class="btn" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(184, 134, 11, 0.15) 100%); color: var(--accent-gold); border: 1px solid rgba(212, 175, 55, 0.4); font-weight: 700; font-size: 0.82rem; padding: 0.45rem 0.9rem; border-radius: 6px; cursor: pointer;">
+          🏗️ Build Proposal
+        </button>
         <button id="suggest-purchases-btn" class="btn" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(5, 150, 105, 0.15) 100%); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); font-weight: 700; font-size: 0.82rem; padding: 0.45rem 0.9rem; border-radius: 6px; cursor: pointer;">
           🛒 Suggest Bond Purchases
         </button>
@@ -77,6 +81,11 @@ export function renderClientSelectorBar(
     const selectedId = (e.target as HTMLSelectElement).value;
     setActiveClientId(selectedId);
     if (onClientSelected) onClientSelected(selectedId);
+  });
+
+  const buildPropBtn = document.getElementById('build-proposal-client-btn');
+  buildPropBtn?.addEventListener('click', () => {
+    launchBuilderForClient(activeClient.id);
   });
 
   const suggestBtn = document.getElementById('suggest-purchases-btn');
@@ -171,7 +180,8 @@ export function openCreateClientModal(onClientCreated: () => void) {
 
       <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
         <button id="cancel-create-client-btn" class="btn" style="background: rgba(255,255,255,0.06); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.15); padding: 0.5rem 1rem; border-radius: 8px;">Cancel</button>
-        <button id="submit-create-client-btn" class="btn" style="background: linear-gradient(135deg, var(--accent-gold) 0%, #b8860b 100%); color: #0f172a; font-weight: 700; border: none; padding: 0.5rem 1.25rem; border-radius: 8px;">Create Client</button>
+        <button id="submit-create-client-btn" class="btn" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); font-weight: 600; padding: 0.5rem 1rem; border-radius: 8px;">Create Only</button>
+     <button id="submit-and-build-client-btn" class="btn" style="background: linear-gradient(135deg, var(--accent-gold) 0%, #b8860b 100%); color: #0f172a; font-weight: 700; border: none; padding: 0.5rem 1.25rem; border-radius: 8px;">🏗️ Create & Build Proposal</button>
       </div>
     </div>
   `;
@@ -184,6 +194,36 @@ export function openCreateClientModal(onClientCreated: () => void) {
 
   closeBtn?.addEventListener('click', () => modal.remove());
   cancelBtn?.addEventListener('click', () => modal.remove());
+
+  const submitAndBuildBtn = document.getElementById('submit-and-build-client-btn');
+  submitAndBuildBtn?.addEventListener('click', () => {
+    const nameInput = document.getElementById('new-client-name') as HTMLInputElement;
+    const catSelect = document.getElementById('new-client-category') as HTMLSelectElement;
+    const riskSelect = document.getElementById('new-client-risk') as HTMLSelectElement;
+    const cashInput = document.getElementById('new-client-cash') as HTMLInputElement;
+    const yieldInput = document.getElementById('new-client-yield') as HTMLInputElement;
+    const notesInput = document.getElementById('new-client-notes') as HTMLTextAreaElement;
+
+    const name = nameInput.value.trim();
+    if (!name) {
+      alert('Please enter a client name.');
+      return;
+    }
+
+    const created = createClient({
+      clientName: name,
+      category: catSelect.value as ClientCategory,
+      riskProfile: riskSelect.value as ClientRiskProfile,
+      availableCash: parseFloat(cashInput.value) || 0,
+      targetYieldPercent: parseFloat(yieldInput.value) || 10.5,
+      notes: notesInput.value.trim()
+    });
+
+    setActiveClientId(created.id);
+    modal.remove();
+    onClientCreated();
+    launchBuilderForClient(created.id);
+  });
 
   submitBtn?.addEventListener('click', () => {
     const nameInput = document.getElementById('new-client-name') as HTMLInputElement;

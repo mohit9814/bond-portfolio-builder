@@ -1,6 +1,8 @@
 import { DefaultBond } from './defaultInventory';
 import { EngineHyperparameters, DEFAULT_HYPERPARAMETERS } from './engineSettingsManager';
 import { resolveBondEntity } from './entityResolver';
+import { assessBondFundamentalRisk, getRiskAdjustedIssuerCap } from './riskAdjustedEngine';
+import { ClientRiskProfile } from './clients/types';
 import {
   AmortizationType,
   StructuredRedemptionPlan,

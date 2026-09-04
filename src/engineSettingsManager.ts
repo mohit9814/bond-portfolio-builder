@@ -14,6 +14,18 @@ export interface EngineHyperparameters {
    * If false (SANE DEFAULT), bonds with ticket size > issuer cap are eliminated to strictly protect diversification.
    */
   allowUnitOverflow: boolean;
+  /** Enable intelligent fundamental risk tenure capping (higher bond risk -> lower allowable tenure) */
+  enableFundamentalTenureCapping: boolean;
+  /** Maximum holding period / tenure for high-risk / sub-A / low fundamental score bonds (months, default: 18m) */
+  maxHighRiskTenorMonths: number;
+  /** Maximum holding period / tenure for moderate-risk A-grade bonds (months, default: 36m) */
+  maxModerateRiskTenorMonths: number;
+  /** Enable investor risk appetite concentration scaling (higher risk appetite -> lower concentration on individual risky bonds) */
+  enableInvestorRiskConcentration: boolean;
+  /** Maximum single-issuer allocation cap on high-risk bonds in aggressive/high-yield mandates (default: 8%) */
+  maxRiskyIssuerConcentrationPct: number;
+  /** Maximum total Sub-AA allocation permitted for conservative investor mandates (default: 10%) */
+  conservativeSubAACapPct: number;
 }
 
 export const DEFAULT_HYPERPARAMETERS: EngineHyperparameters = {
@@ -22,7 +34,13 @@ export const DEFAULT_HYPERPARAMETERS: EngineHyperparameters = {
   maxSubAPct: 25,
   maxBBBTenorMonths: 12.0,
   cashflowYieldTolerancePct: 0.5,
-  allowUnitOverflow: false
+  allowUnitOverflow: false,
+  enableFundamentalTenureCapping: true,
+  maxHighRiskTenorMonths: 18.0,
+  maxModerateRiskTenorMonths: 36.0,
+  enableInvestorRiskConcentration: true,
+  maxRiskyIssuerConcentrationPct: 8.0,
+  conservativeSubAACapPct: 10.0
 };
 
 const STORAGE_KEY = 'bond-engine-hyperparameters';
@@ -32,7 +50,7 @@ const STORAGE_KEY = 'bond-engine-hyperparameters';
  */
 export function getEngineHyperparameters(): EngineHyperparameters {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;
     if (!raw) return { ...DEFAULT_HYPERPARAMETERS };
     const parsed = JSON.parse(raw);
     return {
@@ -41,7 +59,13 @@ export function getEngineHyperparameters(): EngineHyperparameters {
       maxSubAPct: typeof parsed.maxSubAPct === 'number' ? parsed.maxSubAPct : DEFAULT_HYPERPARAMETERS.maxSubAPct,
       maxBBBTenorMonths: typeof parsed.maxBBBTenorMonths === 'number' ? parsed.maxBBBTenorMonths : DEFAULT_HYPERPARAMETERS.maxBBBTenorMonths,
       cashflowYieldTolerancePct: typeof parsed.cashflowYieldTolerancePct === 'number' ? parsed.cashflowYieldTolerancePct : DEFAULT_HYPERPARAMETERS.cashflowYieldTolerancePct,
-      allowUnitOverflow: typeof parsed.allowUnitOverflow === 'boolean' ? parsed.allowUnitOverflow : DEFAULT_HYPERPARAMETERS.allowUnitOverflow
+      allowUnitOverflow: typeof parsed.allowUnitOverflow === 'boolean' ? parsed.allowUnitOverflow : DEFAULT_HYPERPARAMETERS.allowUnitOverflow,
+      enableFundamentalTenureCapping: typeof parsed.enableFundamentalTenureCapping === 'boolean' ? parsed.enableFundamentalTenureCapping : DEFAULT_HYPERPARAMETERS.enableFundamentalTenureCapping,
+      maxHighRiskTenorMonths: typeof parsed.maxHighRiskTenorMonths === 'number' ? parsed.maxHighRiskTenorMonths : DEFAULT_HYPERPARAMETERS.maxHighRiskTenorMonths,
+      maxModerateRiskTenorMonths: typeof parsed.maxModerateRiskTenorMonths === 'number' ? parsed.maxModerateRiskTenorMonths : DEFAULT_HYPERPARAMETERS.maxModerateRiskTenorMonths,
+      enableInvestorRiskConcentration: typeof parsed.enableInvestorRiskConcentration === 'boolean' ? parsed.enableInvestorRiskConcentration : DEFAULT_HYPERPARAMETERS.enableInvestorRiskConcentration,
+      maxRiskyIssuerConcentrationPct: typeof parsed.maxRiskyIssuerConcentrationPct === 'number' ? parsed.maxRiskyIssuerConcentrationPct : DEFAULT_HYPERPARAMETERS.maxRiskyIssuerConcentrationPct,
+      conservativeSubAACapPct: typeof parsed.conservativeSubAACapPct === 'number' ? parsed.conservativeSubAACapPct : DEFAULT_HYPERPARAMETERS.conservativeSubAACapPct
     };
   } catch (e) {
     console.error('Error reading engine hyperparameters from localStorage', e);
@@ -58,8 +82,12 @@ export function saveEngineHyperparameters(params: Partial<EngineHyperparameters>
     ...current,
     ...params
   };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-  window.dispatchEvent(new Event('engine-hyperparameters-changed'));
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  }
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('engine-hyperparameters-changed'));
+  }
   return updated;
 }
 
@@ -67,7 +95,11 @@ export function saveEngineHyperparameters(params: Partial<EngineHyperparameters>
  * Reset all engine hyperparameters back to standard Sane Defaults.
  */
 export function resetEngineHyperparameters(): EngineHyperparameters {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_HYPERPARAMETERS));
-  window.dispatchEvent(new Event('engine-hyperparameters-changed'));
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_HYPERPARAMETERS));
+  }
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('engine-hyperparameters-changed'));
+  }
   return { ...DEFAULT_HYPERPARAMETERS };
 }

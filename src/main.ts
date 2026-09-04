@@ -173,6 +173,7 @@ function updateDashboard() {
     targetQuarterlyCashflowPct, relaxBBBCap, getCompanyOverrides(), getEngineHyperparameters()
   );
   latestSummary = summary;
+  (window as any).latestSummary = summary;
   renderKPIs(summary);
   renderTable(summary);
   renderMaturitySummary(summary);
@@ -1743,6 +1744,11 @@ document.getElementById('relax-bbb-cap')?.addEventListener('change', () => {
 });
 
 window.addEventListener('portfolio-overrides-changed', () => {
+  updateDashboard();
+});
+
+window.addEventListener('client-mandate-loaded', () => {
+  switchActiveTab('builder');
   updateDashboard();
 });
 

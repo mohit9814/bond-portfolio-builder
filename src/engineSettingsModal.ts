@@ -22,7 +22,6 @@ export function initEngineSettingsModal(ctx: EngineSettingsContext) {
     });
   };
   attachTriggers();
-  // In case DOM nodes change
   setTimeout(attachTriggers, 100);
 }
 
@@ -53,7 +52,7 @@ function createModalElement(): HTMLDialogElement {
     color: var(--text-primary);
     padding: 0;
     width: 90%;
-    max-width: 680px;
+    max-width: 720px;
     max-height: 90vh;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(10px);
@@ -66,7 +65,6 @@ function createModalElement(): HTMLDialogElement {
     z-index: 10000;
   `;
 
-  // Close when clicking on dialog backdrop area
   dialog.addEventListener('click', (e) => {
     const rect = dialog.getBoundingClientRect();
     const isInDialog = (
@@ -91,27 +89,28 @@ function renderModalContent() {
   const currentSectorRupeeCap = currentInvestment * (currentHp.maxSingleSectorPct / 100);
 
   modal.innerHTML = `
-    <div style="padding: 1.5rem 1.75rem; border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.02);">
+    <div style="padding: 1.4rem 1.75rem; border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.02);">
       <div>
         <h2 style="margin: 0; font-size: 1.25rem; color: var(--accent-gold); display: flex; align-items: center; gap: 0.5rem;">
           ⚙️ Risk Parameters & Hyperparameters
         </h2>
         <p style="margin: 0.25rem 0 0 0; font-size: 0.82rem; color: var(--text-secondary);">
-          Configure diversification limits, concentration caps, and engine rules
+          Fine-tune diversification caps, fundamental risk tenure rules, and investor concentration
         </p>
       </div>
       <button id="close-engine-settings-btn" style="background: none; border: none; font-size: 1.4rem; color: var(--text-secondary); cursor: pointer; line-height: 1;">&times;</button>
     </div>
 
-    <div style="padding: 1.5rem 1.75rem; overflow-y: auto; max-height: calc(85vh - 130px); display: flex; flex-direction: column; gap: 1.25rem;">
-      <!-- Parameter 1: Single Issuer Cap -->
+    <div style="padding: 1.4rem 1.75rem; overflow-y: auto; max-height: calc(85vh - 130px); display: flex; flex-direction: column; gap: 1.15rem;">
+      
+      <!-- Section A: Diversification & Issuer Caps -->
       <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-glass); border-radius: 12px; padding: 1.1rem;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
           <label style="font-weight: 600; font-size: 0.92rem; color: #fff;">
             Max Single Issuer Allocation Cap (%)
           </label>
           <span style="font-size: 0.75rem; background: rgba(212, 175, 55, 0.2); color: var(--accent-gold); padding: 2px 8px; border-radius: 10px; font-weight: 600;">
-            Sane Default: ${DEFAULT_HYPERPARAMETERS.maxSingleIssuerPct}%
+            Default: ${DEFAULT_HYPERPARAMETERS.maxSingleIssuerPct}%
           </span>
         </div>
         <div style="display: flex; gap: 1rem; align-items: center;">
@@ -126,92 +125,128 @@ function renderModalContent() {
         </div>
       </div>
 
-      <!-- Parameter 2: Ticket Size Overflow Guard -->
-      <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-glass); border-radius: 12px; padding: 1.1rem;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+      <!-- Section B: Fundamental Risk-Adjusted Tenure Rules -->
+      <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; padding: 1.1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.75rem;">
           <div>
-            <label style="font-weight: 600; font-size: 0.92rem; color: #fff; display: flex; align-items: center; gap: 0.4rem;">
-              Allow Large Ticket Unit Overflow
+            <label style="font-weight: 700; font-size: 0.92rem; color: #34d399; display: flex; align-items: center; gap: 0.4rem;">
+              <span>🛡️</span> Fundamental Risk-Adjusted Tenure Capping
             </label>
-            <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0.3rem 0 0 0; line-height: 1.4;">
-              If disabled (recommended), bonds with a physical unit size exceeding the single-issuer cap (e.g. ₹6.17L Edelweiss in a ₹10L portfolio) are eliminated to strictly protect diversification.
+            <p style="font-size: 0.8rem; color: #cbd5e1; margin: 0.25rem 0 0 0; line-height: 1.4;">
+              <strong>Higher risk on bond &rarr; Lower allowable tenure:</strong> Automatically limits holding periods for high-risk / low-fundamental score bonds to reduce exposure duration.
             </p>
           </div>
           <label style="position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; margin-top: 4px;">
+            <input type="checkbox" id="hp-enable-tenure-cap" ${currentHp.enableFundamentalTenureCapping ? 'checked' : ''} style="opacity: 0; width: 0; height: 0;" />
+            <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: ${currentHp.enableFundamentalTenureCapping ? '#10b981' : '#475569'}; border-radius: 24px; transition: .3s;">
+              <span style="position: absolute; height: 18px; width: 18px; left: ${currentHp.enableFundamentalTenureCapping ? '23px' : '3px'}; bottom: 3px; background-color: white; border-radius: 50%; transition: .3s;"></span>
+            </span>
+          </label>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-top: 0.5rem;">
+          <div style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 0.75rem;">
+            <div style="font-size: 0.78rem; font-weight: 600; color: #f87171; margin-bottom: 0.3rem;">
+              Max High-Risk / Sub-A Tenor
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.3rem;">
+              <input type="number" id="hp-high-risk-tenor-input" min="6" max="36" step="1" value="${currentHp.maxHighRiskTenorMonths}" style="width: 100%; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-glass); border-radius: 6px; padding: 0.35rem 0.5rem; color: #fff; font-weight: 600;" />
+              <span style="font-size: 0.8rem; color: var(--text-secondary);">Mo</span>
+            </div>
+            <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 0.25rem;">Default: ${DEFAULT_HYPERPARAMETERS.maxHighRiskTenorMonths}m (Sub-A / Gov &lt; 65)</div>
+          </div>
+
+          <div style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 0.75rem;">
+            <div style="font-size: 0.78rem; font-weight: 600; color: #fbbf24; margin-bottom: 0.3rem;">
+              Max Moderate-Risk (A-Tier) Tenor
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.3rem;">
+              <input type="number" id="hp-mod-risk-tenor-input" min="12" max="60" step="1" value="${currentHp.maxModerateRiskTenorMonths}" style="width: 100%; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-glass); border-radius: 6px; padding: 0.35rem 0.5rem; color: #fff; font-weight: 600;" />
+              <span style="font-size: 0.8rem; color: var(--text-secondary);">Mo</span>
+            </div>
+            <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 0.25rem;">Default: ${DEFAULT_HYPERPARAMETERS.maxModerateRiskTenorMonths}m (A/A- Grade)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section C: Investor Risk Profile Concentration Rules -->
+      <div style="background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 1.1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.75rem;">
+          <div>
+            <label style="font-weight: 700; font-size: 0.92rem; color: #38bdf8; display: flex; align-items: center; gap: 0.4rem;">
+              <span>⚖️</span> Investor Risk Profile Concentration Scaling
+            </label>
+            <p style="font-size: 0.8rem; color: #cbd5e1; margin: 0.25rem 0 0 0; line-height: 1.4;">
+              <strong>Higher risk appetite &rarr; Lower concentration of risky bonds:</strong> Aggressive portfolios accept higher-yield bonds but enforce granular caps (e.g. max 8% per risky issuer) to prevent single-default damage.
+            </p>
+          </div>
+          <label style="position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; margin-top: 4px;">
+            <input type="checkbox" id="hp-enable-risk-conc" ${currentHp.enableInvestorRiskConcentration ? 'checked' : ''} style="opacity: 0; width: 0; height: 0;" />
+            <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: ${currentHp.enableInvestorRiskConcentration ? '#38bdf8' : '#475569'}; border-radius: 24px; transition: .3s;">
+              <span style="position: absolute; height: 18px; width: 18px; left: ${currentHp.enableInvestorRiskConcentration ? '23px' : '3px'}; bottom: 3px; background-color: white; border-radius: 50%; transition: .3s;"></span>
+            </span>
+          </label>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-top: 0.5rem;">
+          <div style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 0.75rem;">
+            <div style="font-size: 0.78rem; font-weight: 600; color: #38bdf8; margin-bottom: 0.3rem;">
+              Risky Issuer Cap (Aggressive)
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.3rem;">
+              <input type="number" id="hp-risky-conc-input" min="3" max="20" step="1" value="${currentHp.maxRiskyIssuerConcentrationPct}" style="width: 100%; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-glass); border-radius: 6px; padding: 0.35rem 0.5rem; color: #fff; font-weight: 600;" />
+              <span style="font-size: 0.8rem; color: var(--text-secondary);">%</span>
+            </div>
+            <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 0.25rem;">Default: ${DEFAULT_HYPERPARAMETERS.maxRiskyIssuerConcentrationPct}% (Granular cap)</div>
+          </div>
+
+          <div style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 0.75rem;">
+            <div style="font-size: 0.78rem; font-weight: 600; color: #a5b4fc; margin-bottom: 0.3rem;">
+              Sub-AA Cap (Conservative)
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.3rem;">
+              <input type="number" id="hp-cons-suba-input" min="0" max="30" step="1" value="${currentHp.conservativeSubAACapPct}" style="width: 100%; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-glass); border-radius: 6px; padding: 0.35rem 0.5rem; color: #fff; font-weight: 600;" />
+              <span style="font-size: 0.8rem; color: var(--text-secondary);">%</span>
+            </div>
+            <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 0.25rem;">Default: ${DEFAULT_HYPERPARAMETERS.conservativeSubAACapPct}% max Sub-AA</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section D: Other Constraints & Overflows -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <!-- Sector Cap -->
+        <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-glass); border-radius: 12px; padding: 1rem;">
+          <div style="font-weight: 600; font-size: 0.85rem; color: #fff; margin-bottom: 0.35rem;">
+            Max Single Sector Cap (%)
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.3rem;">
+            <input type="number" id="hp-sector-input" min="15" max="100" step="5" value="${currentHp.maxSingleSectorPct}" style="width: 100%; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-glass); border-radius: 6px; padding: 0.4rem 0.5rem; color: #fff; font-weight: 600;" />
+            <span style="font-weight: 600; color: var(--text-secondary);">%</span>
+          </div>
+          <div style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 0.35rem;">Default: ${DEFAULT_HYPERPARAMETERS.maxSingleSectorPct}%</div>
+        </div>
+
+        <!-- Ticket Overflow -->
+        <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-glass); border-radius: 12px; padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-weight: 600; font-size: 0.85rem; color: #fff;">
+              Allow Unit Overflow
+            </div>
+            <div style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 0.2rem;">Permit unit > issuer cap</div>
+          </div>
+          <label style="position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0;">
             <input type="checkbox" id="hp-allow-overflow" ${currentHp.allowUnitOverflow ? 'checked' : ''} style="opacity: 0; width: 0; height: 0;" />
-            <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: ${currentHp.allowUnitOverflow ? '#10b981' : '#475569'}; border-radius: 24px; transition: .3s;">
-              <span style="position: absolute; height: 18px; width: 18px; left: ${currentHp.allowUnitOverflow ? '23px' : '3px'}; bottom: 3px; background-color: white; border-radius: 50%; transition: .3s;"></span>
+            <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: ${currentHp.allowUnitOverflow ? '#10b981' : '#475569'}; border-radius: 22px; transition: .3s;">
+              <span style="position: absolute; height: 16px; width: 16px; left: ${currentHp.allowUnitOverflow ? '21px' : '3px'}; bottom: 3px; background-color: white; border-radius: 50%; transition: .3s;"></span>
             </span>
           </label>
         </div>
       </div>
 
-      <!-- Parameter 3: Single Sector Cap -->
-      <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-glass); border-radius: 12px; padding: 1.1rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-          <label style="font-weight: 600; font-size: 0.92rem; color: #fff;">
-            Max Single Sector / Industry Cap (%)
-          </label>
-          <span style="font-size: 0.75rem; background: rgba(59, 130, 246, 0.2); color: #93c5fd; padding: 2px 8px; border-radius: 10px; font-weight: 600;">
-            Sane Default: ${DEFAULT_HYPERPARAMETERS.maxSingleSectorPct}%
-          </span>
-        </div>
-        <div style="display: flex; gap: 1rem; align-items: center;">
-          <input type="range" id="hp-sector-range" min="15" max="100" step="5" value="${currentHp.maxSingleSectorPct}" style="flex: 1; accent-color: var(--accent-blue);" />
-          <div style="display: flex; align-items: center; gap: 0.3rem;">
-            <input type="number" id="hp-sector-input" min="15" max="100" step="5" value="${currentHp.maxSingleSectorPct}" style="width: 65px; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-glass); border-radius: 6px; padding: 0.35rem 0.5rem; color: #fff; text-align: center; font-weight: 600;" />
-            <span style="font-weight: 600; color: var(--text-secondary);">%</span>
-          </div>
-        </div>
-        <div id="hp-sector-calc" style="font-size: 0.8rem; color: #93c5fd; margin-top: 0.4rem; font-family: monospace;">
-          On ₹${(currentInvestment / 100000).toFixed(2)}L portfolio &rarr; Max ₹${(currentSectorRupeeCap / 100000).toFixed(2)}L per sector
-        </div>
-      </div>
-
-      <!-- Parameter 4 & 5: Sub-A (BBB) Rules & Tenor -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-        <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-glass); border-radius: 12px; padding: 1.1rem;">
-          <div style="font-weight: 600; font-size: 0.85rem; color: #fff; margin-bottom: 0.35rem;">
-            Max Sub-A / BBB Allocation (%)
-          </div>
-          <div style="display: flex; align-items: center; gap: 0.3rem;">
-            <input type="number" id="hp-suba-input" min="0" max="100" step="5" value="${currentHp.maxSubAPct}" style="width: 100%; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-glass); border-radius: 6px; padding: 0.4rem 0.5rem; color: #fff; font-weight: 600;" />
-            <span style="font-weight: 600; color: var(--text-secondary);">%</span>
-          </div>
-          <div style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 0.35rem;">Default: ${DEFAULT_HYPERPARAMETERS.maxSubAPct}%</div>
-        </div>
-
-        <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-glass); border-radius: 12px; padding: 1.1rem;">
-          <div style="font-weight: 600; font-size: 0.85rem; color: #fff; margin-bottom: 0.35rem;">
-            Max BBB Tenor Window (Months)
-          </div>
-          <div style="display: flex; align-items: center; gap: 0.3rem;">
-            <input type="number" id="hp-bbb-tenor-input" min="3" max="60" step="1" value="${currentHp.maxBBBTenorMonths}" style="width: 100%; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-glass); border-radius: 6px; padding: 0.4rem 0.5rem; color: #fff; font-weight: 600;" />
-            <span style="font-weight: 600; color: var(--text-secondary);">Mo</span>
-          </div>
-          <div style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 0.35rem;">Default: ${DEFAULT_HYPERPARAMETERS.maxBBBTenorMonths}m (Regulatory rule)</div>
-        </div>
-      </div>
-
-      <!-- Parameter 6: Cashflow Stagger Tolerance -->
-      <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-glass); border-radius: 12px; padding: 1.1rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-          <label style="font-weight: 600; font-size: 0.88rem; color: #fff;">
-            Quarterly Coupon Stagger Yield Tolerance (%)
-          </label>
-          <span style="font-size: 0.75rem; color: var(--text-secondary);">Default: ${DEFAULT_HYPERPARAMETERS.cashflowYieldTolerancePct}%</span>
-        </div>
-        <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0 0 0.5rem 0;">
-          Maximum yield reduction tolerated when swapping ON MATURITY bonds for periodic-coupon bonds to achieve quarterly cashflow targets.
-        </p>
-        <div style="display: flex; align-items: center; gap: 0.3rem; max-width: 150px;">
-          <input type="number" id="hp-cf-tolerance-input" min="0.1" max="2.0" step="0.1" value="${currentHp.cashflowYieldTolerancePct}" style="width: 100%; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-glass); border-radius: 6px; padding: 0.4rem 0.5rem; color: #fff; font-weight: 600;" />
-          <span style="font-weight: 600; color: var(--text-secondary);">%</span>
-        </div>
-      </div>
     </div>
 
-    <div style="padding: 1.25rem 1.75rem; border-top: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.02); flex-wrap: wrap; gap: 0.75rem;">
+    <div style="padding: 1.1rem 1.75rem; border-top: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.02); flex-wrap: wrap; gap: 0.75rem;">
       <button id="reset-hp-defaults-btn" class="btn" style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.2); color: var(--text-secondary); font-size: 0.85rem; padding: 0.5rem 1rem;">
         ↺ Reset to Sane Defaults
       </button>
@@ -220,7 +255,7 @@ function renderModalContent() {
           Cancel
         </button>
         <button id="save-hp-btn" class="btn" style="background: var(--accent-gold); color: #000; font-weight: 700; font-size: 0.85rem; padding: 0.5rem 1.25rem;">
-          ✓ Apply Parameters
+          ✓ Apply Risk Parameters
         </button>
       </div>
     </div>
@@ -239,18 +274,17 @@ function attachModalEventListeners(modal: HTMLDialogElement) {
   const issuerInput = modal.querySelector('#hp-issuer-input') as HTMLInputElement;
   const issuerCalc = modal.querySelector('#hp-issuer-calc') as HTMLDivElement;
 
-  const sectorRange = modal.querySelector('#hp-sector-range') as HTMLInputElement;
   const sectorInput = modal.querySelector('#hp-sector-input') as HTMLInputElement;
-  const sectorCalc = modal.querySelector('#hp-sector-calc') as HTMLDivElement;
-
   const allowOverflow = modal.querySelector('#hp-allow-overflow') as HTMLInputElement;
-  const subaInput = modal.querySelector('#hp-suba-input') as HTMLInputElement;
-  const bbbTenorInput = modal.querySelector('#hp-bbb-tenor-input') as HTMLInputElement;
-  const cfToleranceInput = modal.querySelector('#hp-cf-tolerance-input') as HTMLInputElement;
+  const enableTenureCap = modal.querySelector('#hp-enable-tenure-cap') as HTMLInputElement;
+  const highRiskTenorInput = modal.querySelector('#hp-high-risk-tenor-input') as HTMLInputElement;
+  const modRiskTenorInput = modal.querySelector('#hp-mod-risk-tenor-input') as HTMLInputElement;
+  const enableRiskConc = modal.querySelector('#hp-enable-risk-conc') as HTMLInputElement;
+  const riskyConcInput = modal.querySelector('#hp-risky-conc-input') as HTMLInputElement;
+  const consSubAInput = modal.querySelector('#hp-cons-suba-input') as HTMLInputElement;
 
   const currentInvestment = context?.getCurrentInvestment() || 1000000;
 
-  // Sync issuer slider & input
   if (issuerRange && issuerInput) {
     issuerRange.addEventListener('input', () => {
       issuerInput.value = issuerRange.value;
@@ -266,34 +300,14 @@ function attachModalEventListeners(modal: HTMLDialogElement) {
     });
   }
 
-  // Sync sector slider & input
-  if (sectorRange && sectorInput) {
-    sectorRange.addEventListener('input', () => {
-      sectorInput.value = sectorRange.value;
-      const pct = parseFloat(sectorRange.value) || 35;
-      const rupeeCap = currentInvestment * (pct / 100);
-      sectorCalc.textContent = `On ₹${(currentInvestment / 100000).toFixed(2)}L portfolio → Max ₹${(rupeeCap / 100000).toFixed(2)}L per sector`;
-    });
-    sectorInput.addEventListener('input', () => {
-      sectorRange.value = sectorInput.value;
-      const pct = parseFloat(sectorInput.value) || 35;
-      const rupeeCap = currentInvestment * (pct / 100);
-      sectorCalc.textContent = `On ₹${(currentInvestment / 100000).toFixed(2)}L portfolio → Max ₹${(rupeeCap / 100000).toFixed(2)}L per sector`;
-    });
-  }
+  // Toggles update UI state
+  allowOverflow?.addEventListener('change', () => renderModalContent());
+  enableTenureCap?.addEventListener('change', () => renderModalContent());
+  enableRiskConc?.addEventListener('change', () => renderModalContent());
 
-  // Allow overflow toggle appearance
-  if (allowOverflow) {
-    allowOverflow.addEventListener('change', () => {
-      renderModalContent();
-    });
-  }
-
-  // Close / Cancel
   closeBtn?.addEventListener('click', closeEngineSettingsModal);
   cancelBtn?.addEventListener('click', closeEngineSettingsModal);
 
-  // Reset Sane Defaults
   resetBtn?.addEventListener('click', () => {
     if (confirm('Reset all engine parameters and risk limits back to Sane Defaults?')) {
       resetEngineHyperparameters();
@@ -302,15 +316,17 @@ function attachModalEventListeners(modal: HTMLDialogElement) {
     }
   });
 
-  // Save & Apply
   saveBtn?.addEventListener('click', () => {
     const updated: Partial<EngineHyperparameters> = {
       maxSingleIssuerPct: parseFloat(issuerInput.value) || 15,
       maxSingleSectorPct: parseFloat(sectorInput.value) || 35,
-      maxSubAPct: parseFloat(subaInput.value) || 25,
-      maxBBBTenorMonths: parseFloat(bbbTenorInput.value) || 12,
-      cashflowYieldTolerancePct: parseFloat(cfToleranceInput.value) || 0.5,
-      allowUnitOverflow: !!allowOverflow.checked
+      allowUnitOverflow: !!allowOverflow.checked,
+      enableFundamentalTenureCapping: !!enableTenureCap.checked,
+      maxHighRiskTenorMonths: parseFloat(highRiskTenorInput.value) || 18,
+      maxModerateRiskTenorMonths: parseFloat(modRiskTenorInput.value) || 36,
+      enableInvestorRiskConcentration: !!enableRiskConc.checked,
+      maxRiskyIssuerConcentrationPct: parseFloat(riskyConcInput.value) || 8,
+      conservativeSubAACapPct: parseFloat(consSubAInput.value) || 10
     };
     saveEngineHyperparameters(updated);
     closeEngineSettingsModal();

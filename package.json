@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "test": "npx tsx src/bondEngine.test.ts && npx tsx src/screener.test.ts && npx tsx src/analyzer/analyzer.test.ts && npx tsx src/clients/multiClient.test.ts && npx tsx src/promoterGovernance.test.ts && npx tsx src/redemptionEngine.test.ts && npx tsx src/swotFundamental.test.ts && npx tsx src/creditCoverage.test.ts",
+    "test": "npx tsx src/bondEngine.test.ts && npx tsx src/screener.test.ts && npx tsx src/analyzer/analyzer.test.ts && npx tsx src/clients/multiClient.test.ts && npx tsx src/promoterGovernance.test.ts && npx tsx src/redemptionEngine.test.ts && npx tsx src/swotFundamental.test.ts && npx tsx src/creditCoverage.test.ts && npx tsx src/riskAdjustedEngine.test.ts && npx tsx src/clients/clientJourney.test.ts",
     "preview": "vite preview"
   },
   "devDependencies": {
