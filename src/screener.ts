@@ -1,3 +1,5 @@
+import { openCreditFiveCsModal } from './creditFiveCsModal';
+import { getCreditCoverageRecord } from './data/creditCoverageIntelligence';
 import { DefaultBond } from './defaultInventory';
 import { getUnitPrice } from './bondEngine';
 import { getCompanyOverrides, setCompanyOverride } from './overridesManager';
@@ -33,6 +35,7 @@ let screenerMaxTenure: HTMLInputElement;
 let screenerRating: HTMLSelectElement;
 let screenerGovernance: HTMLSelectElement;
 let screenerSwot: HTMLSelectElement;
+let screenerFiveCs: HTMLSelectElement;
 let screenerSector: HTMLSelectElement;
 let screenerFrequency: HTMLSelectElement;
 let screenerMaxPrice: HTMLSelectElement;
@@ -55,6 +58,7 @@ export function initScreener() {
   screenerRating = document.getElementById('screener-rating') as HTMLSelectElement;
   screenerGovernance = document.getElementById('screener-governance') as HTMLSelectElement;
   screenerSwot = document.getElementById('screener-swot') as HTMLSelectElement;
+  screenerFiveCs = document.getElementById('screener-fivecs') as HTMLSelectElement;
   screenerSector = document.getElementById('screener-sector') as HTMLSelectElement;
   screenerFrequency = document.getElementById('screener-frequency') as HTMLSelectElement;
   screenerMaxPrice = document.getElementById('screener-max-price') as HTMLSelectElement;
@@ -69,7 +73,7 @@ export function initScreener() {
   const filterInputs = [
     screenerSearch, screenerMinYield, screenerMaxYield, screenerMinCoupon,
     screenerMaxCoupon, screenerMinTenure, screenerMaxTenure, screenerRating,
-    screenerGovernance, screenerSwot, screenerSector, screenerFrequency, screenerMaxPrice,
+    screenerGovernance, screenerSwot, screenerFiveCs, screenerSector, screenerFrequency, screenerMaxPrice,
     screenerMinTradableFV, screenerGuarantorOnly
   ];
 
@@ -274,6 +278,7 @@ function loadScreenState(screen: { id: string; filters: ScreenerFilterState }) {
   if (screenerRating) screenerRating.value = f.rating || '';
   if (screenerGovernance) screenerGovernance.value = f.governanceRisk !== undefined ? f.governanceRisk : '';
   if (screenerSwot) screenerSwot.value = f.swotProfile || '';
+  if (screenerFiveCs) screenerFiveCs.value = f.fiveCsProfile || '';
   if (screenerSector) screenerSector.value = f.sector || '';
   if (screenerFrequency) screenerFrequency.value = f.frequency || '';
   if (screenerMaxPrice) screenerMaxPrice.value = f.maxUnitPrice !== undefined ? f.maxUnitPrice.toString() : '';
@@ -296,6 +301,7 @@ function getCurrentFilterState(): ScreenerFilterState {
     rating: screenerRating?.value || undefined,
     governanceRisk: screenerGovernance?.value || undefined,
     swotProfile: screenerSwot?.value || undefined,
+    fiveCsProfile: screenerFiveCs?.value || undefined,
     sector: screenerSector?.value || undefined,
     frequency: screenerFrequency?.value || undefined,
     maxUnitPrice: screenerMaxPrice?.value ? parseFloat(screenerMaxPrice.value) : undefined,
@@ -317,6 +323,7 @@ export function resetAllFilters() {
   if (screenerRating) screenerRating.value = '';
   if (screenerGovernance) screenerGovernance.value = 'EXCLUDE_CRITICAL_HIGH';
   if (screenerSwot) screenerSwot.value = '';
+  if (screenerFiveCs) screenerFiveCs.value = '';
   if (screenerSector) screenerSector.value = '';
   if (screenerFrequency) screenerFrequency.value = '';
   if (screenerMaxPrice) screenerMaxPrice.value = '';
@@ -389,6 +396,23 @@ export function applyFilters() {
       } else if (f.swotProfile === 'institutional') {
         const r = b.rating.toUpperCase();
         if (!r.includes('AAA') && !r.includes('SOVEREIGN') && !r.includes('GOI')) return false;
+      }
+    }
+
+    
+    // 7.5. 5 Cs Credit Framework & Coverage Filter
+    if (f.fiveCsProfile) {
+      const credit = getCreditCoverageRecord(b.isin || b.issuer);
+      if (f.fiveCsProfile === 'prime_5c') {
+        if (!credit || credit.compositeCreditScore < 80) return false;
+      } else if (f.fiveCsProfile === 'high_iscr') {
+        if (!credit || credit.quantitativeCoverage.iscr < 2.5) return false;
+      } else if (f.fiveCsProfile === 'high_dscr') {
+        if (!credit || credit.quantitativeCoverage.dscr < 1.4) return false;
+      } else if (f.fiveCsProfile === 'high_ocf_debt') {
+        if (!credit || credit.quantitativeCoverage.ocfToDebtPercent < 15.0) return false;
+      } else if (f.fiveCsProfile === 'high_collateral') {
+        if (!credit || credit.fiveCs.collateral.score < 17) return false;
       }
     }
 
@@ -595,6 +619,9 @@ function renderTable() {
       <td style="padding: 0.75rem; font-weight: 600;">${priceFmt}</td>
       <td style="padding: 0.75rem;">${fvFmt}</td>
       <td style="padding: 0.75rem; text-align: right; white-space: nowrap;">
+        <button class="screener-fivecs-btn" data-isin="${b.isin}" title="5 Cs Credit Scorecard & Coverage Ratios" style="border-radius: 6px; padding: 0.3rem 0.5rem; font-size: 0.75rem; font-weight: 700; background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); cursor: pointer; margin-right: 0.35rem;">
+          🏛️ 5C
+        </button>
         <button class="audit-row-btn" data-isin="${b.isin}" title="Inspect Forensic Intelligence & Regulatory Records" style="border-radius: 6px; padding: 0.3rem 0.55rem; font-size: 0.75rem; font-weight: 600; background: rgba(212, 175, 55, 0.15); color: var(--accent-gold); border: 1px solid rgba(212, 175, 55, 0.35); cursor: pointer; margin-right: 0.35rem;">
           ⚖️ Audit
         </button>
@@ -620,6 +647,15 @@ function renderTable() {
         e.stopPropagation();
         const group = promoterBtn.getAttribute('data-group') || b.issuer;
         openPromoterProfileModal(group);
+      });
+    }
+
+    
+    const fiveCsBtn = tr.querySelector('.screener-fivecs-btn') as HTMLButtonElement;
+    if (fiveCsBtn) {
+      fiveCsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openCreditFiveCsModal(b.isin || b.issuer);
       });
     }
 

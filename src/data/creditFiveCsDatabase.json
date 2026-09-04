@@ -1,0 +1,674 @@
+{
+  "edelweiss_group": {
+    "entityKey": "edelweiss_group",
+    "issuerName": "EDELWEISS FINANCIAL SERVICES LIMITED",
+    "parentGroup": "Edelweiss Group",
+    "rating": "CRISIL A+ (Negative) / CARE A+",
+    "ratingAgency": "CRISIL / CARE",
+    "quantitativeCoverage": {
+      "dscr": 1.12,
+      "iscr": 1.45,
+      "fccr": 1.28,
+      "ocfToDebtPercent": 6.8,
+      "cfoCr": 1420,
+      "cashEquivalentsCr": 3100,
+      "gearingRatio": 3.7,
+      "securityCoverRatio": 1.25,
+      "operatingEbitdaMarginPercent": 24.5
+    },
+    "fiveCsAssessment": {
+      "compositeScore": 46,
+      "creditGrade": "SPECULATIVE",
+      "character": {
+        "score": 38,
+        "summary": "Severe regulatory overhang from RBI May 2024 supervisory action against ECL Finance & EARC for structured transaction evergreening.",
+        "governanceRating": "Scrutiny / Moderate Risk",
+        "auditorQuality": "S.R. Batliboi & Co. (Emphasis of matter on wholesale provisions)",
+        "creditorTrackRecord": "Zero direct public NCD technical defaults, but multiple stressed wholesale loan restructuring haircuts."
+      },
+      "capacity": {
+        "score": 48,
+        "summary": "Tight operating debt service coverage (DSCR 1.12x, ISCR 1.45x) compensated partially by asset monetization and fund management fee cash flows.",
+        "cashFlowPredictability": "Moderate / Fee Dependent",
+        "debtServicingRunway": "6-9 Months unencumbered liquidity buffer"
+      },
+      "collateral": {
+        "score": 58,
+        "summary": "1.25x first pari-passu charge over standard retail loan receivables and corporate fund assets.",
+        "collateralType": "Hypothecation of diversified loan book & mutual fund receivables",
+        "chargeExclusivity": "Pari-passu with banking consortium",
+        "escrowMechanism": "Designated escrow account with Debenture Trustee oversight"
+      },
+      "capital": {
+        "score": 52,
+        "summary": "Standalone net worth of Rs 5,800+ Cr with group CRAR of 21.6%, offset by wholesale real estate loan provisions.",
+        "netWorthCr": 5840,
+        "crarPercent": 21.6,
+        "leverageBuffer": "Moderate Gearing (3.7x)"
+      },
+      "conditions": {
+        "score": 35,
+        "summary": "High regulatory headwinds post RBI action; tightening wholesale debt syndication appetite in Indian capital markets.",
+        "macroSensitivity": "High to wholesale liquidity spreads",
+        "regulatoryTailwindHeadwind": "Strong Headwind (RBI Supervisory Restrictions)",
+        "sectorOutlook": "Challenging for structured wholesale NBFCs"
+      }
+    }
+  },
+  "sammaan_indiabulls": {
+    "entityKey": "sammaan_indiabulls",
+    "issuerName": "SAMMAAN CAPITAL LIMITED",
+    "parentGroup": "Indiabulls / Sammaan Capital Ecosystem",
+    "rating": "CRISIL AA / ICRA AA+ / CARE AA+",
+    "ratingAgency": "CRISIL / ICRA / CARE",
+    "quantitativeCoverage": {
+      "dscr": 1.34,
+      "iscr": 2.15,
+      "fccr": 1.78,
+      "ocfToDebtPercent": 14.2,
+      "cfoCr": 4200,
+      "cashEquivalentsCr": 6800,
+      "gearingRatio": 2.9,
+      "securityCoverRatio": 1.3,
+      "operatingEbitdaMarginPercent": 31
+    },
+    "fiveCsAssessment": {
+      "compositeScore": 68,
+      "creditGrade": "UPPER_MEDIUM",
+      "character": {
+        "score": 62,
+        "summary": "Rebranded from Indiabulls Housing Finance to Sammaan Capital with institutional board transition led by Ex-RBI Dy Governor S.S. Mundra.",
+        "governanceRating": "Institutional Board Restructured",
+        "auditorQuality": "S.N. Dhawan & Co. LLP / Mazars India (Clean opinion)",
+        "creditorTrackRecord": "Flawless repayment history honoring over Rs 1.2 Lakh Cr debt repayments since 2018 liquidity crisis."
+      },
+      "capacity": {
+        "score": 70,
+        "summary": "Adequate ISCR of 2.15x and DSCR of 1.34x supported by transition to asset-light co-lending with Tier-1 PSU banks.",
+        "cashFlowPredictability": "High retail mortgage EMI predictability",
+        "debtServicingRunway": "12-15 Months liquidity coverage"
+      },
+      "collateral": {
+        "score": 75,
+        "summary": "1.30x exclusive/pari-passu charge on granular residential housing loan book with average LTV of 62%.",
+        "collateralType": "First ranking mortgage loan receivables",
+        "chargeExclusivity": "Exclusive / First Pari-Passu",
+        "escrowMechanism": "Structured waterfall account under IDBI Trusteeship"
+      },
+      "capital": {
+        "score": 76,
+        "summary": "Substantial capital cushion with CRAR of 31.2% and low net gearing of 2.9x.",
+        "netWorthCr": 18200,
+        "crarPercent": 31.2,
+        "leverageBuffer": "Conservative leverage post de-risking"
+      },
+      "conditions": {
+        "score": 58,
+        "summary": "Retail housing loan demand robust; unlisted developer subsidiaries (Tapir/Lucina) face localized refinancing challenges.",
+        "macroSensitivity": "Moderate interest rate sensitivity",
+        "regulatoryTailwindHeadwind": "Favorable retail housing policies (PMAY 2.0)",
+        "sectorOutlook": "Stable for prime mortgage / Moderate for developer arms"
+      }
+    }
+  },
+  "muthoot_group": {
+    "entityKey": "muthoot_group",
+    "issuerName": "MUTHOOT FINANCE LIMITED",
+    "parentGroup": "Muthoot Group",
+    "rating": "CRISIL AA+ / ICRA AA+ (Stable)",
+    "ratingAgency": "CRISIL / ICRA",
+    "quantitativeCoverage": {
+      "dscr": 1.68,
+      "iscr": 3.42,
+      "fccr": 2.85,
+      "ocfToDebtPercent": 24.6,
+      "cfoCr": 6850,
+      "cashEquivalentsCr": 8200,
+      "gearingRatio": 2.4,
+      "securityCoverRatio": 1.45,
+      "operatingEbitdaMarginPercent": 42
+    },
+    "fiveCsAssessment": {
+      "compositeScore": 92,
+      "creditGrade": "PRIME",
+      "character": {
+        "score": 94,
+        "summary": "Exemplary 80-year promoter pedigree with unblemished debt track record, conservative underwriting, and transparent corporate governance.",
+        "governanceRating": "Pristine / Highest Pedigree",
+        "auditorQuality": "Varma & Varma (Clean unqualified report)",
+        "creditorTrackRecord": "Pristine track record of zero historical defaults on capital market debt."
+      },
+      "capacity": {
+        "score": 92,
+        "summary": "Outstanding interest coverage of 3.42x and DSCR of 1.68x driven by high NIMs (11-12%) and short gold loan duration (3-6 months).",
+        "cashFlowPredictability": "Extremely high cash velocity and daily gold loan liquidations",
+        "debtServicingRunway": "> 18 Months self-liquidating loan collections"
+      },
+      "collateral": {
+        "score": 96,
+        "summary": "1.45x security cover backed by physical 22-carat gold jewelry held in bank-grade branch vaults with average LTV of 58%.",
+        "collateralType": "Physical Gold Jewelry Collateral & Liquid Receivables",
+        "chargeExclusivity": "Exclusive First Charge",
+        "escrowMechanism": "Catalyst Trusteeship managed escrow"
+      },
+      "capital": {
+        "score": 88,
+        "summary": "Exceptional capital adequacy with CRAR of 26.8% and low debt-to-equity of 2.4x.",
+        "netWorthCr": 24500,
+        "crarPercent": 26.8,
+        "leverageBuffer": "Best-in-class capitalization"
+      },
+      "conditions": {
+        "score": 88,
+        "summary": "Gold price appreciation expands collateral safety margins; high rural and semi-urban credit demand.",
+        "macroSensitivity": "Counter-cyclical hedge in economic slowdowns",
+        "regulatoryTailwindHeadwind": "Stable RBI regulatory framework for Gold NBFCs",
+        "sectorOutlook": "Strong and defensive"
+      }
+    }
+  },
+  "tata_group": {
+    "entityKey": "tata_group",
+    "issuerName": "TATA CAPITAL LIMITED",
+    "parentGroup": "Tata Group",
+    "rating": "CRISIL AAA / ICRA AAA (Stable)",
+    "ratingAgency": "CRISIL / ICRA",
+    "quantitativeCoverage": {
+      "dscr": 1.55,
+      "iscr": 2.95,
+      "fccr": 2.4,
+      "ocfToDebtPercent": 18.5,
+      "cfoCr": 9200,
+      "cashEquivalentsCr": 14500,
+      "gearingRatio": 4.2,
+      "securityCoverRatio": 1.35,
+      "operatingEbitdaMarginPercent": 28.5
+    },
+    "fiveCsAssessment": {
+      "compositeScore": 96,
+      "creditGrade": "PRIME",
+      "character": {
+        "score": 98,
+        "summary": "Highest corporate governance standard in India backed by Tata Sons (Tata Trusts), institutional oversight, and century-long debt honoring.",
+        "governanceRating": "Pinnacle Governance",
+        "auditorQuality": "B S R & Co. LLP (Clean unqualified audit)",
+        "creditorTrackRecord": "Flawless sovereign-grade debt repayment record."
+      },
+      "capacity": {
+        "score": 94,
+        "summary": "Robust operational cash flow and lowest borrowing costs in the domestic NBFC industry (yielding ISCR 2.95x).",
+        "cashFlowPredictability": "Very High across retail, SME, and clean infrastructure loans",
+        "debtServicingRunway": "> 24 Months supported by parent liquidity lines"
+      },
+      "collateral": {
+        "score": 92,
+        "summary": "1.35x first ranking floating charge on standard loan assets and high-grade corporate debt securities.",
+        "collateralType": "Standard retail and secured SME receivables",
+        "chargeExclusivity": "First ranking charge",
+        "escrowMechanism": "Vistra ITCL managed waterfall"
+      },
+      "capital": {
+        "score": 96,
+        "summary": "Strong net worth of Rs 22,000+ Cr with total CRAR of 18.9% and regular parent equity infusions.",
+        "netWorthCr": 22400,
+        "crarPercent": 18.9,
+        "leverageBuffer": "Extensive financial flexibility and parent equity support"
+      },
+      "conditions": {
+        "score": 98,
+        "summary": "Immune to selective market credit squeezes; preferred destination for institutional treasury allocations.",
+        "macroSensitivity": "Low to medium",
+        "regulatoryTailwindHeadwind": "Favorable priority sector and green bond status",
+        "sectorOutlook": "Industry-leading market expansion"
+      }
+    }
+  },
+  "generic_psu_sovereign": {
+    "entityKey": "generic_psu_sovereign",
+    "issuerName": "POWER FINANCE CORPORATION / REC LIMITED",
+    "parentGroup": "Government of India (Sovereign)",
+    "rating": "CRISIL AAA / ICRA AAA / CARE AAA",
+    "ratingAgency": "CRISIL / ICRA / CARE",
+    "quantitativeCoverage": {
+      "dscr": 1.72,
+      "iscr": 2.8,
+      "fccr": 2.35,
+      "ocfToDebtPercent": 21,
+      "cfoCr": 28500,
+      "cashEquivalentsCr": 32000,
+      "gearingRatio": 5.2,
+      "securityCoverRatio": 1.25,
+      "operatingEbitdaMarginPercent": 65
+    },
+    "fiveCsAssessment": {
+      "compositeScore": 98,
+      "creditGrade": "PRIME",
+      "character": {
+        "score": 100,
+        "summary": "Quasi-sovereign entity owned by Government of India with statutory national infrastructure financing mandate.",
+        "governanceRating": "Sovereign Backed",
+        "auditorQuality": "CAG appointed statutory auditors (Clean opinion)",
+        "creditorTrackRecord": "100% zero default track record since inception."
+      },
+      "capacity": {
+        "score": 96,
+        "summary": "Monopolistic power sector cash flows with direct state government escrow deductions and national grid fee intercepts.",
+        "cashFlowPredictability": "Sovereign guaranteed / Central budget supported",
+        "debtServicingRunway": "Perpetual access to RBI liquidity and national banking window"
+      },
+      "collateral": {
+        "score": 95,
+        "summary": "1.25x statutory asset cover backed by state government power assets and sovereign guarantees.",
+        "collateralType": "First charge on operational power infrastructure assets",
+        "chargeExclusivity": "First ranking charge",
+        "escrowMechanism": "RBI & SBI structured tripartite escrow waterfall"
+      },
+      "capital": {
+        "score": 98,
+        "summary": "Massive sovereign net worth of Rs 1,15,000+ Cr with CRAR of 25.4% and statutory Maharatna status.",
+        "netWorthCr": 115000,
+        "crarPercent": 25.4,
+        "leverageBuffer": "Direct access to sovereign capital markets"
+      },
+      "conditions": {
+        "score": 98,
+        "summary": "Direct beneficiary of National Green Hydrogen Mission and National Electricity Plan.",
+        "macroSensitivity": "Near Zero default sensitivity",
+        "regulatoryTailwindHeadwind": "Highest National Strategic Priority",
+        "sectorOutlook": "Robust and sovereign protected"
+      }
+    }
+  },
+  "iifl_group": {
+    "entityKey": "iifl_group",
+    "issuerName": "IIFL FINANCE LIMITED",
+    "parentGroup": "IIFL Group",
+    "rating": "CRISIL AA / ICRA AA (Positive)",
+    "ratingAgency": "CRISIL / ICRA",
+    "quantitativeCoverage": {
+      "dscr": 1.38,
+      "iscr": 2.25,
+      "fccr": 1.82,
+      "ocfToDebtPercent": 15.6,
+      "cfoCr": 3950,
+      "cashEquivalentsCr": 5400,
+      "gearingRatio": 3.8,
+      "securityCoverRatio": 1.3,
+      "operatingEbitdaMarginPercent": 33
+    },
+    "fiveCsAssessment": {
+      "compositeScore": 76,
+      "creditGrade": "UPPER_MEDIUM",
+      "character": {
+        "score": 72,
+        "summary": "Experienced promoter Nirmal Jain. RBI gold loan restrictions lifted in Sept 2024 following comprehensive compliance audit completion.",
+        "governanceRating": "Post-Embargo Normalized",
+        "auditorQuality": "V. Sankar Aiyar & Co. (Clean report)",
+        "creditorTrackRecord": "Unblemished repayment track record honoring all debt maturities during temporary regulatory embargo."
+      },
+      "capacity": {
+        "score": 78,
+        "summary": "Rapidly rebounding gold and affordable home loan disbursements driving ISCR of 2.25x and DSCR of 1.38x.",
+        "cashFlowPredictability": "High granular retail cash flows (>95% retail loans)",
+        "debtServicingRunway": "10-14 Months liquidity runway"
+      },
+      "collateral": {
+        "score": 82,
+        "summary": "1.30x asset cover backed by gold collateral and ADIA-backed affordable mortgage receivables.",
+        "collateralType": "Gold jewelry and low-ticket residential mortgages",
+        "chargeExclusivity": "First ranking charge",
+        "escrowMechanism": "Catalyst Trusteeship managed escrow waterfall"
+      },
+      "capital": {
+        "score": 80,
+        "summary": "Solid net worth of Rs 12,000+ Cr with consolidated CRAR of 24.2% backed by Fairfax and ADIA.",
+        "netWorthCr": 12200,
+        "crarPercent": 24.2,
+        "leverageBuffer": "Adequate capital buffer (3.8x gearing)"
+      },
+      "conditions": {
+        "score": 68,
+        "summary": "Normalization of bank credit lines and retail customer footfalls post-RBI resolution.",
+        "macroSensitivity": "Moderate interest rate sensitivity",
+        "regulatoryTailwindHeadwind": "Recovering post regulatory clearance",
+        "sectorOutlook": "Strong retail gold and housing growth"
+      }
+    }
+  },
+  "haldiram_group": {
+    "entityKey": "haldiram_group",
+    "issuerName": "HALDIRAM SNACKS FOOD PRIVATE LIMITED",
+    "parentGroup": "Haldiram Group",
+    "rating": "CRISIL AAA / CARE AAA",
+    "ratingAgency": "CRISIL / CARE",
+    "quantitativeCoverage": {
+      "dscr": 2.45,
+      "iscr": 8.5,
+      "fccr": 6.8,
+      "ocfToDebtPercent": 58,
+      "cfoCr": 2400,
+      "cashEquivalentsCr": 3600,
+      "gearingRatio": 0.35,
+      "securityCoverRatio": 1.5,
+      "operatingEbitdaMarginPercent": 21.5
+    },
+    "fiveCsAssessment": {
+      "compositeScore": 95,
+      "creditGrade": "PRIME",
+      "character": {
+        "score": 92,
+        "summary": "India's premier FMCG snack manufacturer with spotless family business integrity, negligible debt, and exceptional consumer trust.",
+        "governanceRating": "Conservative Corporate Governance",
+        "auditorQuality": "Price Waterhouse & Co. LLP (Clean opinion)",
+        "creditorTrackRecord": "Flawless history with near-zero long-term funded debt."
+      },
+      "capacity": {
+        "score": 98,
+        "summary": "Extraordinary interest coverage (ISCR 8.5x) and DSCR (2.45x) driven by daily cash sales through massive retail distribution.",
+        "cashFlowPredictability": "Near 100% cash sales with negative working capital cycle",
+        "debtServicingRunway": "> 36 Months net debt-free operations"
+      },
+      "collateral": {
+        "score": 92,
+        "summary": "1.50x asset cover backed by unencumbered state-of-the-art manufacturing plants and freehold industrial land.",
+        "collateralType": "Prime industrial freehold real estate & plant machinery",
+        "chargeExclusivity": "Exclusive First Charge",
+        "escrowMechanism": "Designated debt service escrow"
+      },
+      "capital": {
+        "score": 96,
+        "summary": "Virtually unleveraged balance sheet with debt-to-equity of 0.35x and net worth of Rs 14,000+ Cr.",
+        "netWorthCr": 14200,
+        "crarPercent": 48,
+        "leverageBuffer": "Massive equity cushion and internal cash accruals"
+      },
+      "conditions": {
+        "score": 94,
+        "summary": "Secular growth in packaged foods and traditional Indian snack exports.",
+        "macroSensitivity": "Recession-resilient daily consumer staple",
+        "regulatoryTailwindHeadwind": "FSSAI compliant with global export certifications",
+        "sectorOutlook": "Exceptional long-term growth"
+      }
+    }
+  },
+  "keertana_spandana": {
+    "entityKey": "keertana_spandana",
+    "issuerName": "KEERTANA FINSERV LIMITED",
+    "parentGroup": "Keertana Finserv (Padmaja Reddy)",
+    "rating": "ACUITE BBB+ / Stable",
+    "ratingAgency": "Acuité Ratings",
+    "quantitativeCoverage": {
+      "dscr": 1.22,
+      "iscr": 1.75,
+      "fccr": 1.42,
+      "ocfToDebtPercent": 9.5,
+      "cfoCr": 340,
+      "cashEquivalentsCr": 420,
+      "gearingRatio": 4.1,
+      "securityCoverRatio": 1.2,
+      "operatingEbitdaMarginPercent": 26
+    },
+    "fiveCsAssessment": {
+      "compositeScore": 54,
+      "creditGrade": "SPECULATIVE",
+      "character": {
+        "score": 50,
+        "summary": "Founded by Padmaja Reddy post boardroom dispute at Spandana Sphoorty. High domain expertise offset by past governance litigation.",
+        "governanceRating": "Past Corporate Governance Dispute",
+        "auditorQuality": "Walker Chandiok & Co LLP",
+        "creditorTrackRecord": "All Keertana debt serviced punctually since inception."
+      },
+      "capacity": {
+        "score": 55,
+        "summary": "Adequate DSCR of 1.22x with high lending yield (22-24%) offset by rural field collection sensitivity.",
+        "cashFlowPredictability": "Moderate / Sensitive to rural monsoon and debt waiver rhetoric",
+        "debtServicingRunway": "4-6 Months liquidity buffer"
+      },
+      "collateral": {
+        "score": 52,
+        "summary": "1.20x asset cover on microfinance loan book (partially unsecured JLG loans and secured gold/MSME loans).",
+        "collateralType": "Hypothecation of micro-enterprise and JLG loan receivables",
+        "chargeExclusivity": "Pari-passu charge",
+        "escrowMechanism": "Trustee monitored repayment account"
+      },
+      "capital": {
+        "score": 58,
+        "summary": "Net worth of Rs 850 Cr with CRAR of 21.8%, seeking institutional Tier-1 equity for expansion.",
+        "netWorthCr": 850,
+        "crarPercent": 21.8,
+        "leverageBuffer": "Moderate Gearing (4.1x)"
+      },
+      "conditions": {
+        "score": 52,
+        "summary": "Rural microfinance sensitive to localized socio-political unrest and climate/flood disruptions.",
+        "macroSensitivity": "High to state-level rural farm stress",
+        "regulatoryTailwindHeadwind": "Subject to RBI MFI interest margin guidelines",
+        "sectorOutlook": "Moderate / High Yielding"
+      }
+    }
+  },
+  "poonawalla_fincorp": {
+    "entityKey": "poonawalla_fincorp",
+    "issuerName": "POONAWALLA FINCORP LIMITED",
+    "parentGroup": "Poonawalla Group (Serum Institute)",
+    "rating": "CRISIL AAA / CARE AAA (Stable)",
+    "ratingAgency": "CRISIL / CARE",
+    "quantitativeCoverage": {
+      "dscr": 1.62,
+      "iscr": 3.1,
+      "fccr": 2.65,
+      "ocfToDebtPercent": 22.4,
+      "cfoCr": 3100,
+      "cashEquivalentsCr": 4800,
+      "gearingRatio": 1.9,
+      "securityCoverRatio": 1.35,
+      "operatingEbitdaMarginPercent": 38
+    },
+    "fiveCsAssessment": {
+      "compositeScore": 94,
+      "creditGrade": "PRIME",
+      "character": {
+        "score": 96,
+        "summary": "Serum Institute of India (Cyrus & Adar Poonawalla) parentage with world-class corporate treasury backing and conservative risk framework.",
+        "governanceRating": "Pristine Institutional",
+        "auditorQuality": "Walker Chandiok & Co LLP",
+        "creditorTrackRecord": "Flawless AAA debt servicing record."
+      },
+      "capacity": {
+        "score": 92,
+        "summary": "Outstanding ISCR of 3.10x and DSCR of 1.62x backed by best-in-class Net NPA (<0.8%) and ultra-low cost of funds.",
+        "cashFlowPredictability": "Very High across professional, personal, and SME loans",
+        "debtServicingRunway": "> 18 Months liquid runway"
+      },
+      "collateral": {
+        "score": 90,
+        "summary": "1.35x first ranking charge on prime retail consumer and secured business loan assets.",
+        "collateralType": "Prime retail loan receivables",
+        "chargeExclusivity": "First ranking charge",
+        "escrowMechanism": "Beacon Trusteeship managed escrow"
+      },
+      "capital": {
+        "score": 98,
+        "summary": "Massive capital adequacy with CRAR of 36.5% and low leverage of 1.9x.",
+        "netWorthCr": 8900,
+        "crarPercent": 36.5,
+        "leverageBuffer": "Exceptional capital cushion"
+      },
+      "conditions": {
+        "score": 92,
+        "summary": "Digital retail loan expansion supported by lowest borrowing costs in private NBFC space.",
+        "macroSensitivity": "Low to medium",
+        "regulatoryTailwindHeadwind": "Compliant with RBI digital lending directives",
+        "sectorOutlook": "Very Strong"
+      }
+    }
+  },
+  "shriram_group": {
+    "entityKey": "shriram_group",
+    "issuerName": "SHRIRAM FINANCE LIMITED",
+    "parentGroup": "Shriram Group",
+    "rating": "CRISIL AA+ / IND AA+ (Stable)",
+    "ratingAgency": "CRISIL / India Ratings",
+    "quantitativeCoverage": {
+      "dscr": 1.48,
+      "iscr": 2.45,
+      "fccr": 2.05,
+      "ocfToDebtPercent": 16.8,
+      "cfoCr": 12500,
+      "cashEquivalentsCr": 18200,
+      "gearingRatio": 3.6,
+      "securityCoverRatio": 1.3,
+      "operatingEbitdaMarginPercent": 36.5
+    },
+    "fiveCsAssessment": {
+      "compositeScore": 86,
+      "creditGrade": "HIGH_GRADE",
+      "character": {
+        "score": 88,
+        "summary": "50-year track record in relationship-based underwriting for commercial vehicles with spotless debt servicing record.",
+        "governanceRating": "High Pedigree / Merged Entity",
+        "auditorQuality": "Sundaram & Srinivasan / Haribhakti & Co. LLP",
+        "creditorTrackRecord": "Pristine track record of honoring all public NCDs and deposit obligations."
+      },
+      "capacity": {
+        "score": 85,
+        "summary": "Industry-leading net interest margins (8.5-9.0%) delivering strong ISCR of 2.45x and DSCR of 1.48x.",
+        "cashFlowPredictability": "High monthly cash collections across 3,000+ branch network",
+        "debtServicingRunway": "12-16 Months liquidity buffer"
+      },
+      "collateral": {
+        "score": 88,
+        "summary": "1.30x exclusive/pari-passu charge on commercial vehicle and tractor asset portfolio with registered RTO hypothecation.",
+        "collateralType": "Commercial vehicles, passenger vehicles, and MSME machinery",
+        "chargeExclusivity": "Registered First Charge with RTO",
+        "escrowMechanism": "Catalyst Trusteeship managed escrow"
+      },
+      "capital": {
+        "score": 86,
+        "summary": "Merged balance sheet net worth of Rs 46,000+ Cr with healthy CRAR of 20.8%.",
+        "netWorthCr": 46200,
+        "crarPercent": 20.8,
+        "leverageBuffer": "Well capitalized (3.6x gearing)"
+      },
+      "conditions": {
+        "score": 82,
+        "summary": "Supported by national logistics expansion and industrial freight volume demand.",
+        "macroSensitivity": "Moderate sensitivity to fuel price inflation",
+        "regulatoryTailwindHeadwind": "Favorable priority sector commercial vehicle status",
+        "sectorOutlook": "Strong and resilient"
+      }
+    }
+  },
+  "chola_group": {
+    "entityKey": "chola_group",
+    "issuerName": "CHOLAMANDALAM INVESTMENT AND FINANCE COMPANY LIMITED",
+    "parentGroup": "Murugappa Group",
+    "rating": "ICRA AA+ (Positive) / CRISIL AA+ (Stable)",
+    "ratingAgency": "ICRA / CRISIL",
+    "quantitativeCoverage": {
+      "dscr": 1.52,
+      "iscr": 2.7,
+      "fccr": 2.2,
+      "ocfToDebtPercent": 18.2,
+      "cfoCr": 8400,
+      "cashEquivalentsCr": 11200,
+      "gearingRatio": 4.6,
+      "securityCoverRatio": 1.35,
+      "operatingEbitdaMarginPercent": 34
+    },
+    "fiveCsAssessment": {
+      "compositeScore": 90,
+      "creditGrade": "PRIME",
+      "character": {
+        "score": 94,
+        "summary": "124-year Murugappa Group corporate governance pedigree with conservative management and stellar creditor record.",
+        "governanceRating": "Pinnacle South Indian Conglomerate",
+        "auditorQuality": "Price Waterhouse LLP (Clean unqualified opinion)",
+        "creditorTrackRecord": "Zero defaults across decades of capital market issuances."
+      },
+      "capacity": {
+        "score": 90,
+        "summary": "Industry-leading RoA (2.6%) and RoE (19.5%) supporting ISCR of 2.70x and DSCR of 1.52x.",
+        "cashFlowPredictability": "Very High granular vehicle and home equity EMI flows",
+        "debtServicingRunway": "14-18 Months liquidity coverage"
+      },
+      "collateral": {
+        "score": 92,
+        "summary": "1.35x first ranking security cover backed by commercial vehicles, cars, and prime property mortgages.",
+        "collateralType": "Vehicles with RTO hypothecation and registered property mortgages",
+        "chargeExclusivity": "First ranking charge",
+        "escrowMechanism": "IDBI Trusteeship managed escrow"
+      },
+      "capital": {
+        "score": 86,
+        "summary": "Net worth of Rs 19,500+ Cr with CRAR of 19.4% and access to top-tier institutional funding.",
+        "netWorthCr": 19500,
+        "crarPercent": 19.4,
+        "leverageBuffer": "Adequate capital buffer"
+      },
+      "conditions": {
+        "score": 88,
+        "summary": "Automotive replacement demand and SME credit appetite remain robust.",
+        "macroSensitivity": "Moderate automotive cycle sensitivity",
+        "regulatoryTailwindHeadwind": "Favorable priority sector and co-lending environment",
+        "sectorOutlook": "Strong and defensive"
+      }
+    }
+  },
+  "piramal_group": {
+    "entityKey": "piramal_group",
+    "issuerName": "PIRAMAL CAPITAL & HOUSING FINANCE LIMITED",
+    "parentGroup": "Piramal Group",
+    "rating": "CRISIL AA / CARE AA (Stable)",
+    "ratingAgency": "CRISIL / CARE",
+    "quantitativeCoverage": {
+      "dscr": 1.28,
+      "iscr": 1.95,
+      "fccr": 1.6,
+      "ocfToDebtPercent": 11.4,
+      "cfoCr": 3100,
+      "cashEquivalentsCr": 6500,
+      "gearingRatio": 2.2,
+      "securityCoverRatio": 1.25,
+      "operatingEbitdaMarginPercent": 29
+    },
+    "fiveCsAssessment": {
+      "compositeScore": 72,
+      "creditGrade": "UPPER_MEDIUM",
+      "character": {
+        "score": 75,
+        "summary": "Ajay Piramal led group; successfully resolved and integrated DHFL NCLT portfolio into retail mortgage franchise.",
+        "governanceRating": "Institutional / Turnaround",
+        "auditorQuality": "Deloitte Haskins & Sells LLP",
+        "creditorTrackRecord": "Clean institutional record honoring all post-acquisition debt commitments."
+      },
+      "capacity": {
+        "score": 68,
+        "summary": "Adequate ISCR of 1.95x and DSCR of 1.28x with expanding retail book offset by wholesale resolution runoff.",
+        "cashFlowPredictability": "Moderate / Improving with 70% retail transition",
+        "debtServicingRunway": "12-15 Months liquidity runway"
+      },
+      "collateral": {
+        "score": 74,
+        "summary": "1.25x asset cover backed by residential mortgage loans and real estate project collateral.",
+        "collateralType": "Housing finance loans and commercial real estate mortgages",
+        "chargeExclusivity": "First ranking charge",
+        "escrowMechanism": "Beacon Trusteeship managed waterfall"
+      },
+      "capital": {
+        "score": 82,
+        "summary": "Very strong net worth of Rs 26,000+ Cr providing massive equity cushion with low gearing of 2.2x.",
+        "netWorthCr": 26400,
+        "crarPercent": 25.8,
+        "leverageBuffer": "Extremely low gearing and massive net worth"
+      },
+      "conditions": {
+        "score": 62,
+        "summary": "Legacy developer loan book undergoing resolution; retail housing demand strong.",
+        "macroSensitivity": "Moderate real estate cycle sensitivity",
+        "regulatoryTailwindHeadwind": "Favorable affordable housing incentives",
+        "sectorOutlook": "Improving with retail scale"
+      }
+    }
+  }
+}

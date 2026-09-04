@@ -1,3 +1,5 @@
+import { openCreditFiveCsModal } from '../creditFiveCsModal';
+import { getPortfolioConsolidatedFiveCs } from '../data/creditCoverageIntelligence';
 import { DefaultBond } from '../defaultInventory';
 import { PortfolioHolding, PortfolioRiskAssessment, ExitRecommendation, AddRecommendation, MaturityReinvestmentItem } from './types';
 import { parsePortfolioInput, SAMPLE_PORTFOLIO_RAW } from './portfolioParser';
@@ -26,6 +28,10 @@ let currentMaturities: MaturityReinvestmentItem[] = [];
 let currentChartMode: ChartViewMode = 'promoter';
 
 // Global hooks for inline row buttons
+(window as unknown as { openCreditFiveCsByIsin: (isin: string) => void }).openCreditFiveCsByIsin = (isin: string) => {
+  openCreditFiveCsModal(isin);
+};
+
 (window as unknown as { openRatingEvidenceByIsin: (isin: string) => void }).openRatingEvidenceByIsin = (isin: string) => {
   const holding = currentHoldings.find(h => h.isin === isin);
   if (holding) openRatingEvidenceModal(holding);
@@ -212,6 +218,10 @@ function renderAnalysisResults() {
   const drilldownFilter = getActiveDrilldownFilter();
   const consolidatedSwot = getPortfolioConsolidatedSwot(currentHoldings);
 
+    const consolidatedFiveCs = getPortfolioConsolidatedFiveCs(currentHoldings);
+    const scoreColor = consolidatedFiveCs.compositeScore >= 80 ? '#10b981' : consolidatedFiveCs.compositeScore >= 65 ? '#38bdf8' : '#fbbf24';
+
+
   container.innerHTML = `
     <!-- Top Scorecard KPI Grid -->
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
@@ -395,6 +405,85 @@ function renderAnalysisResults() {
         </div>
       </div>
     </div>
+
+    
+    <!-- Portfolio Weighted 5 Cs Institutional Credit Health & Coverage Card -->
+    <div class="table-card" style="padding: 1.5rem; background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%); border: 1px solid rgba(56, 189, 248, 0.3);">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.75rem;">
+        <div>
+          <h3 style="margin: 0; font-size: 1.15rem; color: #38bdf8; display: flex; align-items: center; gap: 0.5rem; font-weight: 700;">
+            🏛️ Portfolio-Weighted 5 Cs Credit Radar & Debt Coverage
+          </h3>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0.25rem 0 0 0;">
+            Institutional banking framework: Character, Capacity, Collateral, Capital, Conditions & Quantitative Coverage Ratios
+          </p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+          <div style="background: rgba(0,0,0,0.4); border: 1px solid ${scoreColor}50; border-radius: 8px; padding: 0.4rem 0.8rem; text-align: right;">
+            <div style="font-size: 0.68rem; color: var(--text-secondary);">5C Institutional Score</div>
+            <div style="font-size: 1.2rem; font-weight: 800; color: ${scoreColor};">${consolidatedFiveCs.compositeScore}/100 <span style="font-size: 0.75rem; font-weight: 700; color: #fff;">(${consolidatedFiveCs.creditGrade})</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quantitative Coverage KPIs -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.85rem; margin-bottom: 1.25rem;">
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.75rem;">
+          <div style="font-size: 0.72rem; color: var(--text-secondary);">Weighted DSCR</div>
+          <div style="font-size: 1.15rem; font-weight: 800; color: ${consolidatedFiveCs.weightedDscr >= 1.3 ? '#34d399' : '#fbbf24'}; margin-top: 2px;">${consolidatedFiveCs.weightedDscr.toFixed(2)}x</div>
+          <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">Debt service coverage</div>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.75rem;">
+          <div style="font-size: 0.72rem; color: var(--text-secondary);">Weighted ISCR</div>
+          <div style="font-size: 1.15rem; font-weight: 800; color: ${consolidatedFiveCs.weightedIscr >= 2.0 ? '#34d399' : '#fbbf24'}; margin-top: 2px;">${consolidatedFiveCs.weightedIscr.toFixed(2)}x</div>
+          <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">Interest coverage</div>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.75rem;">
+          <div style="font-size: 0.72rem; color: var(--text-secondary);">Fixed Charge Cover (FCCR)</div>
+          <div style="font-size: 1.15rem; font-weight: 800; color: #60a5fa; margin-top: 2px;">${consolidatedFiveCs.weightedFccr.toFixed(2)}x</div>
+          <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">Fixed obligations cover</div>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.75rem;">
+          <div style="font-size: 0.72rem; color: var(--text-secondary);">OCF-to-Debt</div>
+          <div style="font-size: 1.15rem; font-weight: 800; color: ${consolidatedFiveCs.weightedOcfToDebtPercent >= 15 ? '#34d399' : '#fbbf24'}; margin-top: 2px;">${consolidatedFiveCs.weightedOcfToDebtPercent.toFixed(1)}%</div>
+          <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">Operating cash to debt</div>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.75rem;">
+          <div style="font-size: 0.72rem; color: var(--text-secondary);">Security Cover Ratio</div>
+          <div style="font-size: 1.15rem; font-weight: 800; color: #a78bfa; margin-top: 2px;">${consolidatedFiveCs.weightedSecurityCover.toFixed(2)}x</div>
+          <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">Asset backing cushion</div>
+        </div>
+      </div>
+
+      <!-- 5 Cs 5-Pillar Score Cards -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem;">
+        <div style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 8px; padding: 0.75rem;">
+          <div style="font-size: 0.75rem; font-weight: 700; color: #60a5fa; margin-bottom: 0.25rem;">🏛️ Character (${consolidatedFiveCs.pillarAverages.character.toFixed(1)}/20)</div>
+          <div style="font-size: 0.72rem; color: #cbd5e1; line-height: 1.35;">Management integrity, track record, promoter governance & compliance history.</div>
+        </div>
+        <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 8px; padding: 0.75rem;">
+          <div style="font-size: 0.75rem; font-weight: 700; color: #34d399; margin-bottom: 0.25rem;">⚙️ Capacity (${consolidatedFiveCs.pillarAverages.capacity.toFixed(1)}/20)</div>
+          <div style="font-size: 0.72rem; color: #cbd5e1; line-height: 1.35;">Operating cash generation, DSCR, ISCR & recurring revenue buffers.</div>
+        </div>
+        <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 8px; padding: 0.75rem;">
+          <div style="font-size: 0.75rem; font-weight: 700; color: #fbbf24; margin-bottom: 0.25rem;">🛡️ Collateral (${consolidatedFiveCs.pillarAverages.collateral.toFixed(1)}/20)</div>
+          <div style="font-size: 0.72rem; color: #cbd5e1; line-height: 1.35;">First exclusive charge, asset cover ratio, DSRA & escrow waterfalls.</div>
+        </div>
+        <div style="background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.25); border-radius: 8px; padding: 0.75rem;">
+          <div style="font-size: 0.75rem; font-weight: 700; color: #c084fc; margin-bottom: 0.25rem;">💰 Capital (${consolidatedFiveCs.pillarAverages.capital.toFixed(1)}/20)</div>
+          <div style="font-size: 0.72rem; color: #cbd5e1; line-height: 1.35;">CRAR equity cushion, net worth buffer, gearing & leverage tolerance.</div>
+        </div>
+        <div style="background: rgba(236, 72, 153, 0.08); border: 1px solid rgba(236, 72, 153, 0.25); border-radius: 8px; padding: 0.75rem;">
+          <div style="font-size: 0.75rem; font-weight: 700; color: #f472b6; margin-bottom: 0.25rem;">🌐 Conditions (${consolidatedFiveCs.pillarAverages.conditions.toFixed(1)}/20)</div>
+          <div style="font-size: 0.72rem; color: #cbd5e1; line-height: 1.35;">Macro interest rate cycle, sectoral liquidity & regulatory tailwinds.</div>
+        </div>
+      </div>
+    </div>
+
 
     <!-- Section 1: Bonds to Exit (Sell / Reallocate) -->
     <div class="table-card" style="border-top: 3px solid #ef4444;">
@@ -766,6 +855,10 @@ function renderAnalysisResults() {
                   <td>
                     <div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
                       <span style="font-size: 0.8rem; font-weight: 700;">${h.rating}</span>
+                      
+                      <button onclick="window.openCreditFiveCsByIsin('${h.isin}')" class="btn" style="background: rgba(56,189,248,0.15); color: #38bdf8; border: 1px solid rgba(56,189,248,0.35); padding: 2px 7px; font-size: 0.72rem; font-weight: 700; border-radius: 4px;" title="View 5 Cs Credit Scorecard & Coverage Ratios">
+                        🏛️ 5 Cs
+                      </button>
                       <button onclick="window.openBondInsightByIsin('${h.isin}')" class="btn" style="background: rgba(56,189,248,0.2); color: #38bdf8; border: 1px solid rgba(56,189,248,0.4); padding: 2px 7px; font-size: 0.72rem; font-weight: 700; border-radius: 4px;" title="Inspect bond intelligence & personalized rebalance swaps">
                         🔍 Insights
                       </button>

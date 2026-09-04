@@ -1,3 +1,5 @@
+import { openCreditFiveCsModal } from './creditFiveCsModal';
+import { getCreditCoverageRecord } from './data/creditCoverageIntelligence';
 import { DefaultBond } from './defaultInventory';
 import { setCompanyOverride } from './overridesManager';
 import { getCompanyInsights } from './companyReference';
@@ -179,6 +181,72 @@ export function openBondDetailModal(bond: DefaultBond): void {
     `;
   }
 
+  
+  const creditRecord = getCreditCoverageRecord(bond.isin || bond.issuer);
+  let creditFiveCsCardHtml = '';
+  if (creditRecord) {
+    const cov = creditRecord.quantitativeCoverage;
+    const cs = creditRecord.fiveCs;
+    const scoreColor = creditRecord.compositeCreditScore >= 80 ? '#10b981' : creditRecord.compositeCreditScore >= 65 ? '#38bdf8' : '#fbbf24';
+    
+    creditFiveCsCardHtml = `
+      <div style="grid-column: 1 / -1; margin-top: 1rem; padding: 1rem; background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+          <div style="font-size: 0.85rem; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 0.5rem;">
+            <span>🏛️</span> The 5 Cs of Credit Framework & Coverage Ratios
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 0.85rem; font-weight: 800; color: ${scoreColor}; background: rgba(0,0,0,0.4); padding: 2px 8px; border-radius: 6px; border: 1px solid ${scoreColor}40;">
+              ${creditRecord.compositeCreditScore}/100 (${creditRecord.creditGrade})
+            </span>
+            <button id="detail-open-5cs-btn" style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); padding: 2px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; cursor: pointer;">
+              Full Scorecard ↗
+            </button>
+          </div>
+        </div>
+
+        <!-- Quantitative Coverage Ratios KPI Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.5rem; margin-bottom: 0.85rem;">
+          <div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 0.4rem 0.6rem;">
+            <div style="font-size: 0.68rem; color: var(--text-secondary);">DSCR (Debt Service)</div>
+            <div style="font-size: 0.9rem; font-weight: 700; color: ${cov.dscr >= 1.3 ? '#34d399' : '#fbbf24'};">${cov.dscr.toFixed(2)}x</div>
+          </div>
+          <div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 0.4rem 0.6rem;">
+            <div style="font-size: 0.68rem; color: var(--text-secondary);">ISCR (Interest Cover)</div>
+            <div style="font-size: 0.9rem; font-weight: 700; color: ${cov.iscr >= 2.0 ? '#34d399' : '#fbbf24'};">${cov.iscr.toFixed(2)}x</div>
+          </div>
+          <div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 0.4rem 0.6rem;">
+            <div style="font-size: 0.68rem; color: var(--text-secondary);">OCF / Debt</div>
+            <div style="font-size: 0.9rem; font-weight: 700; color: ${cov.ocfToDebtPercent >= 15 ? '#34d399' : '#fbbf24'};">${cov.ocfToDebtPercent.toFixed(1)}%</div>
+          </div>
+          <div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 0.4rem 0.6rem;">
+            <div style="font-size: 0.68rem; color: var(--text-secondary);">Security Cover</div>
+            <div style="font-size: 0.9rem; font-weight: 700; color: #60a5fa;">${cov.securityCoverRatio.toFixed(2)}x</div>
+          </div>
+        </div>
+
+        <!-- 5 Cs 5-Pillar Score Pills -->
+        <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; font-size: 0.72rem;">
+          <span style="background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.25); color: #93c5fd; padding: 2px 7px; border-radius: 4px;">
+            <strong>Character:</strong> ${cs.character.score}/100
+          </span>
+          <span style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.25); color: #6ee7b7; padding: 2px 7px; border-radius: 4px;">
+            <strong>Capacity:</strong> ${cs.capacity.score}/100
+          </span>
+          <span style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.25); color: #fcd34d; padding: 2px 7px; border-radius: 4px;">
+            <strong>Collateral:</strong> ${cs.collateral.score}/100
+          </span>
+          <span style="background: rgba(139, 92, 246, 0.12); border: 1px solid rgba(139, 92, 246, 0.25); color: #c4b5fd; padding: 2px 7px; border-radius: 4px;">
+            <strong>Capital:</strong> ${cs.capital.score}/100
+          </span>
+          <span style="background: rgba(236, 72, 153, 0.12); border: 1px solid rgba(236, 72, 153, 0.25); color: #f472b6; padding: 2px 7px; border-radius: 4px;">
+            <strong>Conditions:</strong> ${cs.conditions.score}/100
+          </span>
+        </div>
+      </div>
+    `;
+  }
+
   // Build field grid
   const fields = `
     ${section('Identification & Group')}
@@ -211,6 +279,7 @@ export function openBondDetailModal(bond: DefaultBond): void {
     ${redemptionScheduleHtml}
 
     ${swotCardHtml}
+    ${creditFiveCsCardHtml}
 
     ${section('📑 BSE GID & NSDL Terms Breakdown')}
     ${row('Security Cover Ratio', `<span style="color: #4ade80; font-weight: 700;">${gid?.securityCoverRatio || '1.25x (Standard)'}</span>`)}
@@ -276,6 +345,9 @@ export function openBondDetailModal(bond: DefaultBond): void {
       <!-- Action Footer -->
       <div style="padding: 1.2rem 1.6rem; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; gap: 1rem; background: rgba(0,0,0,0.15); border-radius: 0 0 16px 16px;">
         <div style="display: flex; gap: 0.6rem;">
+          <button id="bond-detail-fivecs-scorecard" style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); padding: 0.5rem 0.9rem; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.4rem;">
+            🏛️ 5 Cs Credit Scorecard
+          </button>
           <button id="bond-detail-promoter-profile" style="background: rgba(99, 102, 241, 0.2); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.4); padding: 0.5rem 0.9rem; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.4rem;">
             👤 Promoter Dossier & Personal SWOT
           </button>
@@ -293,6 +365,15 @@ export function openBondDetailModal(bond: DefaultBond): void {
   document.body.appendChild(overlay);
 
   document.getElementById('bond-detail-close')?.addEventListener('click', closeBondDetailModal);
+
+  document.getElementById('detail-open-5cs-btn')?.addEventListener('click', () => {
+    openCreditFiveCsModal(bond.isin || bond.issuer);
+  });
+
+  document.getElementById('bond-detail-fivecs-scorecard')?.addEventListener('click', () => {
+    openCreditFiveCsModal(bond.isin || bond.issuer);
+  });
+
 
   document.getElementById('detail-promoter-dossier-btn')?.addEventListener('click', () => {
     openPromoterProfileModal(entityRes.canonicalEntityName || bond.issuer);

@@ -15,6 +15,7 @@ export interface ScreenerFilterState {
   securedOnly?: boolean;
   governanceRisk?: string;
   swotProfile?: string;
+  fiveCsProfile?: string;
 }
 
 export interface SavedScreen {
@@ -29,6 +30,22 @@ export interface SavedScreen {
 const STORAGE_KEY = 'bond-saved-screens';
 
 export const PRESET_SCREENS: SavedScreen[] = [
+  {
+    id: 'preset-5cs-prime',
+    name: '🏛️ 5 Cs Prime Institutional Grade (Score ≥ 80)',
+    description: 'Bonds with composite 5 Cs credit score >= 80 and strong capital/liquidity ratios',
+    isPreset: true,
+    filters: { fiveCsProfile: 'prime_5c', governanceRisk: 'EXCLUDE_CRITICAL_HIGH' },
+    createdAt: 1700000000000
+  },
+  {
+    id: 'preset-high-coverage',
+    name: '⚡ High Debt Service Coverage (ISCR ≥ 2.5x)',
+    description: 'Bonds with high interest coverage ratio (ISCR >= 2.5x) and comfortable debt servicing capacity',
+    isPreset: true,
+    filters: { fiveCsProfile: 'high_iscr' },
+    createdAt: 1700000000000
+  },
   {
     id: 'preset-swot-high-capital',
     name: '💪 Strong Capital Buffer (CRAR ≥ 20%)',
