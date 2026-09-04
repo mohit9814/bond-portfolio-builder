@@ -1,4 +1,5 @@
 import { getCreditCoverageRecord, IssuerCreditProfile } from './data/creditCoverageIntelligence';
+import { getVerifiedCitationsForEntity } from './data/citationResolver';
 
 /**
  * Renders an institutional-grade 5 Cs Credit Analysis & Quantitative Coverage Modal
@@ -16,244 +17,299 @@ export function openCreditFiveCsModal(isinOrIssuer: string): void {
 
   const q = profile.quantitativeCoverage;
   const f = profile.fiveCsAssessment;
-
   const scoreColor = f.compositeScore >= 85 ? '#10b981' : f.compositeScore >= 70 ? '#38bdf8' : f.compositeScore >= 55 ? '#fbbf24' : '#f87171';
+
+  const citations = getVerifiedCitationsForEntity(
+    profile.issuerName,
+    profile.parentGroup,
+    undefined,
+    profile.ratingAgency
+  );
 
   const container = document.createElement('div');
   container.id = 'credit-five-cs-modal-container';
-  container.className = 'fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto animate-fadeIn';
+  container.style.cssText = `
+    position: fixed; inset: 0; z-index: 99999;
+    background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.5rem; box-sizing: border-box;
+    animation: fadeIn 0.15s ease;
+  `;
 
   container.innerHTML = `
-    <div class="relative w-full max-w-4xl bg-[#1e222d] border border-[#2a2e39] rounded-2xl shadow-2xl overflow-hidden text-gray-200 my-8">
+    <div style="
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      width: min(880px, 94vw);
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+      color: #f8fafc;
+      font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+      display: flex;
+      flex-direction: column;
+    ">
       
       <!-- Header -->
-      <div class="flex items-center justify-between p-6 border-b border-[#2a2e39] bg-[#181a20]">
-        <div class="flex items-center gap-4">
-          <div class="w-14 h-14 rounded-2xl flex flex-col items-center justify-center font-extrabold text-lg border" style="background: ${scoreColor}15; border-color: ${scoreColor}40; color: ${scoreColor};">
-            <span class="text-xl leading-none">${f.compositeScore}</span>
-            <span class="text-[9px] uppercase font-bold tracking-wider mt-0.5">/ 100</span>
+      <div style="
+        display: flex; justify-content: space-between; align-items: flex-start;
+        padding: 1.4rem 1.75rem 1.1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(15, 23, 42, 0.95);
+        position: sticky; top: 0; z-index: 10;
+        border-radius: 16px 16px 0 0;
+      ">
+        <div style="display: flex; align-items: center; gap: 1rem; flex: 1; min-width: 0;">
+          <div style="
+            width: 56px; height: 56px; border-radius: 14px;
+            display: flex; flex-direction: column; items: center; justify-content: center; text-align: center;
+            background: ${scoreColor}18; border: 1px solid ${scoreColor}40; color: ${scoreColor}; flex-shrink: 0;
+          ">
+            <span style="font-size: 1.35rem; font-weight: 800; line-height: 1;">${f.compositeScore}</span>
+            <span style="font-size: 0.6rem; text-transform: uppercase; font-weight: 700; margin-top: 2px;">/ 100</span>
           </div>
-          <div>
-            <div class="flex items-center gap-2.5">
-              <h2 class="text-xl font-bold text-white tracking-wide">${profile.issuerName}</h2>
-              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider" style="background: ${scoreColor}20; color: ${scoreColor}; border: 1px solid ${scoreColor}40;">
+          <div style="flex: 1; min-width: 0;">
+            <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+              <h2 style="margin: 0; font-size: 1.3rem; font-weight: 800; color: #fff; line-height: 1.3;">${profile.issuerName}</h2>
+              <span style="
+                background: ${scoreColor}20; color: ${scoreColor}; border: 1px solid ${scoreColor}40;
+                font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 6px;
+                text-transform: uppercase; letter-spacing: 0.05em;
+              ">
                 ${f.creditGrade.replace(/_/g, ' ')}
               </span>
             </div>
-            <p class="text-xs text-gray-400 mt-1">
-              Group: <strong class="text-gray-200">${profile.parentGroup}</strong> • Rating: <strong class="text-amber-300">${profile.rating}</strong> (${profile.ratingAgency})
-            </p>
+            <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.25rem;">
+              Group: <strong style="color: #e2e8f0;">${profile.parentGroup}</strong> • Rating: <strong style="color: #fbbf24;">${profile.rating}</strong> (${profile.ratingAgency})
+            </div>
           </div>
         </div>
-        <button id="close-five-cs-modal-btn" class="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-[#2a2e39] transition-colors">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-        </button>
+        <button id="close-five-cs-modal-btn" style="
+          background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 8px; color: #cbd5e1; cursor: pointer;
+          font-size: 1.2rem; line-height: 1; padding: 0.4rem 0.65rem; margin-left: 0.75rem;
+          transition: background 0.15s;
+        " title="Close">✕</button>
       </div>
 
       <!-- Body -->
-      <div class="p-6 max-h-[75vh] overflow-y-auto space-y-6">
+      <div style="padding: 1.5rem 1.75rem; display: flex; flex-direction: column; gap: 1.5rem;">
         
         <!-- Quantitative Cash Flow & Coverage Ratios KPI Grid -->
         <div>
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="text-sm font-bold text-white flex items-center gap-2">
-              <span class="text-emerald-400">📊</span> Quantitative Cash Flow & Debt Coverage Metrics
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+            <h3 style="margin: 0; font-size: 0.95rem; font-weight: 700; color: #34d399; display: flex; align-items: center; gap: 0.4rem;">
+              <span>📊</span> Quantitative Cash Flow & Debt Coverage Metrics
             </h3>
-            <span class="text-xs text-gray-400">Institutional Banking Quality Standards</span>
+            <span style="font-size: 0.72rem; color: #94a3b8;">Institutional Banking Quality Standards</span>
           </div>
 
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem;">
             
-            <div class="p-3.5 rounded-xl bg-[#14161c] border border-[#2a2e39]">
-              <div class="text-[11px] text-gray-400 uppercase tracking-wider font-semibold">Interest Coverage (ISCR)</div>
-              <div class="text-xl font-extrabold mt-1 ${q.iscr >= 2.5 ? 'text-emerald-400' : q.iscr >= 1.75 ? 'text-amber-400' : 'text-red-400'}">
+            <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 0.85rem;">
+              <div style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; font-weight: 700;">Interest Coverage (ISCR)</div>
+              <div style="font-size: 1.25rem; font-weight: 800; color: ${q.iscr >= 2.5 ? '#34d399' : q.iscr >= 1.75 ? '#fbbf24' : '#f87171'}; margin-top: 0.2rem;">
                 ${q.iscr.toFixed(2)}x
               </div>
-              <div class="text-[10px] text-gray-400 mt-0.5">Benchmark: &gt; 2.0x (EBITDA / Interest)</div>
+              <div style="font-size: 0.68rem; color: #64748b; margin-top: 0.2rem;">EBITDA / Interest (Min: &gt; 2.0x)</div>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-[#14161c] border border-[#2a2e39]">
-              <div class="text-[11px] text-gray-400 uppercase tracking-wider font-semibold">Debt Service (DSCR)</div>
-              <div class="text-xl font-extrabold mt-1 ${q.dscr >= 1.4 ? 'text-emerald-400' : q.dscr >= 1.2 ? 'text-amber-400' : 'text-red-400'}">
+            <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 0.85rem;">
+              <div style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; font-weight: 700;">Debt Service (DSCR)</div>
+              <div style="font-size: 1.25rem; font-weight: 800; color: ${q.dscr >= 1.4 ? '#34d399' : q.dscr >= 1.2 ? '#fbbf24' : '#f87171'}; margin-top: 0.2rem;">
                 ${q.dscr.toFixed(2)}x
               </div>
-              <div class="text-[10px] text-gray-400 mt-0.5">Benchmark: &gt; 1.25x (Cash / Debt Service)</div>
+              <div style="font-size: 0.68rem; color: #64748b; margin-top: 0.2rem;">Cash Flow / Total Debt Service</div>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-[#14161c] border border-[#2a2e39]">
-              <div class="text-[11px] text-gray-400 uppercase tracking-wider font-semibold">Fixed Charge (FCCR)</div>
-              <div class="text-xl font-extrabold mt-1 ${q.fccr >= 1.8 ? 'text-emerald-400' : 'text-amber-400'}">
+            <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 0.85rem;">
+              <div style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; font-weight: 700;">Fixed Charge (FCCR)</div>
+              <div style="font-size: 1.25rem; font-weight: 800; color: ${q.fccr >= 1.8 ? '#34d399' : '#fbbf24'}; margin-top: 0.2rem;">
                 ${q.fccr.toFixed(2)}x
               </div>
-              <div class="text-[10px] text-gray-400 mt-0.5">Total Fixed Obligations Cushion</div>
+              <div style="font-size: 0.68rem; color: #64748b; margin-top: 0.2rem;">Total Fixed Obligations Cover</div>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-[#14161c] border border-[#2a2e39]">
-              <div class="text-[11px] text-gray-400 uppercase tracking-wider font-semibold">Security Cover Ratio</div>
-              <div class="text-xl font-extrabold mt-1 text-emerald-400">
+            <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 0.85rem;">
+              <div style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; font-weight: 700;">Security Cover Ratio</div>
+              <div style="font-size: 1.25rem; font-weight: 800; color: #38bdf8; margin-top: 0.2rem;">
                 ${q.securityCoverRatio.toFixed(2)}x
               </div>
-              <div class="text-[10px] text-gray-400 mt-0.5">Collateral Asset Cover Backing</div>
+              <div style="font-size: 0.68rem; color: #64748b; margin-top: 0.2rem;">Collateral Asset Cover Backing</div>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-[#14161c] border border-[#2a2e39]">
-              <div class="text-[11px] text-gray-400 uppercase tracking-wider font-semibold">OCF-to-Total Debt</div>
-              <div class="text-lg font-bold mt-1 text-cyan-400">
+            <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 0.85rem;">
+              <div style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; font-weight: 700;">OCF-to-Total Debt</div>
+              <div style="font-size: 1.25rem; font-weight: 800; color: #34d399; margin-top: 0.2rem;">
                 ${q.ocfToDebtPercent.toFixed(1)}%
               </div>
-              <div class="text-[10px] text-gray-400 mt-0.5">Operational Cash Generation</div>
+              <div style="font-size: 0.68rem; color: #64748b; margin-top: 0.2rem;">Operating Cash Flow %</div>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-[#14161c] border border-[#2a2e39]">
-              <div class="text-[11px] text-gray-400 uppercase tracking-wider font-semibold">Cash Flow from Ops (CFO)</div>
-              <div class="text-lg font-bold mt-1 text-white">
+            <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 0.85rem;">
+              <div style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; font-weight: 700;">Operating CFO</div>
+              <div style="font-size: 1.25rem; font-weight: 800; color: #fff; margin-top: 0.2rem;">
                 ₹${q.cfoCr.toLocaleString('en-IN')} Cr
               </div>
-              <div class="text-[10px] text-gray-400 mt-0.5">Annual Operating Inflows</div>
+              <div style="font-size: 0.68rem; color: #64748b; margin-top: 0.2rem;">Annual Operating Cash Inflows</div>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-[#14161c] border border-[#2a2e39]">
-              <div class="text-[11px] text-gray-400 uppercase tracking-wider font-semibold">Liquid Cash / Bank Lines</div>
-              <div class="text-lg font-bold mt-1 text-indigo-400">
+            <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 0.85rem;">
+              <div style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; font-weight: 700;">Liquid Cash / Lines</div>
+              <div style="font-size: 1.25rem; font-weight: 800; color: #a5b4fc; margin-top: 0.2rem;">
                 ₹${q.cashEquivalentsCr.toLocaleString('en-IN')} Cr
               </div>
-              <div class="text-[10px] text-gray-400 mt-0.5">Unencumbered Liquidity</div>
+              <div style="font-size: 0.68rem; color: #64748b; margin-top: 0.2rem;">Unencumbered Liquidity Buffer</div>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-[#14161c] border border-[#2a2e39]">
-              <div class="text-[11px] text-gray-400 uppercase tracking-wider font-semibold">Debt-to-Equity Gearing</div>
-              <div class="text-lg font-bold mt-1 ${q.gearingRatio <= 3.5 ? 'text-emerald-400' : 'text-amber-400'}">
+            <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 0.85rem;">
+              <div style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; font-weight: 700;">Gearing Multiple</div>
+              <div style="font-size: 1.25rem; font-weight: 800; color: ${q.gearingRatio <= 3.5 ? '#34d399' : '#fbbf24'}; margin-top: 0.2rem;">
                 ${q.gearingRatio.toFixed(1)}x
               </div>
-              <div class="text-[10px] text-gray-400 mt-0.5">Leverage Multiple</div>
+              <div style="font-size: 0.68rem; color: #64748b; margin-top: 0.2rem;">Debt / Net Worth Ratio</div>
             </div>
 
           </div>
         </div>
 
         <!-- The 5 Cs of Credit Framework Scorecard -->
-        <div class="space-y-4">
-          <div class="flex items-center justify-between border-b border-[#2a2e39] pb-2">
-            <h3 class="text-sm font-bold text-white flex items-center gap-2">
-              <span class="text-amber-400">🏛️</span> The 5 Cs of Credit Institutional Framework
+        <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+            <h3 style="margin: 0; font-size: 0.95rem; font-weight: 700; color: #fbbf24; display: flex; align-items: center; gap: 0.4rem;">
+              <span>🏛️</span> The 5 Cs of Credit Institutional Framework
             </h3>
-            <span class="text-xs text-gray-400">Banking Assessment of Willingness & Ability to Repay</span>
+            <span style="font-size: 0.72rem; color: #94a3b8;">Banking Assessment of Willingness & Ability to Repay</span>
           </div>
 
-          <div class="space-y-3">
-            
-            <!-- 1. Character -->
-            <div class="p-4 rounded-xl bg-[#14161c] border border-[#2a2e39]">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                  <span class="text-base">👤</span>
-                  <span class="text-xs font-bold text-white uppercase tracking-wider">1. Character (Governance, Integrity & Track Record)</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="text-xs text-gray-400">Score:</span>
-                  <span class="text-xs font-bold px-2 py-0.5 rounded bg-blue-900/30 text-blue-300 border border-blue-800/50">${f.character.score}/100</span>
-                </div>
+          <!-- 1. Character -->
+          <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 1.1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <div style="font-size: 0.82rem; font-weight: 700; color: #60a5fa; text-transform: uppercase; display: flex; align-items: center; gap: 0.4rem;">
+                <span>👤</span> 1. Character (Governance, Integrity & Track Record)
               </div>
-              <p class="text-xs text-gray-300 mt-2 leading-relaxed">${f.character.summary}</p>
-              <div class="mt-2.5 pt-2.5 border-t border-[#2a2e39]/60 flex flex-wrap gap-4 text-[11px] text-gray-400">
-                <span><strong>Auditor:</strong> <span class="text-gray-300">${f.character.auditorQuality}</span></span>
-                <span><strong>Creditor Record:</strong> <span class="text-gray-300">${f.character.creditorTrackRecord}</span></span>
-              </div>
+              <span style="font-size: 0.75rem; font-weight: 800; background: rgba(59, 130, 246, 0.15); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.3); padding: 2px 8px; border-radius: 5px;">
+                ${f.character.score}/100
+              </span>
             </div>
-
-            <!-- 2. Capacity -->
-            <div class="p-4 rounded-xl bg-[#14161c] border border-[#2a2e39]">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                  <span class="text-base">⚡</span>
-                  <span class="text-xs font-bold text-white uppercase tracking-wider">2. Capacity (Cash Flow Generation & Debt Servicing)</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="text-xs text-gray-400">Score:</span>
-                  <span class="text-xs font-bold px-2 py-0.5 rounded bg-emerald-900/30 text-emerald-300 border border-emerald-800/50">${f.capacity.score}/100</span>
-                </div>
-              </div>
-              <p class="text-xs text-gray-300 mt-2 leading-relaxed">${f.capacity.summary}</p>
-              <div class="mt-2.5 pt-2.5 border-t border-[#2a2e39]/60 flex flex-wrap gap-4 text-[11px] text-gray-400">
-                <span><strong>Predictability:</strong> <span class="text-gray-300">${f.capacity.cashFlowPredictability}</span></span>
-                <span><strong>Liquidity Runway:</strong> <span class="text-gray-300">${f.capacity.debtServicingRunway}</span></span>
-              </div>
+            <p style="margin: 0; font-size: 0.84rem; color: #cbd5e1; line-height: 1.5;">${f.character.summary}</p>
+            <div style="margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid rgba(255, 255, 255, 0.06); display: flex; flex-wrap: wrap; gap: 0.85rem; font-size: 0.75rem; color: #94a3b8;">
+              <span><strong>Auditor:</strong> <span style="color: #e2e8f0;">${f.character.auditorQuality}</span></span>
+              <span><strong>Creditor Record:</strong> <span style="color: #e2e8f0;">${f.character.creditorTrackRecord}</span></span>
             </div>
+          </div>
 
-            <!-- 3. Collateral -->
-            <div class="p-4 rounded-xl bg-[#14161c] border border-[#2a2e39]">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                  <span class="text-base">🛡️</span>
-                  <span class="text-xs font-bold text-white uppercase tracking-wider">3. Collateral (Asset Protection & Security Cover)</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="text-xs text-gray-400">Score:</span>
-                  <span class="text-xs font-bold px-2 py-0.5 rounded bg-indigo-900/30 text-indigo-300 border border-indigo-800/50">${f.collateral.score}/100</span>
-                </div>
+          <!-- 2. Capacity -->
+          <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 1.1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <div style="font-size: 0.82rem; font-weight: 700; color: #34d399; text-transform: uppercase; display: flex; align-items: center; gap: 0.4rem;">
+                <span>⚡</span> 2. Capacity (Cash Flow Generation & Debt Servicing)
               </div>
-              <p class="text-xs text-gray-300 mt-2 leading-relaxed">${f.collateral.summary}</p>
-              <div class="mt-2.5 pt-2.5 border-t border-[#2a2e39]/60 flex flex-wrap gap-4 text-[11px] text-gray-400">
-                <span><strong>Collateral Type:</strong> <span class="text-gray-300">${f.collateral.collateralType}</span></span>
-                <span><strong>Charge:</strong> <span class="text-gray-300">${f.collateral.chargeExclusivity}</span></span>
-                <span><strong>Escrow:</strong> <span class="text-gray-300">${f.collateral.escrowMechanism}</span></span>
-              </div>
+              <span style="font-size: 0.75rem; font-weight: 800; background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.3); padding: 2px 8px; border-radius: 5px;">
+                ${f.capacity.score}/100
+              </span>
             </div>
-
-            <!-- 4. Capital -->
-            <div class="p-4 rounded-xl bg-[#14161c] border border-[#2a2e39]">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                  <span class="text-base">💰</span>
-                  <span class="text-xs font-bold text-white uppercase tracking-wider">4. Capital (Equity Cushion & Leverage Structure)</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="text-xs text-gray-400">Score:</span>
-                  <span class="text-xs font-bold px-2 py-0.5 rounded bg-amber-900/30 text-amber-300 border border-amber-800/50">${f.capital.score}/100</span>
-                </div>
-              </div>
-              <p class="text-xs text-gray-300 mt-2 leading-relaxed">${f.capital.summary}</p>
-              <div class="mt-2.5 pt-2.5 border-t border-[#2a2e39]/60 flex flex-wrap gap-4 text-[11px] text-gray-400">
-                <span><strong>Net Worth:</strong> <span class="text-gray-300">₹${f.capital.netWorthCr ? f.capital.netWorthCr.toLocaleString('en-IN') : 'N/A'} Cr</span></span>
-                <span><strong>CRAR / Capital Adequacy:</strong> <span class="text-emerald-400 font-bold">${f.capital.crarPercent}%</span></span>
-                <span><strong>Leverage Buffer:</strong> <span class="text-gray-300">${f.capital.leverageBuffer}</span></span>
-              </div>
+            <p style="margin: 0; font-size: 0.84rem; color: #cbd5e1; line-height: 1.5;">${f.capacity.summary}</p>
+            <div style="margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid rgba(255, 255, 255, 0.06); display: flex; flex-wrap: wrap; gap: 0.85rem; font-size: 0.75rem; color: #94a3b8;">
+              <span><strong>Predictability:</strong> <span style="color: #e2e8f0;">${f.capacity.cashFlowPredictability}</span></span>
+              <span><strong>Debt Servicing Runway:</strong> <span style="color: #e2e8f0;">${f.capacity.debtServicingRunway}</span></span>
             </div>
+          </div>
 
-            <!-- 5. Conditions -->
-            <div class="p-4 rounded-xl bg-[#14161c] border border-[#2a2e39]">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                  <span class="text-base">🌐</span>
-                  <span class="text-xs font-bold text-white uppercase tracking-wider">5. Conditions (Macro Resilience & Regulatory Environment)</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="text-xs text-gray-400">Score:</span>
-                  <span class="text-xs font-bold px-2 py-0.5 rounded bg-purple-900/30 text-purple-300 border border-purple-800/50">${f.conditions.score}/100</span>
-                </div>
+          <!-- 3. Collateral -->
+          <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 1.1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <div style="font-size: 0.82rem; font-weight: 700; color: #fbbf24; text-transform: uppercase; display: flex; align-items: center; gap: 0.4rem;">
+                <span>🛡️</span> 3. Collateral (Asset Protection & Security Cover)
               </div>
-              <p class="text-xs text-gray-300 mt-2 leading-relaxed">${f.conditions.summary}</p>
-              <div class="mt-2.5 pt-2.5 border-t border-[#2a2e39]/60 flex flex-wrap gap-4 text-[11px] text-gray-400">
-                <span><strong>Macro Sensitivity:</strong> <span class="text-gray-300">${f.conditions.macroSensitivity}</span></span>
-                <span><strong>Regulatory Trend:</strong> <span class="text-gray-300">${f.conditions.regulatoryTailwindHeadwind}</span></span>
-                <span><strong>Sector Outlook:</strong> <span class="text-gray-300">${f.conditions.sectorOutlook}</span></span>
-              </div>
+              <span style="font-size: 0.75rem; font-weight: 800; background: rgba(245, 158, 11, 0.15); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.3); padding: 2px 8px; border-radius: 5px;">
+                ${f.collateral.score}/100
+              </span>
             </div>
+            <p style="margin: 0; font-size: 0.84rem; color: #cbd5e1; line-height: 1.5;">${f.collateral.summary}</p>
+            <div style="margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid rgba(255, 255, 255, 0.06); display: flex; flex-wrap: wrap; gap: 0.85rem; font-size: 0.75rem; color: #94a3b8;">
+              <span><strong>Collateral Type:</strong> <span style="color: #e2e8f0;">${f.collateral.collateralType}</span></span>
+              <span><strong>Charge Exclusivity:</strong> <span style="color: #e2e8f0;">${f.collateral.chargeExclusivity}</span></span>
+              <span><strong>Escrow:</strong> <span style="color: #e2e8f0;">${f.collateral.escrowMechanism}</span></span>
+            </div>
+          </div>
 
+          <!-- 4. Capital -->
+          <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 1.1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <div style="font-size: 0.82rem; font-weight: 700; color: #c084fc; text-transform: uppercase; display: flex; align-items: center; gap: 0.4rem;">
+                <span>💰</span> 4. Capital (Net Worth Cushion & Leverage Buffer)
+              </div>
+              <span style="font-size: 0.75rem; font-weight: 800; background: rgba(139, 92, 246, 0.15); color: #c4b5fd; border: 1px solid rgba(139, 92, 246, 0.3); padding: 2px 8px; border-radius: 5px;">
+                ${f.capital.score}/100
+              </span>
+            </div>
+            <p style="margin: 0; font-size: 0.84rem; color: #cbd5e1; line-height: 1.5;">${f.capital.summary}</p>
+            <div style="margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid rgba(255, 255, 255, 0.06); display: flex; flex-wrap: wrap; gap: 0.85rem; font-size: 0.75rem; color: #94a3b8;">
+              <span><strong>Net Worth:</strong> <span style="color: #e2e8f0;">₹${f.capital.netWorthCr ? f.capital.netWorthCr.toLocaleString('en-IN') : 'N/A'} Cr</span></span>
+              <span><strong>CRAR / Capital Adequacy:</strong> <span style="color: #e2e8f0;">${f.capital.crarPercent}%</span></span>
+            </div>
+          </div>
+
+          <!-- 5. Conditions -->
+          <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 1.1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <div style="font-size: 0.82rem; font-weight: 700; color: #f472b6; text-transform: uppercase; display: flex; align-items: center; gap: 0.4rem;">
+                <span>🌐</span> 5. Conditions (Macro Cycles & Regulatory Tailwinds)
+              </div>
+              <span style="font-size: 0.75rem; font-weight: 800; background: rgba(236, 72, 153, 0.15); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.3); padding: 2px 8px; border-radius: 5px;">
+                ${f.conditions.score}/100
+              </span>
+            </div>
+            <p style="margin: 0; font-size: 0.84rem; color: #cbd5e1; line-height: 1.5;">${f.conditions.summary}</p>
+            <div style="margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid rgba(255, 255, 255, 0.06); display: flex; flex-wrap: wrap; gap: 0.85rem; font-size: 0.75rem; color: #94a3b8;">
+              <span><strong>Macro Sensitivity:</strong> <span style="color: #e2e8f0;">${f.conditions.macroSensitivity}</span></span>
+              <span><strong>Regulatory Climate:</strong> <span style="color: #e2e8f0;">${f.conditions.regulatoryTailwindHeadwind}</span></span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Verified Online Citations & Source Links -->
+        <div style="background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 1.1rem;">
+          <div style="font-size: 0.85rem; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.4rem;">
+            <span>🔗</span> Verified Source Citations & Online Rating Reports (Opens in New Window)
+          </div>
+          <p style="font-size: 0.78rem; color: #94a3b8; margin: 0 0 0.75rem 0;">
+            Direct verified deep links to live credit rating reports, BSE debt filings, NSDL directory, and regulatory databases:
+          </p>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.6rem;">
+            ${citations.map(c => `
+              <a href="${c.url}" target="_blank" rel="noopener noreferrer" style="
+                display: flex; justify-content: space-between; align-items: center;
+                padding: 0.6rem 0.85rem; background: rgba(30, 41, 59, 0.7);
+                border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px;
+                text-decoration: none; color: #38bdf8; font-size: 0.78rem; font-weight: 600;
+                cursor: pointer; transition: all 0.15s ease;
+              ">
+                <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 0.4rem;">↗ ${c.title}</span>
+                <span style="font-size: 0.65rem; background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px; color: #94a3b8; font-family: monospace;">${c.type}</span>
+              </a>
+            `).join('')}
           </div>
         </div>
 
       </div>
 
       <!-- Footer -->
-      <div class="flex items-center justify-between p-4 px-6 border-t border-[#2a2e39] bg-[#181a20]">
-        <div class="text-xs text-gray-400">
-          Framework: <span class="text-gray-300 font-medium">Standard & Poor's / Basel Institutional Credit Model</span>
-        </div>
-        <button id="five-cs-modal-close-footer" class="px-4 py-2 rounded-lg bg-[#2a2e39] hover:bg-[#343a48] text-sm font-semibold text-white transition-colors">
-          Close Credit Memo
+      <div style="
+        display: flex; justify-content: flex-end; align-items: center;
+        padding: 1rem 1.75rem; border-top: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(15, 23, 42, 0.95); border-radius: 0 0 16px 16px;
+      ">
+        <button id="close-five-cs-modal-bottom-btn" style="
+          background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
+          color: #fff; font-size: 0.82rem; font-weight: 700; padding: 0.5rem 1.25rem;
+          border-radius: 8px; cursor: pointer;
+        ">
+          Close Scorecard
         </button>
       </div>
 
@@ -264,7 +320,8 @@ export function openCreditFiveCsModal(isinOrIssuer: string): void {
 
   const closeFn = () => container.remove();
   document.getElementById('close-five-cs-modal-btn')?.addEventListener('click', closeFn);
-  document.getElementById('five-cs-modal-close-footer')?.addEventListener('click', closeFn);
+  document.getElementById('close-five-cs-modal-bottom-btn')?.addEventListener('click', closeFn);
+
   container.addEventListener('click', (e) => {
     const target = e.target as HTMLElement;
     const link = target.closest('a') as HTMLAnchorElement;
@@ -273,10 +330,8 @@ export function openCreditFiveCsModal(isinOrIssuer: string): void {
       window.open(link.href, '_blank', 'noopener,noreferrer');
       return;
     }
-    if (e.target === container) closeFn();
+    if (e.target === container) {
+      closeFn();
+    }
   });
-}
-
-if (typeof window !== 'undefined') {
-  (window as unknown as { openCreditFiveCsModal: (isin: string) => void }).openCreditFiveCsModal = openCreditFiveCsModal;
 }
