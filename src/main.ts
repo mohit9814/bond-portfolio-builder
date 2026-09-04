@@ -1,6 +1,6 @@
 import { Chart, registerables } from 'chart.js';
 import './style.css';
-import { DEFAULT_INVENTORY, DefaultBond } from './defaultInventory';
+import { DEFAULT_INVENTORY, DefaultBond, LATEST_INVENTORY_METADATA } from './defaultInventory';
 import { generateBondPortfolio, getUnitPrice, PortfolioSummary, getMaturityBuckets } from './bondEngine';
 import { parseExcelInventory } from './excelParser';
 import { getCompanyInsights } from './companyReference';
@@ -14,6 +14,7 @@ import { getEngineHyperparameters } from './engineSettingsManager';
 import { initEngineSettingsModal, openEngineSettingsModal } from './engineSettingsModal';
 import { initPortfolioAnalyzer, setAnalyzerInventory, loadClientIntoAnalyzer } from './analyzer/analyzerView';
 import { initMultiClientDashboard, setMultiClientInventory } from './clients/multiClientDashboardView';
+import { openPromoterAuditModal } from './promoterModal';
 
 Chart.register(...registerables);
 
@@ -33,6 +34,13 @@ let latestSummary: PortfolioSummary | null = null;
 (window as any).openBondDetailByIsin = (isin: string) => {
   const fullBond = activeInventory.find(b => b.isin === isin);
   if (fullBond) openBondDetailModal(fullBond);
+};
+(window as any).openPromoterAuditByIsin = (isin: string) => {
+  const fullBond = activeInventory.find(b => b.isin === isin);
+  if (fullBond) openPromoterAuditModal(fullBond);
+};
+(window as any).openPromoterAuditByIssuer = (issuer: string) => {
+  openPromoterAuditModal(issuer);
 };
 (window as any).openOverridesModal = openOverridesModal;
 (window as any).openEngineSettingsModal = openEngineSettingsModal;
@@ -440,9 +448,15 @@ function renderTable(summary: PortfolioSummary) {
     tr.innerHTML = `
       <td><span style="font-family: monospace; font-size: 0.85rem;">${bond.isin}</span></td>
       <td>
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-          <strong>${bond.issuer}</strong>
-          ${bond.overrideJustification ? `<span title="Force Included: ${bond.overrideJustification.replace(/"/g, '&quot;')}" style="cursor: help; background: rgba(59, 130, 246, 0.2); color: #60a5fa; padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; font-weight: 700;">OVERRIDE</span>` : ''}
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
+          <div>
+            <strong>${bond.issuer}</strong>
+            ${bond.canonicalEntityName && bond.canonicalEntityName !== bond.issuer ? `<div style="font-size: 0.7rem; color: #94a3b8; font-weight: 500;">Group: ${bond.canonicalEntityName}</div>` : ''}
+            ${bond.overrideJustification ? `<span title="Force Included: ${bond.overrideJustification.replace(/"/g, '&quot;')}" style="cursor: help; background: rgba(59, 130, 246, 0.2); color: #60a5fa; padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; font-weight: 700;">OVERRIDE</span>` : ''}
+          </div>
+          <button class="btn" onclick="event.stopPropagation(); window.openPromoterAuditByIsin('${bond.isin}')" title="Click to view Promoter Background & Negative Media Audit" style="padding: 0.15rem 0.45rem; font-size: 0.68rem; background: rgba(212, 175, 55, 0.15); color: var(--accent-gold); border: 1px solid rgba(212, 175, 55, 0.35); border-radius: 4px; font-weight: 700; cursor: pointer; white-space: nowrap;">
+            ⚖️ Audit
+          </button>
         </div>
       </td>
       <td><span style="font-size: 0.82rem; color: var(--accent-gold); font-weight: 500;">${sectorDisplay}</span></td>
@@ -566,10 +580,18 @@ function renderCompanyAllocations(summary: PortfolioSummary) {
 
     div.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: start;">
-        <span style="font-weight: 700; font-size: 0.95rem; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: 180px;">${alloc.company}</span>
-        <span style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">${formatCurrency(alloc.amount)}</span>
+        <div>
+          <div style="font-weight: 700; font-size: 0.95rem; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: 180px;">${alloc.company}</div>
+          ${alloc.canonicalEntityName && alloc.canonicalEntityName !== alloc.company ? `
+            <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 0.1rem;">Group: <strong style="color: #cbd5e1;">${alloc.canonicalEntityName}</strong></div>
+          ` : ''}
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.2rem;">
+          <span style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">${formatCurrency(alloc.amount)}</span>
+          <button class="btn" onclick="window.openPromoterAuditByIssuer('${alloc.company.replace(/'/g, "\\'")}')" style="font-size: 0.65rem; padding: 0.1rem 0.4rem; background: rgba(212,175,55,0.15); color: var(--accent-gold); border: 1px solid rgba(212,175,55,0.3); border-radius: 4px; cursor: pointer;">⚖️ Audit</button>
+        </div>
       </div>
-      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-secondary);">
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">
         <span style="color: var(--accent-gold); font-weight: 500;">${sectorVal}</span>
         ${trendBadge}
       </div>
@@ -1757,6 +1779,10 @@ tabAnalyzer?.addEventListener('click', () => switchActiveTab('analyzer'));
 tabMultiClient?.addEventListener('click', () => switchActiveTab('multi-client'));
 
 document.addEventListener('DOMContentLoaded', () => {
+  if (fileStatus) {
+    fileStatus.innerHTML = `📁 Auto-Loaded: <strong>${LATEST_INVENTORY_METADATA.fileName}</strong> <span style="opacity: 0.85;">(${LATEST_INVENTORY_METADATA.totalBonds} bonds across ${LATEST_INVENTORY_METADATA.totalIssuers} issuers)</span>`;
+    fileStatus.style.color = '#34d399';
+  }
   initScreener();
   setScreenerInventory(activeInventory);
   initPortfolioAnalyzer(activeInventory);

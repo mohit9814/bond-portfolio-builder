@@ -1,0 +1,936 @@
+{
+  "edelweiss_group": {
+    "entityKey": "edelweiss_group",
+    "entityName": "Edelweiss Group",
+    "aliasesAndSubsidiaries": [
+      "EDELWEISS FINANCIAL SERV LTD",
+      "EDELWEISS RURAL AND CORPORATE SERV LTD",
+      "ECAP EQUITIES LTD",
+      "NIDO HOME FIN LTD",
+      "ECL FINANCE LTD",
+      "EDELWEISS ASSET RECONSTRUCTION CO LTD",
+      "EFSL"
+    ],
+    "promotersAndKeyPersons": [
+      "Rashesh Shah (Chairman)",
+      "Venkat Ramaswamy (Vice Chairman)"
+    ],
+    "ownershipStructure": "Publicly listed (EFSL). PAG Asia holds major stake in wealth arm (Nuvama demerged). Significant debt across wholesale NBFC subsidiaries.",
+    "sector": "Financial Services / Diversified NBFC & Wholesale Lending",
+    "broadSector": "Diversified Financials & Asset Mgmt",
+    "governanceScore": 42,
+    "riskSeverity": "CRITICAL",
+    "autoExcludeFromProposals": true,
+    "exclusionReason": "Severe Regulatory Supervisory Action: In May 2024, RBI imposed a supervisory ban on ECL Finance (cease & desist structured transactions/wholesale lending) and Edelweiss ARC (prohibited from acquiring financial assets/SRs) for evergreening stressed loans, circumventing regulations, and governance deficiencies.",
+    "negativeMediaFlags": [
+      "RBI_SUPERVISORY_BAN",
+      "EVERGREENING_LOANS_SCRUTINY",
+      "HIGH_WHOLESALE_DEBT_LEVERAGE",
+      "PAST_CBI_ED_INQUIRIES",
+      "MANAGEMENT_GOVERNANCE_WARNING"
+    ],
+    "detailedCaseHistory": "In May 2024, the Reserve Bank of India (RBI) issued landmark supervisory directions against ECL Finance Ltd and Edelweiss Asset Reconstruction Company Ltd (EARC). RBI found structured financial arrangements designed to evergreen stressed debt facilities and circumvent regulatory provisioning norms. ECL Finance was directed to cease and desist from undertaking structured transactions, while EARC was prohibited from acquiring financial assets. Additionally, group entities faced inquiries in 2023-2024 related to insolvency proceedings (e.g. Nitin Desai studio loan matter) and ED/CBI investigative scrutiny.",
+    "earlierBankruptciesOrDefaults": "No direct technical NCD default, but multiple developer and corporate loans originated by ECL Finance underwent NCLT resolutions with substantial haircuts.",
+    "regulatoryActions": "RBI Supervised Cease & Desist (May 2024) on ECL Finance wholesale transactions and EARC asset acquisitions; regular SEBI inspection observations.",
+    "auditorAndAccountingQuality": "Audited by S.R. Batliboi & Co. and NGS & Co. LLP with emphasis of matter paragraphs regarding wholesale exposure provisions.",
+    "investmentVerdict": "HIGH RISK / STRATEGIC EXIT: Substantial regulatory overhang, constrained wholesale liquidity, and ongoing business restructuring warrant strict exclusion from capital-preservation portfolios.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "sammaan_indiabulls": {
+    "entityKey": "sammaan_indiabulls",
+    "entityName": "Indiabulls / Sammaan Capital Ecosystem",
+    "aliasesAndSubsidiaries": [
+      "SAMMAAN CAP LTD",
+      "SAMMAAN FINSERVE LTD",
+      "INDIABULLS HOUSING FINANCE LTD",
+      "LUCINA LAND DEV LTD",
+      "TAPIR CONSTRUCTIONS LTD",
+      "CYQURE INDIA PVT LTD",
+      "INDIABULLS REAL ESTATE"
+    ],
+    "promotersAndKeyPersons": [
+      "Sameer Gehlaut (Original Founder)",
+      "Gagan Banga (MD & CEO)",
+      "Subhash Sheoratan Mundra (Ex-RBI Dy Governor, Independent Chairman)"
+    ],
+    "ownershipStructure": "Originally promoter-led by Sameer Gehlaut. Following corporate governance scrutiny and RBI rejection of Lakshmi Vilas Bank merger in 2019, Sameer Gehlaut relinquished promoter status. In 2024, rebranded to Sammaan Capital with institutional board control (Blackstone, Embassy, GIC interest).",
+    "sector": "Housing Finance & Real Estate Project Lending",
+    "broadSector": "Housing Finance (HFC)",
+    "governanceScore": 48,
+    "riskSeverity": "CRITICAL",
+    "autoExcludeFromProposals": true,
+    "exclusionReason": "Developer Arms High Default Risk & Past Corporate Scrutiny: While Sammaan Capital parent maintains AA+ rating post-rebranding, group developer entities (Tapir Constructions, Lucina Land, Cyqure India) carry high leverage, BBB-/A- ratings, and historical PIL/ED scrutiny regarding real estate round-tripping.",
+    "negativeMediaFlags": [
+      "PAST_PIL_ROUNDTRIPPING_ALLEGATIONS",
+      "RBI_BANK_MERGER_REJECTION",
+      "DEVELOPER_ARM_REFINANCING_PRESSURE",
+      "PROMOTER_RELINQUISHMENT_SCRUTINY",
+      "HIGH_REAL_ESTATE_DEVELOPER_EXPOSURE"
+    ],
+    "detailedCaseHistory": "Historically faced intense public PIL scrutiny in Delhi High Court and Supreme Court (2019-2021) regarding alleged loans round-tripping across group companies (though MCA and court observations later found no round-tripping substantiation). RBI rejected its proposed merger with Lakshmi Vilas Bank in 2019 due to real estate developer exposure. Related developer entities (Tapir Constructions, Lucina Land Development) exhibit elevated refinancing risks with high yields (12.5% - 13.5%).",
+    "earlierBankruptciesOrDefaults": "Zero defaults on Sammaan/IBHFL public NCDs; multiple group-financed real estate SPVs faced stalled projects and NCLT claims.",
+    "regulatoryActions": "Rebranding to Sammaan Capital completed in 2024 to detach from legacy promoter identity; institutionalization under professional board.",
+    "auditorAndAccountingQuality": "Audited by S.N. Dhawan & Co. LLP and Mazars India with clean statutory reports on financial holding companies.",
+    "investmentVerdict": "EXCLUDE DEVELOPER ARMS (Tapir, Lucina, Cyqure); Sammaan Capital senior bonds acceptable only for institutional high-yield mandates under close monitoring.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "keertana_spandana": {
+    "entityKey": "keertana_spandana",
+    "entityName": "Keertana Finserv (Padmaja Reddy)",
+    "aliasesAndSubsidiaries": [
+      "KEERTANA FINSERV LTD",
+      "SPANDANA SPHOORTY FINANCIAL (PREVIOUS)"
+    ],
+    "promotersAndKeyPersons": [
+      "Padmaja Reddy (Founder & MD)"
+    ],
+    "ownershipStructure": "Privately held NBFC-MFI founded by Padmaja Reddy with backing from institutional and family office equity.",
+    "sector": "Microfinance (MFI) & Rural MSME Lending",
+    "broadSector": "Microfinance (MFI)",
+    "governanceScore": 50,
+    "riskSeverity": "HIGH",
+    "autoExcludeFromProposals": true,
+    "exclusionReason": "Promoter Boardroom Ouster & Corporate Governance Dispute: Promoter Padmaja Reddy was ousted from Spandana Sphoorty in Oct 2021 following bitter dispute with Kedaara Capital over attempted buyout by Axis Bank, severance terms, and IT infrastructure migration claims.",
+    "negativeMediaFlags": [
+      "BOARDROOM_DISPUTE_AND_OUSTER",
+      "PROMOTER_LITIGATION_PAST_VENTURE",
+      "UNSECURED_RURAL_MFI_RISK",
+      "SUB_A_RATING_BBB_PLUS"
+    ],
+    "detailedCaseHistory": "Padmaja Reddy founded Spandana Sphoorty and navigated it through the 2010 Andhra MFI crisis and CDR. In October 2021, she was abruptly forced to resign as Managing Director by the Board and PE investor Kedaara Capital following conflicts over a proposed sale to Axis Bank and corporate governance differences. Litigation and arbitration ensued regarding client data transfer and non-compete clauses. Subsequently, she launched Keertana Finserv in rural and semi-urban lending, expanding rapidly in Andhra, Telangana, and Odisha.",
+    "earlierBankruptciesOrDefaults": "Spandana underwent Corporate Debt Restructuring (CDR) during the 2010 AP MFI crisis and successfully exited in 2017 with full repayment.",
+    "regulatoryActions": "RBI NBFC registration granted to Keertana Finserv; normal MFI capital adequacy monitoring.",
+    "auditorAndAccountingQuality": "Audited by B S R & Associates / Walker Chandiok with standard microfinance portfolio aging and ECL provisions.",
+    "investmentVerdict": "HIGH RISK: Sub-A rating (IND BBB+), promoter track record of boardroom friction with institutional PE, and unsecured rural exposure require mandatory exclusion from conservative portfolios.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "adani_group": {
+    "entityKey": "adani_group",
+    "entityName": "Adani Group",
+    "aliasesAndSubsidiaries": [
+      "ADANI POWER LTD",
+      "ADANI GREEN ENERGY (UP) LTD",
+      "ALIPURDUAR TRANSMISSION LTD",
+      "ADANI ENERGY SOLUTIONS LTD",
+      "ADANI ENTERPRISES LTD"
+    ],
+    "promotersAndKeyPersons": [
+      "Gautam Adani (Chairman)",
+      "Rajesh Adani (MD)",
+      "Sagar Adani (Executive Director)"
+    ],
+    "ownershipStructure": "Conglomerate of publicly listed flagships with promoter holding ~60-70% and institutional global investors (GQG Partners, IHC, TotalEnergies).",
+    "sector": "Infrastructure, Power Generation & Renewable Energy",
+    "broadSector": "Infrastructure & Energy",
+    "governanceScore": 68,
+    "riskSeverity": "MODERATE",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "HINDENBURG_RESEARCH_REPORT",
+      "US_DOJ_SEC_INDICTMENT_SCRUTINY",
+      "CONGLOMERATE_DEBT_LEVERAGE",
+      "INTERNATIONAL_REGULATORY_HEADWINDS"
+    ],
+    "detailedCaseHistory": "In Jan 2023, Hindenburg Research published a short-seller report alleging accounting irregularities, offshore shell entities, and stock manipulation. Supreme Court appointed an expert panel, and SEBI conducted probes concluding majority without adverse systemic findings. In late 2024, US DOJ and SEC filed an indictment alleging foreign corrupt practices discussions involving renewable energy contracts (vigorously denied by Adani Group). Operational cashflows across regulated utility assets (Adani Power, Green Energy, Transmission) remain robust with sovereign PPA backing.",
+    "earlierBankruptciesOrDefaults": "Flawless track record of bond debt service; all international dollar bonds and domestic NCDs serviced on due date.",
+    "regulatoryActions": "SEBI and Supreme Court oversight; ongoing US legal counsel engagement.",
+    "auditorAndAccountingQuality": "Transitioned major flagship audits to global and national firms (MSKA & Associates, SR Batliboi affiliates, Shah Dhandharia replaced).",
+    "investmentVerdict": "ACCEPTABLE (AAA/AA UTILITY ASSETS): Strong asset collateralization, regulated utility cashflows, and sovereign PPA agreements provide superior structural debt protection.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "navi_technologies": {
+    "entityKey": "navi_technologies",
+    "entityName": "Navi Group (Sachin Bansal)",
+    "aliasesAndSubsidiaries": [
+      "NAVI FINSERV LTD",
+      "NAVI TECHNOLOGIES LTD",
+      "CHAMBAL FERTILISERS NBFC (PREVIOUS)"
+    ],
+    "promotersAndKeyPersons": [
+      "Sachin Bansal (Co-founder, Flipkart; Promoter & CEO, Navi)"
+    ],
+    "ownershipStructure": "Majority owned by Flipkart co-founder Sachin Bansal (~98% equity holding). Debt funded via retail and institutional NCDs.",
+    "sector": "Digital Consumer & Home Lending (Fintech NBFC)",
+    "broadSector": "Digital Fintech & Consumer Lending",
+    "governanceScore": 62,
+    "riskSeverity": "MODERATE",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "RBI_SUPERVISORY_PRICING_RESTRICTION_2024",
+      "HIGH_UNSECURED_DIGITAL_EXPOSURE",
+      "INTEREST_RATE_USURY_SCRUTINY"
+    ],
+    "detailedCaseHistory": "In October 2024, the Reserve Bank of India (RBI) placed temporary supervisory restrictions on Navi Finserv barring new loan sanctions/disbursements citing excessive interest pricing and inadequate household income verification. Navi promptly revised its loan pricing algorithms, overhauled risk underwriting, and successfully obtained full regulatory clearance and revocation of the restriction from RBI.",
+    "earlierBankruptciesOrDefaults": "Zero debt defaults across commercial papers and listed NCDs. Strong promoter capital backing (>₹4,000 Cr invested by Sachin Bansal).",
+    "regulatoryActions": "RBI temporary supervisory pricing restriction imposed Oct 2024, remediated and lifted post-compliance overhaul.",
+    "auditorAndAccountingQuality": "Audited by Price Waterhouse & Co Chartered Accountants LLP (PwC) with clean unqualified audit opinions.",
+    "investmentVerdict": "MODERATE RISK: Well-capitalized by promoter with clean auditor report (PwC), but requires single-issuer cap due to unsecured retail portfolio concentration.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "asirvad_manappuram": {
+    "entityKey": "asirvad_manappuram",
+    "entityName": "Manappuram Group (Asirvad Microfinance)",
+    "aliasesAndSubsidiaries": [
+      "ASIRVAD MICRO FINANCE LTD",
+      "MANAPPURAM FINANCE LTD",
+      "MANAPPURAM HOME FINANCE"
+    ],
+    "promotersAndKeyPersons": [
+      "V.P. Nandakumar (MD & CEO, Manappuram Finance)",
+      "B.N. Raveendra Babu"
+    ],
+    "ownershipStructure": "Subsidiary of Manappuram Finance Ltd (~97% equity). Promoted by V.P. Nandakumar.",
+    "sector": "Microfinance (MFI) & Gold/MSME Lending",
+    "broadSector": "Microfinance (MFI)",
+    "governanceScore": 66,
+    "riskSeverity": "MODERATE",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "RBI_SUPERVISORY_PRICING_CAP_2024",
+      "PAST_ED_INVESTIGATION_PARENT_DEPOSIT"
+    ],
+    "detailedCaseHistory": "In October 2024, RBI placed temporary loan sanction restrictions on Asirvad Microfinance for weighted average lending rates exceeding regulatory interest margins. Asirvad lowered interest rates and enhanced income checks, following which restrictions were lifted. In 2023, ED conducted a brief inquiry into historical deposit collections at an unlisted promoter firm, with High Court granting relief to promoter V.P. Nandakumar.",
+    "earlierBankruptciesOrDefaults": "Zero NCD defaults across parent (Manappuram Finance) and subsidiary (Asirvad). High CAR (>23%).",
+    "regulatoryActions": "RBI pricing compliance remediation completed in late 2024; listed debt serviced on time.",
+    "auditorAndAccountingQuality": "Audited by Deloitte Haskins & Sells and Walker Chandiok & Co LLP with clean unqualified opinions.",
+    "investmentVerdict": "ACCEPTABLE (CRISIL AA-): Parent backing from Manappuram Finance provides strong liquidity, high collection efficiency, and institutional credit quality.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "indostar_brookfield": {
+    "entityKey": "indostar_brookfield",
+    "entityName": "IndoStar Capital Finance (Brookfield)",
+    "aliasesAndSubsidiaries": [
+      "INDOSTAR CAP FIN LTD",
+      "INDOSTAR HOME FINANCE PVT LTD"
+    ],
+    "promotersAndKeyPersons": [
+      "Brookfield Asset Management (Majority Shareholder ~56%)",
+      "Karthikeyan Srinivasan (CEO)"
+    ],
+    "ownershipStructure": "Institutional control by Brookfield Asset Management and Everstone Capital.",
+    "sector": "Commercial Vehicle (CV) & SME Financing",
+    "broadSector": "Diversified Financials & Asset Mgmt",
+    "governanceScore": 60,
+    "riskSeverity": "MODERATE",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "PAST_MASSIVE_LOAN_IMPAIRMENT_2022",
+      "AUDITOR_QUALIFICATION_EY_REVIEW",
+      "MANAGEMENT_OVERHAUL"
+    ],
+    "detailedCaseHistory": "In May 2022, an independent loan portfolio review by Ernst & Young revealed severe control deficiencies and loan evergreen practices in commercial vehicle loans, requiring an immediate ₹1,800+ Cr loan impairment and capital erosion. Brookfield stepped in with ₹1,225 Cr fresh equity infusion, replaced legacy executive management, and instituted institutional risk frameworks.",
+    "earlierBankruptciesOrDefaults": "Zero defaults on senior secured debt; Brookfield capital infusion ensured 100% solvency and debt service.",
+    "regulatoryActions": "SEBI and RBI regulatory notifications regarding accounting adjustments; portfolio fully cleaned.",
+    "auditorAndAccountingQuality": "Audited by Deloitte Haskins & Sells with clean audit reports post-2023 balance sheet clean-up.",
+    "investmentVerdict": "ACCEPTABLE (CARE AA-): Brookfield ownership and post-2023 balance sheet restructuring provide strong institutional backing.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "iifl_group": {
+    "entityKey": "iifl_group",
+    "entityName": "IIFL Group",
+    "aliasesAndSubsidiaries": [
+      "IIFL SAMASTA FIN LTD",
+      "IIFL FIN LTD",
+      "IIFL HOME FIN LTD",
+      "INDIA INFOLINE"
+    ],
+    "promotersAndKeyPersons": [
+      "Nirmal Jain (Founder & MD)",
+      "R. Venkataraman (Co-Founder & Chairman)",
+      "Prem Watsa (Fairfax Financial Holdings - Major Shareholder)",
+      "ADIA (Abu Dhabi Investment Authority - Stake in Home Fin)"
+    ],
+    "ownershipStructure": "Publicly listed with major institutional global backing (Fairfax Financial, ADIA, Capital Group).",
+    "sector": "Diversified Retail NBFC (Gold Loans, Affordable Housing, Microfinance)",
+    "broadSector": "Diversified Financials & Asset Mgmt",
+    "governanceScore": 72,
+    "riskSeverity": "LOW",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "RBI_GOLD_LOAN_BAN_LIFTED_2024",
+      "SPECIAL_AUDIT_COMPLIANCE"
+    ],
+    "detailedCaseHistory": "In March 2024, RBI imposed a temporary restriction on IIFL Finance barring gold loan sanctions due to deviations in assaying procedures and LTV caps. IIFL appointed external auditors, rectified operational controls, and RBI completely lifted the ban in September 2024. IIFL Home Finance received ₹2,200 Cr equity from ADIA.",
+    "earlierBankruptciesOrDefaults": "Zero bond defaults in 28+ years of group operating history.",
+    "regulatoryActions": "RBI gold loan restriction completely lifted in Sep 2024 after comprehensive compliance verification.",
+    "auditorAndAccountingQuality": "Audited by V. Sankar Aiyar & Co. and Chokshi & Chokshi LLP with robust disclosure standards.",
+    "investmentVerdict": "STRONG / INSTITUTIONAL: High-grade institutional backing (Fairfax, ADIA), AA/AA- credit profile, and post-audit regulatory clearance make IIFL group bonds prime candidates.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "muthoot_pappachan": {
+    "entityKey": "muthoot_pappachan",
+    "entityName": "Muthoot Pappachan Group (Muthoot Blue)",
+    "aliasesAndSubsidiaries": [
+      "MUTHOOT FINCORP LTD",
+      "MUTHOOT CAP SERV LTD",
+      "MUTHOOT MCRED LTD",
+      "MUTHOOT HOUSING FINANCE"
+    ],
+    "promotersAndKeyPersons": [
+      "Thomas John Muthoot (Chairman)",
+      "Thomas George Muthoot",
+      "Thomas Muthoot"
+    ],
+    "ownershipStructure": "Flagship family business conglomerate founded in 1887. Distinct from George Alexander Muthoot (Muthoot Finance Ltd).",
+    "sector": "Gold Loans, Two-Wheeler Auto Finance & Microfinance",
+    "broadSector": "Diversified Financials & Asset Mgmt",
+    "governanceScore": 78,
+    "riskSeverity": "LOW",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "NONE_MATERIAL"
+    ],
+    "detailedCaseHistory": "Consistently maintained solid collection track record with gold-backed secured lending. Zero promoter litigation or regulatory sanctions. Microfinance arm (Muthoot Microfin) successfully completed IPO.",
+    "earlierBankruptciesOrDefaults": "Zero defaults on public or private debt instruments across 130+ year history.",
+    "regulatoryActions": "Fully compliant with RBI NBFC-ND-SI norms.",
+    "auditorAndAccountingQuality": "Audited by Walker Chandiok & Co LLP and B S R & Associates.",
+    "investmentVerdict": "VERY STRONG (CRISIL AA / ICRA A+): High liquidity, secured gold collateral, and pristine promoter track record.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "muthoot_finance_ltd": {
+    "entityKey": "muthoot_finance_ltd",
+    "entityName": "Muthoot Finance Ltd (Red Muthoot)",
+    "aliasesAndSubsidiaries": [
+      "MUTHOOT FIN LTD",
+      "BELSTAR MICROFINANCE",
+      "MUTHOOT HOMEFIN"
+    ],
+    "promotersAndKeyPersons": [
+      "George Alexander Muthoot (MD)",
+      "George Jacob Muthoot (Chairman)"
+    ],
+    "ownershipStructure": "India largest gold loan NBFC (Market Cap > ₹75,000 Cr). Publicly listed with ~73% promoter holding.",
+    "sector": "Gold Loan Financing & Retail Credit",
+    "broadSector": "Diversified Financials & Asset Mgmt",
+    "governanceScore": 88,
+    "riskSeverity": "CLEAN",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "NONE"
+    ],
+    "detailedCaseHistory": "Market leader in retail gold lending with pristine asset quality, low LTVs (<65%), and massive capital adequacy (>30%). Pristine corporate governance and disclosure standards.",
+    "earlierBankruptciesOrDefaults": "Zero defaults on any commercial paper or listed bond.",
+    "regulatoryActions": "Clean regulatory standing with RBI.",
+    "auditorAndAccountingQuality": "Audited by B S R & Co. LLP (KPMG affiliate) with clean unqualified reports.",
+    "investmentVerdict": "TOP TIER (ICRA AA+ / CRISIL AA+): Exceptional liquidity, robust gold security, and industry-leading profitability.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "nuvama_group": {
+    "entityKey": "nuvama_group",
+    "entityName": "Nuvama Wealth Group (PAG Asia)",
+    "aliasesAndSubsidiaries": [
+      "NUVAMA WEALTH FIN LTD",
+      "NUVAMA WEALTH AND INVT LTD",
+      "NUVAMA WEALTH MANAGEMENT LTD"
+    ],
+    "promotersAndKeyPersons": [
+      "PAG Asia Capital (Global Private Equity - Majority Promoter)",
+      "Ashish Kehair (MD & CEO)"
+    ],
+    "ownershipStructure": "Demerged from Edelweiss in 2023. Global institutional buyout by PAG Asia Capital (~56% ownership). Publicly listed on NSE/BSE.",
+    "sector": "Wealth Management, Capital Markets & Margin Trade Financing",
+    "broadSector": "Diversified Financials & Asset Mgmt",
+    "governanceScore": 82,
+    "riskSeverity": "CLEAN",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "NONE_POST_DEMERGER"
+    ],
+    "detailedCaseHistory": "Successfully demerged from Edelweiss Group and independently listed on NSE/BSE in 2023 under PAG Asia stewardship. Operates with independent institutional governance and distinct treasury.",
+    "earlierBankruptciesOrDefaults": "Zero debt defaults across Nuvama entities.",
+    "regulatoryActions": "Clean SEBI & RBI compliance records.",
+    "auditorAndAccountingQuality": "Audited by Price Waterhouse & Co Chartered Accountants LLP (PwC) with unqualified opinions.",
+    "investmentVerdict": "STRONG (CRISIL AA): Institutional private equity parentage (PAG), ring-fenced balance sheet, and market leadership in wealth advisory.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "murugappa_cholamandalam": {
+    "entityKey": "murugappa_cholamandalam",
+    "entityName": "Murugappa Group (Cholamandalam)",
+    "aliasesAndSubsidiaries": [
+      "CHOLAMANDALAM INVT AND FIN CO LTD",
+      "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD",
+      "CHOLA MS GENERAL INSURANCE"
+    ],
+    "promotersAndKeyPersons": [
+      "Murugappa Family (M.A.M. Arunachalam, Vellayan Subbiah)",
+      "Ravindra Kundu (MD)"
+    ],
+    "ownershipStructure": "120-year-old Chennai-based industrial conglomerate. Publicly listed flagships (Chola Investment, Coromandel International, Tube Investments).",
+    "sector": "Vehicle Finance, LAP, MSME & General Insurance",
+    "broadSector": "Diversified Financials & Asset Mgmt",
+    "governanceScore": 92,
+    "riskSeverity": "CLEAN",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "NONE"
+    ],
+    "detailedCaseHistory": "Benchmark corporate governance and ethical leadership. Over 40 years of compounding profitability and pristine credit track record across South and Pan-India markets.",
+    "earlierBankruptciesOrDefaults": "Zero bond defaults.",
+    "regulatoryActions": "Clean regulatory track record with RBI and IRDAI.",
+    "auditorAndAccountingQuality": "Audited by S.R. Batliboi & Associates LLP and Sundaram & Srinivasan.",
+    "investmentVerdict": "TOP TIER (IND AA+ / ICRA AA+): Gold standard in corporate governance and vehicle loan underwriting.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "satin_group": {
+    "entityKey": "satin_group",
+    "entityName": "Satin Group",
+    "aliasesAndSubsidiaries": [
+      "SATIN CREDITCARE NETWORK LTD",
+      "SATIN FINSERV LTD",
+      "SATIN HOUSING FINANCE"
+    ],
+    "promotersAndKeyPersons": [
+      "H.P. Singh (Chairman & MD)"
+    ],
+    "ownershipStructure": "Publicly listed MFI with promoter holding ~38% and institutional backing (ADB, responsAbility, Florintree).",
+    "sector": "Microfinance & Rural MSME Financing",
+    "broadSector": "Microfinance (MFI)",
+    "governanceScore": 74,
+    "riskSeverity": "LOW",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "CYCLICAL_MFI_PROVISIONS_PAST"
+    ],
+    "detailedCaseHistory": "Navigated COVID-19 pandemic headwinds, infused fresh institutional equity, and upgraded asset quality metrics with GNPA < 2.5% and CAR > 26%.",
+    "earlierBankruptciesOrDefaults": "Zero public debt defaults.",
+    "regulatoryActions": "Clean RBI compliance status.",
+    "auditorAndAccountingQuality": "Audited by Walker Chandiok & Co LLP with clean unqualified reports.",
+    "investmentVerdict": "ATTRACTIVE (ICRA A / ICRA A-): Upgraded rating outlook, strong capital adequacy, and established rural distribution.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "ugro_capital": {
+    "entityKey": "ugro_capital",
+    "entityName": "UGRO Capital Ltd",
+    "aliasesAndSubsidiaries": [
+      "UGRO CAP LTD",
+      "CHOKHANI SECURITIES (PREVIOUS)"
+    ],
+    "promotersAndKeyPersons": [
+      "Shachindra Nath (Vice Chairman & MD)",
+      "Institutional PE Backers (TPG Newquest, ADV Partners, Samena Capital)"
+    ],
+    "ownershipStructure": "Institutionally controlled public NBFC with PE backing (>80% institutional equity).",
+    "sector": "MSME Financing (Data-Tech Underwritten)",
+    "broadSector": "Diversified Financials & Asset Mgmt",
+    "governanceScore": 77,
+    "riskSeverity": "LOW",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "NONE_MATERIAL"
+    ],
+    "detailedCaseHistory": "Specialized data-driven MSME lending platform combining bureau, banking, and GST analytics. AUM crossed ₹12,000 Cr with co-lending partnerships across 10+ public sector banks.",
+    "earlierBankruptciesOrDefaults": "Zero debt defaults.",
+    "regulatoryActions": "Clean regulatory compliance record with RBI.",
+    "auditorAndAccountingQuality": "Audited by MSKA & Associates (BDO affiliate).",
+    "investmentVerdict": "VERY ATTRACTIVE (IND A+): High asset collateralization (~70% secured MSME loans) and institutional PE governance.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "krazybee_kreditbee": {
+    "entityKey": "krazybee_kreditbee",
+    "entityName": "Krazybee Services (KreditBee)",
+    "aliasesAndSubsidiaries": [
+      "KRAZYBEE SERV LTD",
+      "FINNOV INNOVATIVE SOLUTIONS"
+    ],
+    "promotersAndKeyPersons": [
+      "Madhusudan Ekambaram (Co-Founder & CEO)",
+      "Wanwei Technology / Finnov Holding"
+    ],
+    "ownershipStructure": "Fintech platform backed by PremjiInvest, Motilal Oswal PE, TPG-backed NewQuest, and Mirae Asset.",
+    "sector": "Digital Consumer Lending & Personal Loans",
+    "broadSector": "Digital Fintech & Consumer Lending",
+    "governanceScore": 75,
+    "riskSeverity": "LOW",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "NONE_MATERIAL"
+    ],
+    "detailedCaseHistory": "Scaled profitable digital consumer lender with low delinquency rates, high capital adequacy (>28%), and top tier institutional PE backing.",
+    "earlierBankruptciesOrDefaults": "Zero debt defaults.",
+    "regulatoryActions": "Clean RBI compliance under digital lending guidelines.",
+    "auditorAndAccountingQuality": "Audited by Walker Chandiok & Co LLP with clean unqualified reports.",
+    "investmentVerdict": "ATTRACTIVE (CRISIL A+ / CARE A): Strong capital buffer and digital collection efficiency.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "earlysalary_fibe": {
+    "entityKey": "earlysalary_fibe",
+    "entityName": "EarlySalary Services (Fibe)",
+    "aliasesAndSubsidiaries": [
+      "EARLYSALARY SERV PVT LTD",
+      "SOCIAL WORTH TECHNOLOGIES"
+    ],
+    "promotersAndKeyPersons": [
+      "Akshay Mehrotra (Co-Founder & CEO)",
+      "Ashish Goyal (Co-Founder & CFO)"
+    ],
+    "ownershipStructure": "Backed by TPG The Rise Fund, Norwest Venture Partners, Piramal Capital, and Eight Roads.",
+    "sector": "Salary Advance & Digital Consumer Credit",
+    "broadSector": "Digital Fintech & Consumer Lending",
+    "governanceScore": 76,
+    "riskSeverity": "LOW",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "NONE_MATERIAL"
+    ],
+    "detailedCaseHistory": "Focused on salaried corporate professionals with automated payroll/bureau underwriting. Consistently profitable with GNPA < 2.0%.",
+    "earlierBankruptciesOrDefaults": "Zero debt defaults.",
+    "regulatoryActions": "Clean RBI digital lending record.",
+    "auditorAndAccountingQuality": "Audited by Price Waterhouse & Co Chartered Accountants LLP (PwC).",
+    "investmentVerdict": "ATTRACTIVE (CARE A-): Elite venture backing (TPG, Norwest), clean auditor (PwC), and salaried prime borrower profile.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "mufin_green_finance": {
+    "entityKey": "mufin_green_finance",
+    "entityName": "Mufin Green Finance Ltd",
+    "aliasesAndSubsidiaries": [
+      "MUFIN GREEN FIN LTD",
+      "APM FINVEST (PREVIOUS)"
+    ],
+    "promotersAndKeyPersons": [
+      "Kapil Garg (MD)",
+      "Hindcon Chemicals Group"
+    ],
+    "ownershipStructure": "Publicly listed on BSE/NSE. Promoted by Hindcon Chemicals group with impact funding from Incofin and BlueOrchard.",
+    "sector": "Electric Vehicle (EV) Mobility & Solar Financing",
+    "broadSector": "Renewable Energy & EV Mobility",
+    "governanceScore": 70,
+    "riskSeverity": "LOW",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "NONE_MATERIAL"
+    ],
+    "detailedCaseHistory": "Pioneer in EV commercial 3W/2W and battery swapping infrastructure lending. Loans collateralized by vehicle hypothecation and IoT immobilizer telemetry.",
+    "earlierBankruptciesOrDefaults": "Zero debt defaults.",
+    "regulatoryActions": "Clean RBI NBFC standing.",
+    "auditorAndAccountingQuality": "Audited by Gaur & Associates.",
+    "investmentVerdict": "ATTRACTIVE GREEN DEBT (ACUITE A-): Dedicated climate-tech financing with strong collateral recovery mechanisms.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "akme_fintrade": {
+    "entityKey": "akme_fintrade",
+    "entityName": "Akme Fintrade (India) Ltd (Aasaan Loans)",
+    "aliasesAndSubsidiaries": [
+      "AKME FINTRADE (INDIA) LTD"
+    ],
+    "promotersAndKeyPersons": [
+      "Nirmal Kumar Jain (Promoter & MD)"
+    ],
+    "ownershipStructure": "Publicly listed post-2024 IPO. Rajasthan-based NBFC operating in semi-urban lending.",
+    "sector": "Vehicle Finance (2W/4W) & LAP",
+    "broadSector": "Diversified Financials & Asset Mgmt",
+    "governanceScore": 71,
+    "riskSeverity": "LOW",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "NONE_MATERIAL"
+    ],
+    "detailedCaseHistory": "Successful public IPO in mid-2024. Upgraded bank credit facilities to ACUITE A- backed by vehicle collateral and LAP mortgages.",
+    "earlierBankruptciesOrDefaults": "Zero defaults on commercial papers or NCDs.",
+    "regulatoryActions": "Clean RBI status.",
+    "auditorAndAccountingQuality": "Audited by B.L. Pagaria & Co.",
+    "investmentVerdict": "ATTRACTIVE (ACUITE A-): Monthly coupon cashflows (11.0% - 11.6%) backed by secured vehicle and real estate mortgage charge.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "progfin_progcap": {
+    "entityKey": "progfin_progcap",
+    "entityName": "Progfin Private Ltd (Progcap)",
+    "aliasesAndSubsidiaries": [
+      "PROGFIN PRIVATE LTD",
+      "DESIDERATA IMPACT VENTURES"
+    ],
+    "promotersAndKeyPersons": [
+      "Pallavi Shrivastava (Co-Founder)",
+      "Himanshu Joshi (Co-Founder)"
+    ],
+    "ownershipStructure": "Fintech supply chain NBFC backed by Tiger Global, Creation Investments, and Sequoia Capital (Peak XV).",
+    "sector": "Supply Chain & SME Distributor Financing",
+    "broadSector": "Diversified Financials & Asset Mgmt",
+    "governanceScore": 73,
+    "riskSeverity": "LOW",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "NONE_MATERIAL"
+    ],
+    "detailedCaseHistory": "Specialized in working capital for micro and small retailers against corporate anchor invoice receivables with GNPA < 2.0%.",
+    "earlierBankruptciesOrDefaults": "Zero debt defaults.",
+    "regulatoryActions": "Clean RBI compliance.",
+    "auditorAndAccountingQuality": "Audited by Price Waterhouse & Co Chartered Accountants LLP (PwC).",
+    "investmentVerdict": "ATTRACTIVE (ICRA BBB+): High yield (11.4%), Tier-1 PE backing (Tiger Global, Peak XV), and PwC audited books.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "indel_money": {
+    "entityKey": "indel_money",
+    "entityName": "Indel Money Ltd",
+    "aliasesAndSubsidiaries": [
+      "INDEL MONEY LTD",
+      "INDEL CORPORATION"
+    ],
+    "promotersAndKeyPersons": [
+      "Mohanan Gopalakrishnan (Chairman)",
+      "Umesh Mohanan (MD & CEO)"
+    ],
+    "ownershipStructure": "Non-deposit taking gold loan NBFC based in Kochi, Kerala. Promoted by Indel Corporation.",
+    "sector": "Gold Loan & MSME Financing",
+    "broadSector": "Diversified Financials & Asset Mgmt",
+    "governanceScore": 72,
+    "riskSeverity": "LOW",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "NONE_MATERIAL"
+    ],
+    "detailedCaseHistory": "Long-term gold-loan track record in South India. Over 80% portfolio secured by physical gold ornaments with conservative LTV caps.",
+    "earlierBankruptciesOrDefaults": "Zero debt defaults across listed public NCD issuances.",
+    "regulatoryActions": "Clean RBI track record.",
+    "auditorAndAccountingQuality": "Audited by K Venkatachalam Aiyer & Co.",
+    "investmentVerdict": "ATTRACTIVE (IND A-): High coupon cashflows (11.0%) with strong physical gold collateral backing.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "360_one_wealth": {
+    "entityKey": "360_one_wealth",
+    "entityName": "360 ONE WAM Group (formerly IIFL Wealth)",
+    "aliasesAndSubsidiaries": [
+      "360 ONE PRIME LTD",
+      "360 ONE WAM LTD",
+      "IIFL WEALTH (PREVIOUS)"
+    ],
+    "promotersAndKeyPersons": [
+      "Karan Bhagat (Founder, MD & CEO)",
+      "Bain Capital (Global PE Major Shareholder)"
+    ],
+    "ownershipStructure": "Publicly listed premier wealth management firm in India (>₹5,00,000 Cr AUM). Major stake held by Bain Capital.",
+    "sector": "Private Wealth Management & Structured Lending",
+    "broadSector": "Diversified Financials & Asset Mgmt",
+    "governanceScore": 89,
+    "riskSeverity": "CLEAN",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "NONE"
+    ],
+    "detailedCaseHistory": "Completely demerged and rebranded from IIFL in 2022. Premier private wealth manager for ultra-HNIs with pristine credit record.",
+    "earlierBankruptciesOrDefaults": "Zero debt defaults in history.",
+    "regulatoryActions": "Clean SEBI & RBI standing.",
+    "auditorAndAccountingQuality": "Audited by Deloitte Haskins & Sells LLP with clean unqualified reports.",
+    "investmentVerdict": "TOP TIER (CRISIL AA): High liquidity, Bain Capital backing, and conservative private wealth underwriting.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "state_bank_of_india": {
+    "entityKey": "state_bank_of_india",
+    "entityName": "State Bank of India (SBI Group)",
+    "aliasesAndSubsidiaries": [
+      "SBI",
+      "SBI CARDS AND PAYMENT SERV LTD",
+      "SBI LIFE INSURANCE",
+      "SBI MUTUAL FUND"
+    ],
+    "promotersAndKeyPersons": [
+      "Government of India (Majority Owner)",
+      "C.S. Setty (Chairman)"
+    ],
+    "ownershipStructure": "India largest commercial bank (Fortune 500, >57% Govt of India ownership). Domestic Systemically Important Bank (D-SIB).",
+    "sector": "Public Sector Banking & Credit Cards",
+    "broadSector": "Banking & Financial Institutions",
+    "governanceScore": 98,
+    "riskSeverity": "CLEAN",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "NONE"
+    ],
+    "detailedCaseHistory": "Sovereign-backed banking benchmark with unparalleled deposit franchise, liquidity buffer, and systemic importance.",
+    "earlierBankruptciesOrDefaults": "Zero defaults in history.",
+    "regulatoryActions": "Governed by RBI and Banking Regulation Act.",
+    "auditorAndAccountingQuality": "Statutory central auditors appointed by RBI / CAG oversight.",
+    "investmentVerdict": "PRISTINE / ULTRA SAFE (CRISIL AAA / Sovereign-tier): Highest safety and liquidity.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "rec_ltd": {
+    "entityKey": "rec_ltd",
+    "entityName": "REC Ltd (Maharatna PSU)",
+    "aliasesAndSubsidiaries": [
+      "REC LTD",
+      "RURAL ELECTRIFICATION CORP",
+      "POWER FINANCE CORP (PARENT)"
+    ],
+    "promotersAndKeyPersons": [
+      "Government of India (Ministry of Power)",
+      "Vivek Kumar Dewangan (CMD)"
+    ],
+    "ownershipStructure": "Maharatna Central Public Sector Enterprise (CPSE) under Ministry of Power. Subsidiary of Power Finance Corporation (PFC).",
+    "sector": "Power Infrastructure Financing (PSU)",
+    "broadSector": "Public Sector (PSU)",
+    "governanceScore": 96,
+    "riskSeverity": "CLEAN",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "NONE"
+    ],
+    "detailedCaseHistory": "Quasi-sovereign financier of India entire power generation, transmission, distribution, and renewable energy rollout.",
+    "earlierBankruptciesOrDefaults": "Zero defaults in 55+ years.",
+    "regulatoryActions": "Supervised by RBI and Ministry of Power.",
+    "auditorAndAccountingQuality": "Audited by CAG empanelled statutory auditors.",
+    "investmentVerdict": "PRISTINE / QUASI-SOVEREIGN (CRISIL AAA): Quasi-sovereign credit safety.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "nhpc_ltd": {
+    "entityKey": "nhpc_ltd",
+    "entityName": "NHPC Ltd (Navratna PSU)",
+    "aliasesAndSubsidiaries": [
+      "NHPC LTD",
+      "NATIONAL HYDROELECTRIC POWER CORP"
+    ],
+    "promotersAndKeyPersons": [
+      "Government of India (Ministry of Power - 70.95% stake)",
+      "R.K. Chaudhary (CMD)"
+    ],
+    "ownershipStructure": "Navratna CPSE under Government of India. Premier hydropower generation utility.",
+    "sector": "Hydropower & Renewable Energy Utility",
+    "broadSector": "Public Sector (PSU)",
+    "governanceScore": 95,
+    "riskSeverity": "CLEAN",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "NONE"
+    ],
+    "detailedCaseHistory": "Largest hydropower producer in India with over 7,000 MW operational capacity and sovereign utility cashflows.",
+    "earlierBankruptciesOrDefaults": "Zero defaults in history.",
+    "regulatoryActions": "Central PSU regulated by CERC / Ministry of Power.",
+    "auditorAndAccountingQuality": "CAG supervised audit framework.",
+    "investmentVerdict": "PRISTINE (IND AAA): Sovereign CPSE ownership and tariff-based annuity revenues.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "ongc_mrpl": {
+    "entityKey": "ongc_mrpl",
+    "entityName": "Mangalore Refinery & Petrochemicals Ltd (ONGC Group)",
+    "aliasesAndSubsidiaries": [
+      "MANGALORE REFINERY AND PETROCHEMICALS LTD",
+      "MRPL",
+      "ONGC (PARENT)"
+    ],
+    "promotersAndKeyPersons": [
+      "Oil and Natural Gas Corporation Ltd (ONGC - 71.88% stake)",
+      "Government of India (Ministry of Petroleum)"
+    ],
+    "ownershipStructure": "Miniratna Category 1 CPSE. Majority-owned subsidiary of ONGC (Maharatna PSU).",
+    "sector": "Oil Refining & Petrochemicals",
+    "broadSector": "Public Sector (PSU)",
+    "governanceScore": 94,
+    "riskSeverity": "CLEAN",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "NONE"
+    ],
+    "detailedCaseHistory": "State-of-the-art 15 MMTPA coastal refinery supplying high-octane fuels with strategic national energy significance.",
+    "earlierBankruptciesOrDefaults": "Zero defaults on senior debt.",
+    "regulatoryActions": "Clean statutory compliance.",
+    "auditorAndAccountingQuality": "CAG supervised statutory audits.",
+    "investmentVerdict": "PRISTINE (IND AAA): Full ownership and operational integration with ONGC.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "kiifb_kerala": {
+    "entityKey": "kiifb_kerala",
+    "entityName": "Kerala Infrastructure Investment Fund Board (KIIFB)",
+    "aliasesAndSubsidiaries": [
+      "KERALA INFRA INVT FUND BOARD",
+      "KIIFB"
+    ],
+    "promotersAndKeyPersons": [
+      "Government of Kerala (Chief Minister - Chairman, Finance Minister - Vice Chairman)",
+      "Dr. K.M. Abraham (CEO)"
+    ],
+    "ownershipStructure": "Statutory Body established by the Government of Kerala to fund core state infrastructure projects.",
+    "sector": "State Infrastructure Finance (State Government Entity)",
+    "broadSector": "State Municipal & Statutory Bodies",
+    "governanceScore": 65,
+    "riskSeverity": "MODERATE",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "ED_MASALA_BOND_FEMA_INVESTIGATION",
+      "STATE_FISCAL_DEFICIT_SCRUTINY",
+      "POLITICAL_CONTROVERSY"
+    ],
+    "detailedCaseHistory": "KIIFB is funded via dedicated statutory cess on petrol and motor vehicle tax backed by state government guarantees. In 2021-2024, the Enforcement Directorate (ED) initiated summons regarding FEMA compliance in its overseas Masala Bond issuance. Kerala High Court granted relief and state continues full debt service on its CE guaranteed bonds.",
+    "earlierBankruptciesOrDefaults": "Zero bond defaults; structured escrow and budget allocation mechanisms.",
+    "regulatoryActions": "ED probe under judicial review; credit enhancement structure intact.",
+    "auditorAndAccountingQuality": "Audited by Comptroller and Auditor General of India (CAG) and state auditors.",
+    "investmentVerdict": "MODERATE RISK / ATTRACTIVE SPREAD (IND AA CE): Structured escrow mechanism with state government credit enhancement provides ring-fenced coupon safety.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "ap_state_entities": {
+    "entityKey": "ap_state_entities",
+    "entityName": "Government of Andhra Pradesh (State Entities & SDLs)",
+    "aliasesAndSubsidiaries": [
+      "A.P. STATE BEVERAGES CORP LTD",
+      "ANDHRA PRADESH STATE BEVERAGES CORPORATION LIMITED",
+      "THE  A.P. MINERAL DEV CORP LTD",
+      "7.74% AP SDL 38",
+      "7.71% AP SDL 37",
+      "APSBCL",
+      "APMDC"
+    ],
+    "promotersAndKeyPersons": [
+      "Government of Andhra Pradesh (Governor / State Cabinet)"
+    ],
+    "ownershipStructure": "100% State Government owned corporations and State Development Loans (SDLs).",
+    "sector": "State Government Enterprises & Sovereign SDLs",
+    "broadSector": "State Government & SDLs",
+    "governanceScore": 78,
+    "riskSeverity": "LOW",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "STATE_DEBT_RESTRUCTURING_SCRUTINY",
+      "ESCROW_LIQUOR_REVENUE_LITIGATION_PAST"
+    ],
+    "detailedCaseHistory": "APSBCL and APMDC bonds are structured with tripartite escrow agreements on state retail beverage/mineral sales and unconditional state government guarantee (CE). SDLs are directly serviced by RBI via automatic debit of the state consolidated fund.",
+    "earlierBankruptciesOrDefaults": "Zero defaults on RBI-administered SDLs or escrow-backed bonds.",
+    "regulatoryActions": "Governed by RBI public debt management norms.",
+    "auditorAndAccountingQuality": "CAG state financial reporting.",
+    "investmentVerdict": "SECURE (IND AA CE / SOVEREIGN): RBI administered debt servicing and statutory escrow mechanisms.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "state_sdls_and_sovereign": {
+    "entityKey": "state_sdls_and_sovereign",
+    "entityName": "Sovereign Government of India & State Development Loans (SDLs)",
+    "aliasesAndSubsidiaries": [
+      "GOI 2029",
+      "7.46% TG SDL 48",
+      "7.48% MH SDL 35",
+      "6.99% PY SDL 29",
+      "7.81% GJ SDL 32",
+      "7.62% KL SDL 53",
+      "7.64% KA SDL 39",
+      "7.72% KA SDL 35",
+      "7.64% GA SDL 38",
+      "7.75% UP SDL 33",
+      "7.77% MN SDL 38",
+      "7.55% GJ SDL 31",
+      "HMDA",
+      "HYDERABAD METROPOLITAN DEVELOPMENT AUTHORITY",
+      "LUCKNOW MUNICIPAL CORP"
+    ],
+    "promotersAndKeyPersons": [
+      "President of India / State Governors / Municipal Commissioners"
+    ],
+    "ownershipStructure": "Sovereign Federal Government of India, State Governments, and Premier Municipal Corporations.",
+    "sector": "Sovereign Debt & Municipal Development",
+    "broadSector": "Sovereign & State Government",
+    "governanceScore": 99,
+    "riskSeverity": "CLEAN",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "NONE"
+    ],
+    "detailedCaseHistory": "Direct sovereign obligations serviced via Reserve Bank of India (RBI) with zero credit risk and statutory priority on public revenues.",
+    "earlierBankruptciesOrDefaults": "Zero sovereign defaults in modern Indian history.",
+    "regulatoryActions": "RBI Public Debt Office managed.",
+    "auditorAndAccountingQuality": "Comptroller and Auditor General of India (CAG).",
+    "investmentVerdict": "PRISTINE / ZERO CREDIT RISK (SOVEREIGN): Utmost principal security backed by sovereign taxation authority.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "au_small_finance_bank": {
+    "entityKey": "au_small_finance_bank",
+    "entityName": "AU Small Finance Bank Ltd",
+    "aliasesAndSubsidiaries": [
+      "AU SMALL FIN BANK LTD",
+      "FINCARE SFB (MERGED)"
+    ],
+    "promotersAndKeyPersons": [
+      "Sanjay Agarwal (MD & CEO)"
+    ],
+    "ownershipStructure": "Scheduled Commercial Bank listed on NSE/BSE with institutional global shareholders (Temasek, Warburg Pincus, Capital Group).",
+    "sector": "Scheduled Commercial Banking & Small Finance",
+    "broadSector": "Banking & Financial Institutions",
+    "governanceScore": 86,
+    "riskSeverity": "CLEAN",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "NONE"
+    ],
+    "detailedCaseHistory": "Successfully transformed from NBFC to Scheduled Commercial Bank and executed seamless merger with Fincare Small Finance Bank in 2024. Superior asset quality (GNPA < 1.8%).",
+    "earlierBankruptciesOrDefaults": "Zero debt defaults.",
+    "regulatoryActions": "Clean RBI banking regulatory standing.",
+    "auditorAndAccountingQuality": "Audited by B S R & Associates LLP and Walker Chandiok & Co LLP.",
+    "investmentVerdict": "TOP TIER (ICRA AA / CRISIL AA): Strong retail deposit franchise and solid banking governance.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "pnb_metlife": {
+    "entityKey": "pnb_metlife",
+    "entityName": "PNB MetLife India Insurance Co Ltd",
+    "aliasesAndSubsidiaries": [
+      "PNB METLIFE INDIA INS CO LTD"
+    ],
+    "promotersAndKeyPersons": [
+      "Punjab National Bank (PSU Promoter)",
+      "MetLife Inc (Global Fortune 100 Insurer)"
+    ],
+    "ownershipStructure": "Joint venture between Punjab National Bank (30%) and MetLife Inc (32%) along with M. Pallonji and Jammu & Kashmir Bank.",
+    "sector": "Life Insurance & Actuarial Solvency (Tier-2 Subordinated Debt)",
+    "broadSector": "Insurance",
+    "governanceScore": 91,
+    "riskSeverity": "CLEAN",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "NONE"
+    ],
+    "detailedCaseHistory": "Leading life insurer with solvency ratio > 190% (against IRDAI mandatory 150%) and backing from MetLife and PNB.",
+    "earlierBankruptciesOrDefaults": "Zero defaults.",
+    "regulatoryActions": "Clean IRDAI standing.",
+    "auditorAndAccountingQuality": "Audited by Price Waterhouse & Co and ASA & Associates LLP.",
+    "investmentVerdict": "TOP TIER (CRISIL AA+): Exceptional solvency buffer and institutional promoter joint venture.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "nabkisan_nabard": {
+    "entityKey": "nabkisan_nabard",
+    "entityName": "NABKISAN Finance Ltd (NABARD Subsidiary)",
+    "aliasesAndSubsidiaries": [
+      "NABKISAN FINANCE LTD",
+      "NABARD (PARENT)"
+    ],
+    "promotersAndKeyPersons": [
+      "National Bank for Agriculture and Rural Development (NABARD - 84.83% stake)",
+      "Govt of Tamil Nadu"
+    ],
+    "ownershipStructure": "Subsidiary of Apex Development Financial Institution NABARD (100% owned by Govt of India).",
+    "sector": "Agriculture & Farmer Producer Organization (FPO) Financing",
+    "broadSector": "Public Sector (PSU)",
+    "governanceScore": 97,
+    "riskSeverity": "CLEAN",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "NONE"
+    ],
+    "detailedCaseHistory": "Apex institutional backing for farmer producer organizations with full credit support from NABARD.",
+    "earlierBankruptciesOrDefaults": "Zero defaults.",
+    "regulatoryActions": "Supervised by NABARD and RBI.",
+    "auditorAndAccountingQuality": "CAG supervised audit framework.",
+    "investmentVerdict": "PRISTINE (CRISIL AAA): Quasi-sovereign development financial institution safety.",
+    "lastRefinedDate": "2026-09-04"
+  },
+  "renew_power": {
+    "entityKey": "renew_power",
+    "entityName": "ReNew Power (Nasdaq: RNW)",
+    "aliasesAndSubsidiaries": [
+      "RENEW AKSHAY URJA LTD",
+      "RENEW POWER PVT LTD",
+      "RENEW ENERGY GLOBAL PLC"
+    ],
+    "promotersAndKeyPersons": [
+      "Sumant Sinha (Founder, Chairman & CEO)",
+      "CPPIB (Canada Pension Plan - Major Shareholder)",
+      "Goldman Sachs / ADIA"
+    ],
+    "ownershipStructure": "Publicly listed on Nasdaq (RNW) with backing from global sovereign wealth funds (CPPIB, ADIA, JERA).",
+    "sector": "Renewable Clean Energy (Solar & Wind IPP)",
+    "broadSector": "Renewable Energy & Infrastructure",
+    "governanceScore": 88,
+    "riskSeverity": "CLEAN",
+    "autoExcludeFromProposals": false,
+    "negativeMediaFlags": [
+      "NONE"
+    ],
+    "detailedCaseHistory": "India largest renewable energy independent power producer (>13 GW operational capacity) with sovereign SECI/NTPC 25-year PPAs.",
+    "earlierBankruptciesOrDefaults": "Zero debt defaults across domestic and global green bond issuances.",
+    "regulatoryActions": "Clean SEC and SEBI compliance.",
+    "auditorAndAccountingQuality": "Audited by S.R. Batliboi & Co. LLP (EY affiliate).",
+    "investmentVerdict": "TOP TIER (IND AA+ CE / CRISIL AA+): World-class sovereign PPA counterparties (SECI/NTPC) and CPPIB institutional governance.",
+    "lastRefinedDate": "2026-09-04"
+  }
+}

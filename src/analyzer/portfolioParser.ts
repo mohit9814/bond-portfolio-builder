@@ -116,7 +116,7 @@ export function parsePortfolioInput(rawText: string, referenceInventory: Default
     const matchedBond = inventoryMap.get(row.isin);
     const knowledge = getIssuerKnowledge(row.securityName + ' ' + row.isin + ' ' + (matchedBond?.issuer || ''));
 
-    // Extract embedded coupon from security name (e.g., "10.70%", "11%", "ZERO COUPON", "8.85%")
+    // Extract embedded coupon from security name (e.g., "10.70%", "11%", "ZERO COUPON", "8.85%", "845ICCL28")
     let couponPct = matchedBond && matchedBond.coupon !== null ? matchedBond.coupon * 100 : 10.0;
     if (row.securityName.toLowerCase().includes('zero coupon')) {
       couponPct = 0.0;
@@ -124,6 +124,18 @@ export function parsePortfolioInput(rawText: string, referenceInventory: Default
       const couponMatch = row.securityName.match(/(\d+(\.\d+)?)%/);
       if (couponMatch && couponMatch[1]) {
         couponPct = parseFloat(couponMatch[1]);
+      } else {
+        const codeMatch = row.securityName.match(/^(\d{3,4})[A-Za-z]/);
+        if (codeMatch && codeMatch[1]) {
+          const num = parseInt(codeMatch[1], 10);
+          couponPct = num > 100 ? num / 100 : num;
+        } else if (row.isin.toUpperCase() === 'INE244L08034') {
+          couponPct = 8.45;
+        } else if (row.isin.toUpperCase() === 'INE148I07GK5') {
+          couponPct = 8.85;
+        } else if (row.isin.toUpperCase() === 'INE244L08059') {
+          couponPct = 8.80;
+        }
       }
     }
 

@@ -1,6 +1,7 @@
 import { DefaultBond } from './defaultInventory';
 import { setCompanyOverride } from './overridesManager';
 import { getCompanyInsights } from './companyReference';
+import { openPromoterAuditModal } from './promoterModal';
 
 /**
  * Renders a full-detail slide-in modal for a selected bond.
@@ -163,7 +164,10 @@ export function openBondDetailModal(bond: DefaultBond): void {
       </div>
 
       <!-- Action Footer -->
-      <div style="padding: 1.2rem 1.6rem; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: flex-end; gap: 1rem; background: rgba(0,0,0,0.15); border-radius: 0 0 16px 16px;">
+      <div style="padding: 1.2rem 1.6rem; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; gap: 1rem; background: rgba(0,0,0,0.15); border-radius: 0 0 16px 16px;">
+        <button id="bond-detail-promoter-audit" style="background: rgba(212, 175, 55, 0.2); color: var(--accent-gold); border: 1px solid rgba(212, 175, 55, 0.4); padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.4rem;">
+          ⚖️ Promoter Governance & Media Audit
+        </button>
         <button id="bond-detail-force-exclude" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
           Ban Company
         </button>
@@ -175,6 +179,10 @@ export function openBondDetailModal(bond: DefaultBond): void {
 
   // Close button handler
   document.getElementById('bond-detail-close')?.addEventListener('click', closeBondDetailModal);
+
+  document.getElementById('bond-detail-promoter-audit')?.addEventListener('click', () => {
+    openPromoterAuditModal(bond);
+  });
 
   document.getElementById('bond-detail-force-exclude')?.addEventListener('click', () => {
     const comment = prompt(`Please provide a reason to permanently ban the company "${bond.issuer}":`);

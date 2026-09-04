@@ -1,5 +1,6 @@
 import { DefaultBond } from './defaultInventory';
 import { EngineHyperparameters, DEFAULT_HYPERPARAMETERS } from './engineSettingsManager';
+import { resolveBondEntity } from './entityResolver';
 
 export interface SelectedBond extends DefaultBond {
   allocationPercent: number;
@@ -8,6 +9,10 @@ export interface SelectedBond extends DefaultBond {
   bucketIndex: number;
   fdRate?: number;
   overrideJustification?: string;
+  canonicalEntityKey?: string;
+  canonicalEntityName?: string;
+  governanceScore?: number;
+  promoterRiskSeverity?: string;
 }
 
 export interface FDRateConfig {
@@ -58,6 +63,10 @@ export interface CompanyAllocation {
   guarantor?: string;
   guarantorRating?: string;
   ratingTrend?: 'stable' | 'improving' | 'deteriorating';
+  canonicalEntityKey?: string;
+  canonicalEntityName?: string;
+  governanceScore?: number;
+  promoterRiskSeverity?: string;
 }
 
 export interface QuarterlyCashflowItem {
@@ -89,6 +98,7 @@ export type EliminationReason =
   | 'TICKET_SIZE_TOO_LARGE' // Unit price exceeds single issuer cap (diversification rule)
   | 'BBB_TENOR_VIOLATION'  // BBB-rated bond with tenure > 12 months (regulatory risk cap)
   | 'BELOW_MIN_RATING'     // Rating below user-specified minimum
+  | 'PROMOTER_GOVERNANCE_RISK' // Flagged due to adverse promoter negative media / regulatory action
   | 'NOT_SELECTED';        // Passed all filters but not chosen by the optimizer (runner-up)
 
 export interface EliminatedBond {
@@ -320,8 +330,9 @@ export function generateBondPortfolio(
   );
   candidateBonds = candidateBonds.filter(b => {
     const u = getUnitPrice(b);
-    // If company is explicitly force-included by user, bypass ticket size guard
+    // If company is explicitly force-included by user or manually swapped in, bypass ticket size guard
     if (companyOverrides[b.issuer]?.action === 'INCLUDE') return true;
+    if (manualReplacements && Array.from(manualReplacements.values()).includes(b.isin)) return true;
     // If user explicitly enabled allowUnitOverflow, allow it
     if (hp.allowUnitOverflow) return true;
 
@@ -341,6 +352,20 @@ export function generateBondPortfolio(
     if (!isBetterThanBBB && b.months > hp.maxBBBTenorMonths && !relaxBBBCap) {
       return eliminate(b, 'BBB_TENOR_VIOLATION',
         `Rating ${b.rating} (BBB tier) with tenure ${b.months.toFixed(1)}m exceeds the ${hp.maxBBBTenorMonths}-month cap for sub-A bonds. Regulatory risk management rule.`);
+    }
+    return true;
+  });
+
+  // ─── Stage 5b: Promoter Governance, Negative Media & Regulatory Risk Gate ──
+  candidateBonds = candidateBonds.filter(b => {
+    // If company is explicitly force-included by user or manually swapped in, bypass promoter risk filter
+    if (companyOverrides[b.issuer]?.action === 'INCLUDE') return true;
+    if (manualReplacements && Array.from(manualReplacements.values()).includes(b.isin)) return true;
+
+    const entityRes = resolveBondEntity(b);
+    if (entityRes.autoExclude) {
+      return eliminate(b, 'PROMOTER_GOVERNANCE_RISK',
+        `Promoter Governance & Negative Media Alert: ${entityRes.exclusionReason || 'Adverse regulatory action or corporate governance dispute.'}`);
     }
     return true;
   });
@@ -441,6 +466,7 @@ export function generateBondPortfolio(
 
     const tempSelected: { bond: DefaultBond; bucketIndex: number }[] = [];
     const tempIssuers = new Set<string>();
+    const tempEntities = new Set<string>();
 
     if (manualReplacements) {
       for (const [bIndex, isin] of manualReplacements.entries()) {
@@ -448,6 +474,8 @@ export function generateBondPortfolio(
         if (targetBond) {
           tempSelected.push({ bond: targetBond, bucketIndex: bIndex });
           tempIssuers.add(targetBond.issuer);
+          const entityRes = resolveBondEntity(targetBond);
+          tempEntities.add(entityRes.canonicalEntityKey);
         }
       }
     }
@@ -455,8 +483,11 @@ export function generateBondPortfolio(
     const tryAddTemp = (bond: DefaultBond, bIdx: number): boolean => {
       if (tempSelected.some(s => s.bond.isin === bond.isin)) return false;
       if (tempIssuers.has(bond.issuer)) return false;
+      const entityRes = resolveBondEntity(bond);
+      if (tempEntities.has(entityRes.canonicalEntityKey)) return false;
       tempSelected.push({ bond, bucketIndex: bIdx });
       tempIssuers.add(bond.issuer);
+      tempEntities.add(entityRes.canonicalEntityKey);
       return true;
     };
 
@@ -846,6 +877,8 @@ export function generateBondPortfolio(
     const allocationPercent = allocatedAmount / totalInvestment;
     const fdRateForBond = getFDRateForTenure(s.bond.months);
 
+    const entityRes = resolveBondEntity(s.bond);
+
     selectedBonds.push({
       ...s.bond,
       allocationPercent,
@@ -853,7 +886,11 @@ export function generateBondPortfolio(
       expectedAnnualReturn: allocatedAmount * s.bond.yield,
       bucketIndex: s.bucketIndex,
       fdRate: fdRateForBond,
-      overrideJustification: companyOverrides[s.bond.issuer]?.justification
+      overrideJustification: companyOverrides[s.bond.issuer]?.justification,
+      canonicalEntityKey: entityRes.canonicalEntityKey,
+      canonicalEntityName: entityRes.canonicalEntityName,
+      governanceScore: entityRes.governanceScore,
+      promoterRiskSeverity: entityRes.riskSeverity
     });
 
     const issuer = s.bond.issuer;
@@ -866,6 +903,7 @@ export function generateBondPortfolio(
 
   const companyAllocations: CompanyAllocation[] = Object.keys(companyAllocMap).map(company => {
     const data = companyAllocMap[company];
+    const entityRes = resolveBondEntity(data.sampleBond);
     return {
       company,
       amount: data.amount,
@@ -875,7 +913,11 @@ export function generateBondPortfolio(
       sector: data.sampleBond.sector,
       guarantor: data.sampleBond.guarantor,
       guarantorRating: data.sampleBond.guarantorRating,
-      ratingTrend: data.sampleBond.ratingTrend
+      ratingTrend: data.sampleBond.ratingTrend,
+      canonicalEntityKey: entityRes.canonicalEntityKey,
+      canonicalEntityName: entityRes.canonicalEntityName,
+      governanceScore: entityRes.governanceScore,
+      promoterRiskSeverity: entityRes.riskSeverity
     };
   });
 

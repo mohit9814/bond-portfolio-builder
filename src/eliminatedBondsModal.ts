@@ -80,9 +80,16 @@ const REASON_META: Record<EliminationReason, ReasonMeta> = {
   USER_EXCLUDE: {
     label: "User Excluded",
     icon: "🚫",
-    color: "text-red-500",
-    bgColor: "bg-red-500/10",
+    color: "#ef4444",
+    bgColor: "rgba(239,68,68,0.12)",
     description: "You manually excluded this company."
+  },
+  PROMOTER_GOVERNANCE_RISK: {
+    label: "Promoter Governance / Negative Media",
+    icon: "⚖️",
+    color: "#f87171",
+    bgColor: "rgba(239, 68, 68, 0.15)",
+    description: "Excluded due to adverse promoter negative media, regulatory supervisory restrictions, or corporate governance litigation."
   }
 };
 

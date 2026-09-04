@@ -1,5 +1,6 @@
 import { generateBondPortfolio } from './bondEngine';
 import { DEFAULT_INVENTORY, DefaultBond } from './defaultInventory';
+import { resolveBondEntity, areBondsSameEntity } from './entityResolver';
 
 function runTests() {
   console.log('--- Running Bond Selection Engine Tests ---');
@@ -59,7 +60,8 @@ function runTests() {
 
   // Test 6: Manual swap
   const swapMap = new Map<number, string>();
-  const swapIsin = mockInventory[mockInventory.length - 1].isin;
+  const swapBond = mockInventory.find(b => !resolveBondEntity(b).autoExclude && (b.faceValue || 100000) <= 100000) || mockInventory[0];
+  const swapIsin = swapBond.isin;
   swapMap.set(0, swapIsin);
   const summarySwap = generateBondPortfolio(mockInventory, investment, fdRates, 'ALL', undefined, 10, undefined, swapMap);
   console.assert(
@@ -328,6 +330,7 @@ function runTests() {
   // ─── Test 15: Swap functionality completely replaces and removes original bond ───
   const isCandidateEligible = (b: DefaultBond) => {
     if (b.months < 7 || b.months > 24) return false;
+    if (resolveBondEntity(b).autoExclude) return false;
     const cat = (b.category || '').toLowerCase();
     if (cat.includes('bundle - flexi') || cat.includes('bundle-flexi')) return false;
     const symbol = b.rating.toUpperCase();
@@ -408,29 +411,31 @@ function runTests() {
 
     if (unselectedCands.length >= 2) {
       const repA = unselectedCands[0];
-      const repB = unselectedCands[1];
-      const multiSwapExcluded = new Set<string>([bondA.isin, bondB.isin]);
-      const multiSwapReplacements = new Map<number, string>([
-        [bondA.bucketIndex, repA.isin],
-        [bondB.bucketIndex, repB.isin]
-      ]);
+      const repB = unselectedCands.find(b => !areBondsSameEntity(b, repA));
+      if (repA && repB) {
+        const multiSwapExcluded = new Set<string>([bondA.isin, bondB.isin]);
+        const multiSwapReplacements = new Map<number, string>([
+          [bondA.bucketIndex, repA.isin],
+          [bondB.bucketIndex, repB.isin]
+        ]);
 
-      const multiSwapSummary = generateBondPortfolio(
-        mockInventory, investment, fdRates, 'ALL', undefined, 10,
-        multiSwapExcluded, multiSwapReplacements
-      );
+        const multiSwapSummary = generateBondPortfolio(
+          mockInventory, investment, fdRates, 'ALL', undefined, 10,
+          multiSwapExcluded, multiSwapReplacements
+        );
 
-      console.assert(
-        !multiSwapSummary.selectedBonds.some(b => b.isin === bondA.isin) &&
-        !multiSwapSummary.selectedBonds.some(b => b.isin === bondB.isin),
-        'FAIL Test 17a: Both swapped-out bonds must be absent from portfolio'
-      );
-      console.assert(
-        multiSwapSummary.selectedBonds.some(b => b.isin === repA.isin) &&
-        multiSwapSummary.selectedBonds.some(b => b.isin === repB.isin),
-        'FAIL Test 17b: Both replacement bonds must be present in portfolio'
-      );
-      console.log('Test 17 — Multi-bucket Swap: Multiple simultaneous swaps across buckets succeed with all initial bonds removed ✓');
+        console.assert(
+          !multiSwapSummary.selectedBonds.some(b => b.isin === bondA.isin) &&
+          !multiSwapSummary.selectedBonds.some(b => b.isin === bondB.isin),
+          'FAIL Test 17a: Both swapped-out bonds must be absent from portfolio'
+        );
+        console.assert(
+          multiSwapSummary.selectedBonds.some(b => b.isin === repA.isin) &&
+          multiSwapSummary.selectedBonds.some(b => b.isin === repB.isin),
+          'FAIL Test 17b: Both replacement bonds must be present in portfolio'
+        );
+        console.log('Test 17 — Multi-bucket Swap: Multiple simultaneous swaps across buckets succeed with all initial bonds removed ✓');
+      }
     }
   }
 
@@ -488,7 +493,7 @@ function runTests() {
   // A bond with unit price ₹6,16,650 (like Edelweiss) in a ₹10,00,000 portfolio
   const largeTicketBond: DefaultBond = {
     isin: 'INE657N07613',
-    issuer: 'EDELWEISS RURAL AND CORP',
+    issuer: 'PREMIER HIGH YIELD CORP',
     rating: 'AA',
     yield: 0.13,
     coupon: 0.12,
