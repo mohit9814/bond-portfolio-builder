@@ -241,7 +241,16 @@ export function openPromoterProfileModal(entityKeyOrName: string): void {
   document.getElementById('close-promoter-modal-btn')?.addEventListener('click', closeFn);
   document.getElementById('promoter-modal-close-footer')?.addEventListener('click', closeFn);
   container.addEventListener('click', (e) => {
-    if (e.target === container) closeFn();
+    const target = e.target as HTMLElement;
+    const link = target.closest('a') as HTMLAnchorElement;
+    if (link && link.href && link.href.startsWith('http')) {
+      e.stopPropagation();
+      window.open(link.href, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    if (e.target === container) {
+      closeFn();
+    }
   });
 }
 

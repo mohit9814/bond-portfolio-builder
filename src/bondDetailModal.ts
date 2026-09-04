@@ -68,6 +68,13 @@ export function openBondDetailModal(bond: DefaultBond): void {
   `;
 
   overlay.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const link = target.closest('a') as HTMLAnchorElement;
+    if (link && link.href && link.href.startsWith('http')) {
+      e.stopPropagation();
+      window.open(link.href, '_blank', 'noopener,noreferrer');
+      return;
+    }
     if (e.target === overlay) closeBondDetailModal();
   });
 

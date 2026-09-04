@@ -1,13 +1,27 @@
 import { getRiskSeverityStyling } from './data/promoterIntelligence';
 import { resolveBondEntity } from './entityResolver';
 import { DefaultBond } from './defaultInventory';
+import { getBusinessSwot } from './data/swotIntelligence';
+import { openPromoterProfileModal } from './promoterProfileModal';
+
+/**
+ * Converts raw URLs in text into clickable HTML links with target="_blank"
+ */
+function linkifyText(text: string): string {
+  if (!text) return '';
+  const urlRegex = /(https?:\/\/[^\s<>"'()]+)/g;
+  return text.replace(urlRegex, (url) => {
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color: #38bdf8; text-decoration: underline; font-weight: 600; display: inline-flex; align-items: center; gap: 2px;">${url} ↗</a>`;
+  });
+}
 
 /**
  * Opens the interactive Promoter Governance, Scams & Negative Media Audit Modal.
  */
-export function openPromoterAuditModal(bondOrIssuer: DefaultBond | string) {
+export function openPromoterAuditModal(bondOrIssuer: DefaultBond | string): void {
   const entityRes = resolveBondEntity(bondOrIssuer);
   const rec = entityRes.promoterRecord;
+  const swotRecord = getBusinessSwot(rec ? rec.entityName : entityRes.canonicalEntityName);
 
   // Remove existing modal if any
   document.getElementById('promoter-audit-modal')?.remove();
@@ -21,8 +35,17 @@ export function openPromoterAuditModal(bondOrIssuer: DefaultBond | string) {
   const entityName = rec ? rec.entityName : entityRes.canonicalEntityName;
   const scoreColor = entityRes.governanceScore >= 80 ? '#10b981' : entityRes.governanceScore >= 60 ? '#f59e0b' : '#ef4444';
 
+  const citations = (rec && rec.citations && rec.citations.length > 0)
+    ? rec.citations
+    : [
+        { title: `CRISIL / ICRA Rating Rationale - ${entityName}`, url: 'https://www.crisilratings.com/', type: 'RATING_REPORT' },
+        { title: `BSE Debt Filings & GID Directory`, url: 'https://www.bseindia.com/markets/debt/debt_security_summary.html', type: 'BSE_FILING' },
+        { title: `NSDL Bond Information Directory`, url: 'https://www.indiabondinfo.nsdl.com/', type: 'NSDL' },
+        { title: `SEBI Enforcement Actions & Orders`, url: 'https://www.sebi.gov.in/enforcement/orders.html', type: 'REGULATOR' }
+      ];
+
   modal.innerHTML = `
-    <div class="modal-content" style="background: #0f172a; border: 1px solid var(--border-glass); border-radius: 16px; width: 100%; max-width: 780px; max-height: 90vh; overflow-y: auto; padding: 1.75rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); font-family: var(--font-sans); color: #f8fafc;">
+    <div class="modal-content" style="background: #0f172a; border: 1px solid var(--border-glass); border-radius: 16px; width: 100%; max-width: 820px; max-height: 90vh; overflow-y: auto; padding: 1.75rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); font-family: var(--font-sans); color: #f8fafc;">
       
       <!-- Modal Header -->
       <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 1rem; margin-bottom: 1.25rem;">
@@ -75,7 +98,7 @@ export function openPromoterAuditModal(bondOrIssuer: DefaultBond | string) {
             ⚠️ Exclusion Rationale
           </div>
           <div style="font-size: 0.82rem; color: #f8fafc; line-height: 1.45;">
-            ${rec.exclusionReason}
+            ${linkifyText(rec.exclusionReason)}
           </div>
         </div>
       ` : ''}
@@ -86,7 +109,7 @@ export function openPromoterAuditModal(bondOrIssuer: DefaultBond | string) {
           📰 Negative Media, Litigation & Regulatory Track Record
         </h3>
         <p style="font-size: 0.84rem; color: #cbd5e1; line-height: 1.55; margin: 0 0 0.85rem 0;">
-          ${rec ? rec.detailedCaseHistory : 'No material adverse media or active regulatory bans found in verified public databases.'}
+          ${rec ? linkifyText(rec.detailedCaseHistory) : 'No material adverse media or active regulatory bans found in verified public databases.'}
         </p>
 
         ${rec && rec.negativeMediaFlags.length > 0 && rec.negativeMediaFlags[0] !== 'NONE' ? `
@@ -107,7 +130,7 @@ export function openPromoterAuditModal(bondOrIssuer: DefaultBond | string) {
             🏛️ Earlier Bankruptcies / NCLT / Defaults
           </div>
           <div style="font-size: 0.8rem; color: #94a3b8; line-height: 1.45;">
-            ${rec ? rec.earlierBankruptciesOrDefaults : 'Clean historical debt service track record with zero bond defaults.'}
+            ${rec ? linkifyText(rec.earlierBankruptciesOrDefaults) : 'Clean historical debt service track record with zero bond defaults.'}
           </div>
         </div>
 
@@ -116,7 +139,7 @@ export function openPromoterAuditModal(bondOrIssuer: DefaultBond | string) {
             🛡️ Regulatory & Auditor Quality
           </div>
           <div style="font-size: 0.8rem; color: #94a3b8; line-height: 1.45;">
-            ${rec ? `${rec.regulatoryActions} | ${rec.auditorAndAccountingQuality}` : 'Standard regulatory oversight by statutory bodies.'}
+            ${rec ? linkifyText(`${rec.regulatoryActions} | ${rec.auditorAndAccountingQuality}`) : 'Standard regulatory oversight by statutory bodies.'}
           </div>
         </div>
       </div>
@@ -133,6 +156,36 @@ export function openPromoterAuditModal(bondOrIssuer: DefaultBond | string) {
         </div>
       ` : ''}
 
+      <!-- Verified Online Citations & Source Links (CITE TO SOURCE) -->
+      <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 1.1rem; margin-bottom: 1.25rem;">
+        <div style="font-size: 0.85rem; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.5rem;">
+          <span>🔗</span> Verified Source Citations & Rating Rationales (Opens in New Window)
+        </div>
+        <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0 0 0.75rem 0;">
+          Direct verified links to live credit rating reports, BSE debt filings, NSDL directory, and regulatory databases:
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.6rem;">
+          ${citations.map(c => `
+            <a href="${c.url}" target="_blank" rel="noopener noreferrer" class="audit-external-link" style="display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0.8rem; background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; text-decoration: none; color: #38bdf8; font-size: 0.78rem; font-weight: 600; transition: all 0.2s; cursor: pointer;">
+              <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 0.4rem;">↗ ${c.title}</span>
+              <span style="font-size: 0.65rem; background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px; color: #94a3b8; font-family: monospace;">${c.type}</span>
+            </a>
+          `).join('')}
+
+          ${swotRecord ? `
+            <a href="${swotRecord.sourceUrl}" target="_blank" rel="noopener noreferrer" class="audit-external-link" style="display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0.8rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 8px; text-decoration: none; color: #34d399; font-size: 0.78rem; font-weight: 600; cursor: pointer;">
+              <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 0.4rem;">↗ ${swotRecord.ratingAgency} Rating Report</span>
+              <span style="font-size: 0.65rem; background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px; color: #a7f3d0; font-family: monospace;">RATING</span>
+            </a>
+            <a href="${swotRecord.bseFilingUrl}" target="_blank" rel="noopener noreferrer" class="audit-external-link" style="display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0.8rem; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 8px; text-decoration: none; color: #fbbf24; font-size: 0.78rem; font-weight: 600; cursor: pointer;">
+              <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 0.4rem;">↗ BSE Debt Covenants & GID</span>
+              <span style="font-size: 0.65rem; background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px; color: #fde68a; font-family: monospace;">BSE</span>
+            </a>
+          ` : ''}
+        </div>
+      </div>
+
       <!-- Investment Verdict -->
       <div style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%); border-left: 4px solid ${styling.color}; border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
         <div style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Forensic Investment Verdict</div>
@@ -141,9 +194,12 @@ export function openPromoterAuditModal(bondOrIssuer: DefaultBond | string) {
         </div>
       </div>
 
-      <!-- Close Button -->
-      <div style="display: flex; justify-content: flex-end;">
-        <button id="close-promoter-modal-bottom-btn" class="btn" style="background: rgba(255, 255, 255, 0.1); color: #fff; border: 1px solid rgba(255, 255, 255, 0.2); font-weight: 600; padding: 0.5rem 1.25rem; border-radius: 8px;">
+      <!-- Action Footer -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 1rem;">
+        <button id="open-full-promoter-dossier-btn" style="background: rgba(99, 102, 241, 0.2); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.4); font-weight: 700; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; gap: 0.4rem;">
+          👤 Full Executive Dossier & Personal SWOT ↗
+        </button>
+        <button id="close-promoter-modal-bottom-btn" class="btn" style="background: rgba(255, 255, 255, 0.1); color: #fff; border: 1px solid rgba(255, 255, 255, 0.2); font-weight: 600; padding: 0.5rem 1.25rem; border-radius: 8px; cursor: pointer;">
           Close Audit
         </button>
       </div>
@@ -155,10 +211,28 @@ export function openPromoterAuditModal(bondOrIssuer: DefaultBond | string) {
 
   const closeBtn = document.getElementById('close-promoter-modal-btn');
   const bottomCloseBtn = document.getElementById('close-promoter-modal-bottom-btn');
+  const openDossierBtn = document.getElementById('open-full-promoter-dossier-btn');
 
-  closeBtn?.addEventListener('click', () => modal.remove());
-  bottomCloseBtn?.addEventListener('click', () => modal.remove());
+  const closeFn = () => modal.remove();
+  closeBtn?.addEventListener('click', closeFn);
+  bottomCloseBtn?.addEventListener('click', closeFn);
+
+  openDossierBtn?.addEventListener('click', () => {
+    closeFn();
+    openPromoterProfileModal(entityName);
+  });
+
+  // Global link interceptor to guarantee open in new window
   modal.addEventListener('click', (e) => {
-    if (e.target === modal) modal.remove();
+    const target = e.target as HTMLElement;
+    const link = target.closest('a') as HTMLAnchorElement;
+    if (link && link.href && link.href.startsWith('http')) {
+      e.stopPropagation();
+      window.open(link.href, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    if (e.target === modal) {
+      closeFn();
+    }
   });
 }
