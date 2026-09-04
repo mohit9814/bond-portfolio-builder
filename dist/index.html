@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bond Ladder Portfolio Architect</title>
     <meta name="description" content="Generate a well-diversified bond portfolio maturity ladder and compare returns with Fixed Deposits." />
-    <script type="module" crossorigin src="/assets/index-DLuqQAgl.js"></script>
+    <script type="module" crossorigin src="/assets/index-O_f5luXu.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/index-6MQVPjXe.css">
   </head>
   <body>
@@ -524,6 +524,15 @@
                 <option value="A">A Category (A+, A, A-)</option>
                 <option value="BBB">BBB Category</option>
                 <option value="SUB_BBB">High Yield / Sub-BBB</option>
+              </select>
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+              <label for="screener-swot" style="font-size: 0.8rem;">📊 Fundamental SWOT</label>
+              <select id="screener-swot" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.55rem 0.75rem; color: var(--text-primary); font-size: 0.85rem; outline: none; width: 100%;">
+                <option value="">All Fundamentals</option>
+                <option value="high_crar">High Capital Buffer (CRAR ≥ 20%)</option>
+                <option value="low_npa">Low NPA Asset Quality (GNPA &lt; 3%)</option>
+                <option value="institutional">Institutional / AAA Grade</option>
               </select>
             </div>
             <div class="input-group" style="margin-bottom: 0;">

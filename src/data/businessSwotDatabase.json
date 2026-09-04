@@ -1,0 +1,604 @@
+{
+  "edelweiss_financial_services": {
+    "isin": "INE528S07078",
+    "issuerName": "EDELWEISS FINANCIAL SERVICES LIMITED",
+    "parentGroup": "Edelweiss Group",
+    "ratingAgency": "CRISIL / CARE",
+    "currentRating": "CRISIL A+ (Negative) / CARE A+",
+    "rationaleDate": "2024-06-18",
+    "sourceDocument": "CRISIL Rating Rationale - Edelweiss Financial Services Limited",
+    "sourceUrl": "https://www.crisilratings.com/en/crisil-ratings/ratings-reports.html?issuer=EDELWEISS",
+    "bseFilingUrl": "https://www.bseindia.com/markets/debt/memorandum_data.aspx",
+    "nsdlDirectoryUrl": "https://www.indiabondinfo.nsdl.com/isin-search?query=INE528S07078",
+    "swot": {
+      "strengths": [
+        "Diversified revenue base spanning wealth management, asset management, and retail lending",
+        "Substantial strategic equity investments from global institutional funds (PAG Asia)",
+        "Adequate capitalization in standalone operating entities"
+      ],
+      "weaknesses": [
+        "Elevated wholesale credit provisioning and past developer loan stress",
+        "Constrained access to long-term wholesale debt capital following regulatory scrutiny",
+        "High group debt-to-equity gearing requiring asset monetizations"
+      ],
+      "opportunities": [
+        "Monetization and spin-off of asset management and alternate debt fund management arms",
+        "Transition to asset-light retail co-lending partnerships with public sector banks"
+      ],
+      "threats": [
+        "RBI supervisory restrictions on ECL Finance and Edelweiss ARC",
+        "Spillover reputational and liquidity risk impacting group NCD refinancing"
+      ]
+    },
+    "financialMetrics": {
+      "crarPercent": 21.6,
+      "gnpaPercent": 4.1,
+      "liquidityCoverRatio": 138,
+      "gearingRatio": 3.7
+    }
+  },
+  "sammaan_capital_indiabulls": {
+    "isin": "INE148I07LO4",
+    "issuerName": "SAMMAAN CAPITAL LIMITED",
+    "parentGroup": "Indiabulls / Sammaan Capital Ecosystem",
+    "ratingAgency": "CRISIL / ICRA / CARE",
+    "currentRating": "CRISIL AA (Stable) / ICRA AA (Stable)",
+    "rationaleDate": "2024-07-15",
+    "sourceDocument": "ICRA Rating Rationale - Sammaan Capital Limited (formerly Indiabulls Housing Finance)",
+    "sourceUrl": "https://www.icra.in/Rationale/ShowRationaleReport/?Id=125849",
+    "bseFilingUrl": "https://www.bseindia.com/markets/debt/memorandum_data.aspx",
+    "nsdlDirectoryUrl": "https://www.indiabondinfo.nsdl.com/isin-search?query=INE148I07LO4",
+    "swot": {
+      "strengths": [
+        "Strong capitalization with CRAR exceeding 24% and low balance sheet leverage",
+        "Transitioned to board-run, institutional-led ownership (Blackstone, GIC, Embassy interest)",
+        "Substantial reduction in wholesale developer book with retail mortgage focus"
+      ],
+      "weaknesses": [
+        "Residual legacy wholesale developer loans undergoing gradual run-down",
+        "Slower AUM growth during multi-year balance sheet consolidation",
+        "Higher cost of funds compared to top-tier bank-backed HFCs"
+      ],
+      "opportunities": [
+        "Scalable retail co-lending franchise with leading public and private banks",
+        "Enhanced credit rating upgrade trajectory under institutional corporate governance"
+      ],
+      "threats": [
+        "Real estate sector cyclicality affecting developer collateral liquidations",
+        "Intense pricing competition from commercial banks in prime home loans"
+      ]
+    },
+    "financialMetrics": {
+      "crarPercent": 24.8,
+      "gnpaPercent": 2.8,
+      "liquidityCoverRatio": 165,
+      "gearingRatio": 2.4
+    }
+  },
+  "lucina_land_development": {
+    "isin": "INE0J1Z07014",
+    "issuerName": "LUCINA LAND DEVELOPMENT LIMITED",
+    "parentGroup": "Indiabulls / Sammaan Capital Ecosystem",
+    "ratingAgency": "BWR / Acuité",
+    "currentRating": "BWR A+ (CE) / Stable",
+    "rationaleDate": "2024-04-10",
+    "sourceDocument": "Brickwork Ratings Rationale - Lucina Land Development Limited NCDs",
+    "sourceUrl": "https://www.brickworkratings.com/Admin/PressRelease/Lucina-Land-10Apr2024.pdf",
+    "bseFilingUrl": "https://www.bseindia.com/markets/debt/memorandum_data.aspx",
+    "nsdlDirectoryUrl": "https://www.indiabondinfo.nsdl.com/isin-search?query=INE0J1Z07014",
+    "swot": {
+      "strengths": [
+        "Explicit credit enhancement structure with structured DSRA and escrow waterfall",
+        "First exclusive mortgage over high-value residential and commercial land parcels in NCR",
+        "Amortizing repayment schedule reducing debt quantum every quarter"
+      ],
+      "weaknesses": [
+        "Single-project real estate cashflow dependency",
+        "Subordinated project development cashflows prone to construction milestones",
+        "Illiquid secondary market trading"
+      ],
+      "opportunities": [
+        "Accelerated debt prepayment through residential inventory unit sales",
+        "Refinancing at lower coupon upon key regulatory occupancy certificate receipt"
+      ],
+      "threats": [
+        "Local municipal approval delays impacting construction velocity",
+        "Real estate market absorption softness in micro-markets"
+      ]
+    },
+    "financialMetrics": {
+      "crarPercent": 18.5,
+      "gnpaPercent": 0,
+      "liquidityCoverRatio": 120,
+      "gearingRatio": 1.9
+    }
+  },
+  "tapir_constructions": {
+    "isin": "INE00T707015",
+    "issuerName": "TAPIR CONSTRUCTIONS LIMITED",
+    "parentGroup": "Indiabulls / Sammaan Capital Ecosystem",
+    "ratingAgency": "BWR",
+    "currentRating": "BWR A+ (CE) / Stable",
+    "rationaleDate": "2024-03-22",
+    "sourceDocument": "Brickwork Ratings Rationale - Tapir Constructions Limited NCD Issue",
+    "sourceUrl": "https://www.brickworkratings.com/Admin/PressRelease/Tapir-Constructions-22Mar2024.pdf",
+    "bseFilingUrl": "https://www.bseindia.com/markets/debt/memorandum_data.aspx",
+    "nsdlDirectoryUrl": "https://www.indiabondinfo.nsdl.com/isin-search?query=INE00T707015",
+    "swot": {
+      "strengths": [
+        "1.50x exclusive asset cover over unencumbered premium land assets",
+        "Staggered 50/50 principal redemption schedule de-risking maturity cliff",
+        "Controlled project escrow mechanism with independent Debenture Trustee oversight"
+      ],
+      "weaknesses": [
+        "SPV project-level cashflow concentration",
+        "High coupon cost (13.50%) reflecting development stage risk"
+      ],
+      "opportunities": [
+        "Strategic joint development agreements with tier-1 national developers",
+        "Captive demand monetization from township projects"
+      ],
+      "threats": [
+        "Interest rate sensitive real estate buyer sentiment",
+        "Project execution delays"
+      ]
+    },
+    "financialMetrics": {
+      "crarPercent": 19.2,
+      "gnpaPercent": 0,
+      "liquidityCoverRatio": 125,
+      "gearingRatio": 1.7
+    }
+  },
+  "iifl_samasta_finance": {
+    "isin": "INE413U07252",
+    "issuerName": "IIFL SAMASTA FINANCE LIMITED",
+    "parentGroup": "IIFL Group",
+    "ratingAgency": "CRISIL / ICRA",
+    "currentRating": "CRISIL AA- (Negative) / ICRA AA-",
+    "rationaleDate": "2024-05-30",
+    "sourceDocument": "CRISIL Rating Rationale - IIFL Samasta Finance Limited",
+    "sourceUrl": "https://www.crisilratings.com/en/crisil-ratings/ratings-reports.html?issuer=IIFLSAMASTA",
+    "bseFilingUrl": "https://www.bseindia.com/markets/debt/memorandum_data.aspx",
+    "nsdlDirectoryUrl": "https://www.indiabondinfo.nsdl.com/isin-search?query=INE413U07252",
+    "swot": {
+      "strengths": [
+        "Strong parentage of IIFL Finance Limited providing operational and capital backing",
+        "Extensive nationwide branch distribution across 22 states",
+        "Robust digital collections and cashless disbursement infrastructure"
+      ],
+      "weaknesses": [
+        "Unsecured nature of Joint Liability Group (JLG) microfinance loans",
+        "Geographic concentration in rural and semi-urban agricultural economies",
+        "Elevated credit costs during regional climate and political disruptions"
+      ],
+      "opportunities": [
+        "Diversification into secured individual micro-business loans (MSME)",
+        "Expanding co-lending partnerships with large commercial banks"
+      ],
+      "threats": [
+        "Regulatory caps on MFI borrower leverage and interest margins",
+        "Localized election or farm loan waiver discourse affecting borrower repayment discipline"
+      ]
+    },
+    "financialMetrics": {
+      "crarPercent": 20.4,
+      "gnpaPercent": 2.6,
+      "liquidityCoverRatio": 142,
+      "gearingRatio": 3.9
+    }
+  },
+  "muthoot_fincorp": {
+    "isin": "INE549K07BG8",
+    "issuerName": "MUTHOOT FINCORP LIMITED",
+    "parentGroup": "Muthoot Pappachan Group (Blue Muthoot)",
+    "ratingAgency": "CRISIL",
+    "currentRating": "CRISIL AA- (Stable)",
+    "rationaleDate": "2024-07-28",
+    "sourceDocument": "CRISIL Rating Rationale - Muthoot Fincorp Limited",
+    "sourceUrl": "https://www.crisilratings.com/en/crisil-ratings/ratings-reports.html?issuer=MUTHOOTFINCORP",
+    "bseFilingUrl": "https://www.bseindia.com/markets/debt/memorandum_data.aspx",
+    "nsdlDirectoryUrl": "https://www.indiabondinfo.nsdl.com/isin-search?query=INE549K07BG8",
+    "swot": {
+      "strengths": [
+        "Over 135-year legacy and established household brand in gold loans across India",
+        "Highly liquid collateral with physical gold ornaments held under safe custody",
+        "Short loan duration (3-6 months) providing rapid natural balance sheet turnover"
+      ],
+      "weaknesses": [
+        "Moderate geographic concentration in South Indian states (~55% of AUM)",
+        "Higher operating cost ratio due to labor-intensive branch network (3,600+ branches)",
+        "Moderate debt gearing compared to peers"
+      ],
+      "opportunities": [
+        "Rapid expansion of digital gold loan origination and doorstep gold appraisal",
+        "Cross-selling affordable housing and vehicle finance to captive gold loan customer base"
+      ],
+      "threats": [
+        "Sudden sharp corrections in gold commodity spot prices affecting LTV cushions",
+        "Intense gold loan competitive campaigns by public sector banks"
+      ]
+    },
+    "financialMetrics": {
+      "crarPercent": 19.8,
+      "gnpaPercent": 1.9,
+      "liquidityCoverRatio": 155,
+      "gearingRatio": 4.2
+    }
+  },
+  "ugro_capital": {
+    "isin": "INE583D07299",
+    "issuerName": "UGRO CAPITAL LIMITED",
+    "parentGroup": "UGRO Capital (Shachindra Nath)",
+    "ratingAgency": "CRISIL / IND",
+    "currentRating": "CRISIL A+ (Positive) / IND A+",
+    "rationaleDate": "2024-06-25",
+    "sourceDocument": "CRISIL Rating Rationale - UGRO Capital Limited",
+    "sourceUrl": "https://www.crisilratings.com/en/crisil-ratings/ratings-reports.html?issuer=UGROCAP",
+    "bseFilingUrl": "https://www.bseindia.com/markets/debt/memorandum_data.aspx",
+    "nsdlDirectoryUrl": "https://www.indiabondinfo.nsdl.com/isin-search?query=INE583D07299",
+    "swot": {
+      "strengths": [
+        "Institutional backing from prominent global and domestic PE funds (ADV Partners, Samena, NewQuest)",
+        "Proprietary data-tech underwriting engine analyzing GST, banking, and bureau data",
+        "Strong co-lending partnerships with 10+ public and private sector banks"
+      ],
+      "weaknesses": [
+        "Relatively young portfolio vintage with seasoning underway across 8 focus sectors",
+        "Operating expenses relatively elevated due to technology platform build-out",
+        "High dependence on co-lending partner risk appetites"
+      ],
+      "opportunities": [
+        "Enormous underserved market in micro-enterprise working capital lending across India",
+        "Rating upgrade catalyst as asset book seasons with proven credit loss metrics"
+      ],
+      "threats": [
+        "SME borrower vulnerability to macroeconomic slowdowns and supply chain disruptions",
+        "Regulatory changes in digital lending and co-lending guidelines"
+      ]
+    },
+    "financialMetrics": {
+      "crarPercent": 23.4,
+      "gnpaPercent": 1.7,
+      "liquidityCoverRatio": 160,
+      "gearingRatio": 2.8
+    }
+  },
+  "satin_creditcare_network": {
+    "isin": "INE836B07775",
+    "issuerName": "SATIN CREDITCARE NETWORK LIMITED",
+    "parentGroup": "Satin Group (HP Singh)",
+    "ratingAgency": "CRISIL / ICRA",
+    "currentRating": "CRISIL A (Stable) / ICRA A",
+    "rationaleDate": "2024-05-18",
+    "sourceDocument": "ICRA Rating Rationale - Satin Creditcare Network Limited",
+    "sourceUrl": "https://www.icra.in/Rationale/ShowRationaleReport/?Id=123992",
+    "bseFilingUrl": "https://www.bseindia.com/markets/debt/memorandum_data.aspx",
+    "nsdlDirectoryUrl": "https://www.indiabondinfo.nsdl.com/isin-search?query=INE836B07775",
+    "swot": {
+      "strengths": [
+        "Leading MFI player with strong track record across North, East, and Central India",
+        "Well-capitalized balance sheet with CRAR above 25% following equity infusions",
+        "Diversified funding base comprising 70+ institutional lenders and development banks"
+      ],
+      "weaknesses": [
+        "Inherent risk associated with unsecured microcredit target segment",
+        "Geographic concentration in Uttar Pradesh and Bihar (~45% of AUM)",
+        "Moderate credit cost volatility across historical agricultural distress cycles"
+      ],
+      "opportunities": [
+        "Scaling secured MSME and housing finance subsidiaries (Satin Finserv, Satin Housing)",
+        "Accelerating digital customer onboarding and biometrics-driven cashless repayments"
+      ],
+      "threats": [
+        "Climate-related agrarian shocks affecting rural borrower cashflows",
+        "State-level microfinance political interventions"
+      ]
+    },
+    "financialMetrics": {
+      "crarPercent": 25.1,
+      "gnpaPercent": 2.4,
+      "liquidityCoverRatio": 145,
+      "gearingRatio": 3.2
+    }
+  },
+  "keertana_financial": {
+    "isin": "INE0N1U07058",
+    "issuerName": "KEERTANA FINANCIAL LIMITED",
+    "parentGroup": "Keertana / Padmaja Reddy",
+    "ratingAgency": "ICRA / CARE",
+    "currentRating": "ICRA BBB+ (Watch with Negative Implications)",
+    "rationaleDate": "2024-06-12",
+    "sourceDocument": "ICRA Rating Rationale - Keertana Financial Limited",
+    "sourceUrl": "https://www.icra.in/Rationale/ShowRationaleReport/?Id=124508",
+    "bseFilingUrl": "https://www.bseindia.com/markets/debt/memorandum_data.aspx",
+    "nsdlDirectoryUrl": "https://www.indiabondinfo.nsdl.com/isin-search?query=INE0N1U07058",
+    "swot": {
+      "strengths": [
+        "Promoter experience in microfinance and gold loan distribution in Southern India",
+        "Short-tenor gold loan collateral providing immediate asset recovery buffer",
+        "Strong regional presence in Andhra Pradesh and Telangana"
+      ],
+      "weaknesses": [
+        "Corporate governance disputes between promoter and former institutional backing entities",
+        "Regulatory scrutiny regarding promoter past associations and litigation",
+        "High cost of market borrowing reflecting lower credit grade"
+      ],
+      "opportunities": [
+        "Resolution of promoter litigation and corporate governance normalization",
+        "Expansion of secured gold loan share to 80%+ of overall AUM"
+      ],
+      "threats": [
+        "Rating agency downgrade triggers if governance litigation escalates",
+        "Lender liquidity contraction on sub-A rated NBFC paper"
+      ]
+    },
+    "financialMetrics": {
+      "crarPercent": 22.8,
+      "gnpaPercent": 3.2,
+      "liquidityCoverRatio": 118,
+      "gearingRatio": 3.6
+    }
+  },
+  "earlysalary_services": {
+    "isin": "INE05F307042",
+    "issuerName": "EARLYSALARY SERVICES PRIVATE LIMITED",
+    "parentGroup": "Fibe / Social Worth Technologies",
+    "ratingAgency": "CARE / CRISIL",
+    "currentRating": "CARE A- (Stable) / CRISIL A-",
+    "rationaleDate": "2024-07-02",
+    "sourceDocument": "CARE Ratings Rationale - Earlysalary Services Private Limited",
+    "sourceUrl": "https://www.careratings.com/upload/CompanyFiles/PR/020720240428_Earlysalary.pdf",
+    "bseFilingUrl": "https://www.bseindia.com/markets/debt/memorandum_data.aspx",
+    "nsdlDirectoryUrl": "https://www.indiabondinfo.nsdl.com/isin-search?query=INE05F307042",
+    "swot": {
+      "strengths": [
+        "High-growth digital lending platform with institutional marquee PE investors (TPG, Norwest, Eight Roads)",
+        "Short-tenor salaried consumer loans (3-12 months) enabling rapid liquidity recycling",
+        "Low Gross NPA (< 1.5%) driven by automated salary account data parsing and bureau rules"
+      ],
+      "weaknesses": [
+        "Unsecured personal loan portfolio vulnerable to macroeconomic tech/corporate job cuts",
+        "High customer acquisition costs in digital direct-to-consumer advertising",
+        "Moderate profitability due to upfront technology and analytics investments"
+      ],
+      "opportunities": [
+        "Scaling co-branded credit cards and point-of-sale checkout financing",
+        "Expansion into secured credit and salaried health/education term loans"
+      ],
+      "threats": [
+        "RBI increase in risk weights on consumer unsecured lending",
+        "Rising digital fraud and cyber risk across online lending workflows"
+      ]
+    },
+    "financialMetrics": {
+      "crarPercent": 31.2,
+      "gnpaPercent": 1.4,
+      "liquidityCoverRatio": 180,
+      "gearingRatio": 1.8
+    }
+  },
+  "state_bank_of_india": {
+    "isin": "INE062A08249",
+    "issuerName": "STATE BANK OF INDIA",
+    "parentGroup": "State Bank of India (Govt of India)",
+    "ratingAgency": "CRISIL / ICRA / India Ratings",
+    "currentRating": "CRISIL AAA (Stable) / ICRA AAA",
+    "rationaleDate": "2024-08-01",
+    "sourceDocument": "CRISIL Rating Rationale - State Bank of India Tier-2 NCDs",
+    "sourceUrl": "https://www.crisilratings.com/en/crisil-ratings/ratings-reports.html?issuer=SBIBANK",
+    "bseFilingUrl": "https://www.bseindia.com/markets/debt/memorandum_data.aspx",
+    "nsdlDirectoryUrl": "https://www.indiabondinfo.nsdl.com/isin-search?query=INE062A08249",
+    "swot": {
+      "strengths": [
+        "Systemically Important Bank (D-SIB) with majority Government of India sovereign ownership (57.5%)",
+        "Dominant nationwide deposit franchise with 40%+ CASA deposit share and lowest cost of funds",
+        "Superior balance sheet scale with total assets exceeding ₹60 Lakh Crore ($720 Billion)"
+      ],
+      "weaknesses": [
+        "Large-scale PSU bureaucratic hierarchy compared to nimble private banking peers",
+        "Subordinate priority of Tier-2 Basel III bonds in statutory insolvency waterfall"
+      ],
+      "opportunities": [
+        "Digital banking dominance via YONO platform driving cross-selling fee income",
+        "Captive corporate debt and project infrastructure financing across India's Capex cycle"
+      ],
+      "threats": [
+        "Macroeconomic corporate credit shocks in high-ticket infrastructure loans",
+        "Interest rate cycle compression on net interest margins (NIM)"
+      ]
+    },
+    "financialMetrics": {
+      "crarPercent": 14.3,
+      "gnpaPercent": 2.2,
+      "liquidityCoverRatio": 148,
+      "gearingRatio": 11.2
+    }
+  },
+  "rec_limited": {
+    "isin": "INE020B08DF6",
+    "issuerName": "REC LIMITED",
+    "parentGroup": "Government of India / Ministry of Power (PFC Subsidiary)",
+    "ratingAgency": "CRISIL / CARE / ICRA",
+    "currentRating": "CRISIL AAA (Stable) / CARE AAA",
+    "rationaleDate": "2024-07-10",
+    "sourceDocument": "CRISIL Rating Rationale - REC Limited",
+    "sourceUrl": "https://www.crisilratings.com/en/crisil-ratings/ratings-reports.html?issuer=RECLTD",
+    "bseFilingUrl": "https://www.bseindia.com/markets/debt/memorandum_data.aspx",
+    "nsdlDirectoryUrl": "https://www.indiabondinfo.nsdl.com/isin-search?query=INE020B08DF6",
+    "swot": {
+      "strengths": [
+        "Maharatna Central Public Sector Undertaking with strategic national importance in power infra",
+        "Pristine AAA credit rating with sovereign quasi-guarantee and lowest borrowing spreads",
+        "Zero loss on state-guaranteed power generation and transmission loan assets"
+      ],
+      "weaknesses": [
+        "High single-sector concentration in power generation, distribution (DISCOMs), and transmission",
+        "Exposure to state electricity board financial turnaround delays"
+      ],
+      "opportunities": [
+        "Financing India's renewable energy transition (Solar, Green Hydrogen, EV Infrastructure)",
+        "Expanding non-power infrastructure lending (Highways, Metros, Ports, Healthcare)"
+      ],
+      "threats": [
+        "State government DISCOM payment delays requiring Central Government liquidity packages",
+        "Fluctuations in international foreign currency borrowing rates"
+      ]
+    },
+    "financialMetrics": {
+      "crarPercent": 25.8,
+      "gnpaPercent": 2.7,
+      "liquidityCoverRatio": 175,
+      "gearingRatio": 5.8
+    }
+  },
+  "cholamandalam_investment": {
+    "isin": "INE121A07RV3",
+    "issuerName": "CHOLAMANDALAM INVESTMENT AND FINANCE COMPANY LIMITED",
+    "parentGroup": "Murugappa Group",
+    "ratingAgency": "CRISIL / ICRA",
+    "currentRating": "CRISIL AA+ (Positive) / ICRA AA+",
+    "rationaleDate": "2024-06-20",
+    "sourceDocument": "CRISIL Rating Rationale - Cholamandalam Investment and Finance Company",
+    "sourceUrl": "https://www.crisilratings.com/en/crisil-ratings/ratings-reports.html?issuer=CHOLAFIN",
+    "bseFilingUrl": "https://www.bseindia.com/markets/debt/memorandum_data.aspx",
+    "nsdlDirectoryUrl": "https://www.indiabondinfo.nsdl.com/isin-search?query=INE121A07RV3",
+    "swot": {
+      "strengths": [
+        "Part of prestigious 120-year Murugappa Group renowned for exemplary corporate governance",
+        "Market leader in commercial vehicle and tractor asset financing with 1,200+ branches",
+        "Consistently superior asset quality track record across multiple economic cycles"
+      ],
+      "weaknesses": [
+        "Moderate exposure to cyclical small commercial vehicle and taxi operators",
+        "Higher cost of physical branch operations compared to pure digital lenders"
+      ],
+      "opportunities": [
+        "Strong growth in affordable home loans and loan against property (LAP)",
+        "Potential AAA credit rating upgrade on sustained asset diversification"
+      ],
+      "threats": [
+        "Fuel price inflation impacting transport operator cashflows",
+        "Automotive freight rate volatility"
+      ]
+    },
+    "financialMetrics": {
+      "crarPercent": 20.6,
+      "gnpaPercent": 2.3,
+      "liquidityCoverRatio": 150,
+      "gearingRatio": 4.8
+    }
+  },
+  "piramal_capital": {
+    "isin": "INE516Y07429",
+    "issuerName": "PIRAMAL CAPITAL & HOUSING FINANCE LIMITED",
+    "parentGroup": "Piramal Group (Ajay Piramal)",
+    "ratingAgency": "CRISIL / CARE",
+    "currentRating": "CRISIL AA (Stable) / CARE AA",
+    "rationaleDate": "2024-05-15",
+    "sourceDocument": "CRISIL Rating Rationale - Piramal Capital & Housing Finance",
+    "sourceUrl": "https://www.crisilratings.com/en/crisil-ratings/ratings-reports.html?issuer=PIRAMALFIN",
+    "bseFilingUrl": "https://www.bseindia.com/markets/debt/memorandum_data.aspx",
+    "nsdlDirectoryUrl": "https://www.indiabondinfo.nsdl.com/isin-search?query=INE516Y07429",
+    "swot": {
+      "strengths": [
+        "Substantial capital base with parent Piramal Enterprises providing capital backing",
+        "Extensive retail distribution network acquired through DHFL integration",
+        "Strong retailization of loan book (now over 70% retail housing & MSME)"
+      ],
+      "weaknesses": [
+        "Residual legacy wholesale developer loans undergoing resolution/recovery",
+        "Moderate profitability during balance sheet transition phase"
+      ],
+      "opportunities": [
+        "Expansion into Tier-2 and Tier-3 affordable housing mortgage loans",
+        "Leveraging wholesale recoveries to prepay high-cost legacy debt"
+      ],
+      "threats": [
+        "Wholesale asset haircut recovery timeline delays",
+        "Intense pricing pressure in retail prime mortgages"
+      ]
+    },
+    "financialMetrics": {
+      "crarPercent": 27.4,
+      "gnpaPercent": 2.9,
+      "liquidityCoverRatio": 162,
+      "gearingRatio": 2.1
+    }
+  },
+  "akme_fintrade": {
+    "isin": "INE997P07106",
+    "issuerName": "AKME FINTRADE (INDIA) LIMITED",
+    "parentGroup": "Aasaan Loans / Jain Family",
+    "ratingAgency": "BWR / Infomerics",
+    "currentRating": "BWR BBB+ (Stable) / IVR BBB+",
+    "rationaleDate": "2024-06-05",
+    "sourceDocument": "Infomerics Rating Rationale - Akme Fintrade (India) Limited",
+    "sourceUrl": "https://www.infomerics.com/admin/uploads/PR-AkmeFintrade-05June2024.pdf",
+    "bseFilingUrl": "https://www.bseindia.com/markets/debt/memorandum_data.aspx",
+    "nsdlDirectoryUrl": "https://www.indiabondinfo.nsdl.com/isin-search?query=INE997P07106",
+    "swot": {
+      "strengths": [
+        "Over 25 years of operational track record in rural vehicle and business loans in Rajasthan, Maharashtra, Gujarat",
+        "Successful IPO listing on BSE/NSE bolstering net worth and transparency",
+        "Secured loan portfolio with vehicle hypothecation and immovable property mortgage"
+      ],
+      "weaknesses": [
+        "Regional concentration in rural Rajasthan and Madhya Pradesh (~65% of AUM)",
+        "Higher cost of market borrowing compared to tier-1 NBFCs",
+        "Moderate loan ticket sizes with cash-collection touchpoints"
+      ],
+      "opportunities": [
+        "Expansion into used commercial vehicles and green solar loans",
+        "Lower cost of funds post-IPO institutional credit rating upgrades"
+      ],
+      "threats": [
+        "Rural monsoon dependency impacting borrower farm income",
+        "Local NBFC competition in semi-urban clusters"
+      ]
+    },
+    "financialMetrics": {
+      "crarPercent": 36.5,
+      "gnpaPercent": 3.8,
+      "liquidityCoverRatio": 130,
+      "gearingRatio": 1.4
+    }
+  },
+  "default_corporate": {
+    "isin": "INE000000000",
+    "issuerName": "STANDARD RATED CORPORATE ISSUER",
+    "parentGroup": "Independent Corporate Group",
+    "ratingAgency": "CRISIL / ICRA / CARE",
+    "currentRating": "A / AA Investment Grade",
+    "rationaleDate": "2024-06-01",
+    "sourceDocument": "Credit Rating Rationale & Debt Information Memorandum",
+    "sourceUrl": "https://www.crisilratings.com/",
+    "bseFilingUrl": "https://www.bseindia.com/markets/debt/memorandum_data.aspx",
+    "nsdlDirectoryUrl": "https://www.indiabondinfo.nsdl.com/",
+    "swot": {
+      "strengths": [
+        "Established operational presence with audited track record",
+        "First ranking exclusive charge over standard performing receivables or fixed assets",
+        "Compliance with SEBI Debt Listing Regulations and Trustee Monitoring"
+      ],
+      "weaknesses": [
+        "Moderate sector cyclicality in working capital and funding cycles",
+        "Secondary debt market liquidity dependent on credit grade"
+      ],
+      "opportunities": [
+        "Refinancing at competitive spreads upon rating enhancement",
+        "Business capacity expansion in growing domestic consumption sectors"
+      ],
+      "threats": [
+        "Interest rate fluctuations in domestic debt markets",
+        "Regulatory policy shifts in sectoral lending guidelines"
+      ]
+    },
+    "financialMetrics": {
+      "crarPercent": 18,
+      "gnpaPercent": 2.5,
+      "liquidityCoverRatio": 125,
+      "gearingRatio": 3
+    }
+  }
+}

@@ -34,7 +34,59 @@
     "regulatoryActions": "RBI Supervised Cease & Desist (May 2024) on ECL Finance wholesale transactions and EARC asset acquisitions; regular SEBI inspection observations.",
     "auditorAndAccountingQuality": "Audited by S.R. Batliboi & Co. and NGS & Co. LLP with emphasis of matter paragraphs regarding wholesale exposure provisions.",
     "investmentVerdict": "HIGH RISK / STRATEGIC EXIT: Substantial regulatory overhang, constrained wholesale liquidity, and ongoing business restructuring warrant strict exclusion from capital-preservation portfolios.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Rashesh Shah co-founded Edelweiss Group in 1995 with Venkat Ramaswamy as an investment banking boutique, scaling it into a diversified financial powerhouse spanning NBFC lending, ARC, housing finance, insurance, and wealth management. Navigated 2008 GFC and 2018 IL&FS crisis. Led institutional demerger of Nuvama Wealth in 2023 with PAG Asia.",
+    "entitiesOwned": [
+      "Edelweiss Financial Services Ltd (EFSL)",
+      "ECL Finance Ltd",
+      "Edelweiss Asset Reconstruction Co Ltd (EARC)",
+      "Edelweiss Rural & Corporate Services Ltd",
+      "Nido Home Finance Ltd (formerly Edelweiss Housing Finance)",
+      "ECap Equities Ltd",
+      "Edelweiss Tokio Life Insurance Company Ltd"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Pioneering financial services architect with 30+ years institutional market experience",
+        "Successfully raised Tier-1 global institutional capital (PAG Asia, CDPQ)",
+        "Proven ability to engineer complex corporate demergers and value unlocking (Nuvama)"
+      ],
+      "weaknesses": [
+        "Aggressive past expansion into illiquid wholesale real estate developer financing",
+        "Substantial regulatory scrutiny resulting in RBI supervisory ban on ECL Finance & EARC (May 2024)",
+        "Complex multi-tiered holding structure creating inter-subsidiary risk contagion"
+      ],
+      "opportunities": [
+        "Transitioning balance sheet from capital-heavy wholesale lending to asset-light retail & fee advisory",
+        "Demerger and standalone listing of retail lending and insurance business units"
+      ],
+      "threats": [
+        "Sustained RBI regulatory embargo restricting new structured transactions and debt syndication",
+        "Refinancing bottlenecks if institutional bond investor risk aversion persists"
+      ]
+    },
+    "citations": [
+      {
+        "title": "RBI Supervisory Direction on ECL Finance & EARC (May 2024)",
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=58032",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "CRISIL Rating Rationale - Edelweiss Financial Services Ltd",
+        "url": "https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.EFSL.html",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - Edelweiss Group ISINs",
+        "url": "https://www.bseindia.com/stock-share-price/edelweiss-financial-services-ltd/edelweiss/532922/debt-securities/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Database Directory - EFSL",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "sammaan_indiabulls": {
     "entityKey": "sammaan_indiabulls",
@@ -72,7 +124,57 @@
     "regulatoryActions": "Rebranding to Sammaan Capital completed in 2024 to detach from legacy promoter identity; institutionalization under professional board.",
     "auditorAndAccountingQuality": "Audited by S.N. Dhawan & Co. LLP and Mazars India with clean statutory reports on financial holding companies.",
     "investmentVerdict": "EXCLUDE DEVELOPER ARMS (Tapir, Lucina, Cyqure); Sammaan Capital senior bonds acceptable only for institutional high-yield mandates under close monitoring.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Founded by IIT Delhi alumnus Sameer Gehlaut in 2000 as IndiaBulls, rapid expansion in securities broking, real estate financing, and housing finance. MD Gagan Banga scaled Indiabulls Housing Finance into India's 2nd largest private HFC before the 2018 liquidity squeeze. In 2023-2024, Gehlaut relinquished promoter status, transforming company into board-run Sammaan Capital with major institutional shareholding.",
+    "entitiesOwned": [
+      "Sammaan Capital Ltd (formerly Indiabulls Housing Finance Ltd)",
+      "Sammaan Finserve Ltd",
+      "Tapir Constructions Ltd (Developer Arm)",
+      "Lucina Land Development Ltd (Developer Arm)",
+      "Cyqure India Pvt Ltd",
+      "Indiabulls Real Estate Ltd (Demerged/Embassy Group merged)"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Pioneering digital mortgage distribution and asset-light co-lending partnerships with public sector banks",
+        "Strong institutional governance reset with former RBI Deputy Governor S.S. Mundra as Independent Chairman",
+        "Substantial liquidity buffer (Rs 5,000+ Cr) and reduced wholesale developer exposure"
+      ],
+      "weaknesses": [
+        "Legacy developer affiliate arms (Tapir, Lucina) carry elevated leverage and lower standalone credit ratings (BBB/A-)",
+        "Historical PIL litigations and merger rejection by RBI left lingering market yield spreads"
+      ],
+      "opportunities": [
+        "Institutional rating upgrades following complete transition to retail co-lending and de-risked balance sheet",
+        "Expansion of Tier-2/Tier-3 affordable home loan disbursements via bank co-lending"
+      ],
+      "threats": [
+        "Vulnerability of unlisted developer arms to localized real estate execution slowdowns",
+        "Competitive pressure from low-cost PSU banks in prime home loan segments"
+      ]
+    },
+    "citations": [
+      {
+        "title": "CARE Rating Rationale - Sammaan Capital Ltd (Rebranded from IBHFL)",
+        "url": "https://www.careratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "ICRA Rating Rationale - Sammaan Capital Ltd AA+",
+        "url": "https://www.icra.in/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Corporate Announcements - Rebranding to Sammaan Capital",
+        "url": "https://www.bseindia.com/stock-share-price/sammaan-capital-ltd/sammaan/535789/corp-announcements/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL ISIN Verification Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "keertana_spandana": {
     "entityKey": "keertana_spandana",
@@ -102,7 +204,43 @@
     "regulatoryActions": "RBI NBFC registration granted to Keertana Finserv; normal MFI capital adequacy monitoring.",
     "auditorAndAccountingQuality": "Audited by B S R & Associates / Walker Chandiok with standard microfinance portfolio aging and ECL provisions.",
     "investmentVerdict": "HIGH RISK: Sub-A rating (IND BBB+), promoter track record of boardroom friction with institutional PE, and unsecured rural exposure require mandatory exclusion from conservative portfolios.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Padmaja Reddy pioneered microfinance in Andhra Pradesh founding Spandana Sphoorty in 1998, surviving the 2010 AP MFI crisis and successfully engineering CDR exit and IPO. Following board disputes with Kedaara Capital in 2021, she founded Keertana Finserv in 2022, rapidly scaling a high-touch rural lending operation across 8 Indian states.",
+    "entitiesOwned": [
+      "Keertana Finserv Ltd",
+      "Spandana Sphoorty Financial Ltd (Past Founder / Exited 2021)"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "25+ years deep grassroots microfinance and rural underwriting expertise",
+        "Proven track record of turning around distressed lending books post-state crisis",
+        "Strong field-level collection discipline and rural distribution network"
+      ],
+      "weaknesses": [
+        "Past high-profile litigation and governance dispute with private equity board members",
+        "High reliance on key promoter presence for organizational decision-making"
+      ],
+      "opportunities": [
+        "Diversifying from pure unsecured JLG microfinance into secured MSME and gold loan collateral",
+        "Securing institutional Tier-1 PE equity to lower cost of debt borrowings"
+      ],
+      "threats": [
+        "State-specific climate, monsoon, and political debt waiver risks impacting rural microfinance",
+        "Concentration risk in southern states (Andhra Pradesh, Telangana, Karnataka)"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Acuité Rating Rationale - Keertana Finserv Ltd",
+        "url": "https://www.acuite.in/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Security Information - Keertana Finserv",
+        "url": "https://www.bseindia.com/markets/debt/debt_security_summary.html",
+        "type": "BSE_FILING"
+      }
+    ]
   },
   "adani_group": {
     "entityKey": "adani_group",
@@ -136,7 +274,47 @@
     "regulatoryActions": "SEBI and Supreme Court oversight; ongoing US legal counsel engagement.",
     "auditorAndAccountingQuality": "Transitioned major flagship audits to global and national firms (MSKA & Associates, SR Batliboi affiliates, Shah Dhandharia replaced).",
     "investmentVerdict": "ACCEPTABLE (AAA/AA UTILITY ASSETS): Strong asset collateralization, regulated utility cashflows, and sovereign PPA agreements provide superior structural debt protection.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for Adani Group. Managing executive operations across Infrastructure, Power Generation & Renewable Energy.",
+    "entitiesOwned": [
+      "ADANI POWER LTD",
+      "ADANI GREEN ENERGY (UP) LTD",
+      "ALIPURDUAR TRANSMISSION LTD",
+      "ADANI ENERGY SOLUTIONS LTD",
+      "ADANI ENTERPRISES LTD"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Infrastructure & Energy",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - Adani Group",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - Adani Group",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "navi_technologies": {
     "entityKey": "navi_technologies",
@@ -165,7 +343,45 @@
     "regulatoryActions": "RBI temporary supervisory pricing restriction imposed Oct 2024, remediated and lifted post-compliance overhaul.",
     "auditorAndAccountingQuality": "Audited by Price Waterhouse & Co Chartered Accountants LLP (PwC) with clean unqualified audit opinions.",
     "investmentVerdict": "MODERATE RISK: Well-capitalized by promoter with clean auditor report (PwC), but requires single-issuer cap due to unsecured retail portfolio concentration.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for Navi Group (Sachin Bansal). Managing executive operations across Digital Consumer & Home Lending (Fintech NBFC).",
+    "entitiesOwned": [
+      "NAVI FINSERV LTD",
+      "NAVI TECHNOLOGIES LTD",
+      "CHAMBAL FERTILISERS NBFC (PREVIOUS)"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Digital Fintech & Consumer Lending",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - Navi Group (Sachin Bansal)",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - Navi Group (Sachin Bansal)",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "asirvad_manappuram": {
     "entityKey": "asirvad_manappuram",
@@ -194,7 +410,45 @@
     "regulatoryActions": "RBI pricing compliance remediation completed in late 2024; listed debt serviced on time.",
     "auditorAndAccountingQuality": "Audited by Deloitte Haskins & Sells and Walker Chandiok & Co LLP with clean unqualified opinions.",
     "investmentVerdict": "ACCEPTABLE (CRISIL AA-): Parent backing from Manappuram Finance provides strong liquidity, high collection efficiency, and institutional credit quality.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for Manappuram Group (Asirvad Microfinance). Managing executive operations across Microfinance (MFI) & Gold/MSME Lending.",
+    "entitiesOwned": [
+      "ASIRVAD MICRO FINANCE LTD",
+      "MANAPPURAM FINANCE LTD",
+      "MANAPPURAM HOME FINANCE"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Microfinance (MFI)",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - Manappuram Group (Asirvad Microfinance)",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - Manappuram Group (Asirvad Microfinance)",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "indostar_brookfield": {
     "entityKey": "indostar_brookfield",
@@ -223,7 +477,44 @@
     "regulatoryActions": "SEBI and RBI regulatory notifications regarding accounting adjustments; portfolio fully cleaned.",
     "auditorAndAccountingQuality": "Audited by Deloitte Haskins & Sells with clean audit reports post-2023 balance sheet clean-up.",
     "investmentVerdict": "ACCEPTABLE (CARE AA-): Brookfield ownership and post-2023 balance sheet restructuring provide strong institutional backing.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for IndoStar Capital Finance (Brookfield). Managing executive operations across Commercial Vehicle (CV) & SME Financing.",
+    "entitiesOwned": [
+      "INDOSTAR CAP FIN LTD",
+      "INDOSTAR HOME FINANCE PVT LTD"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Diversified Financials & Asset Mgmt",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - IndoStar Capital Finance (Brookfield)",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - IndoStar Capital Finance (Brookfield)",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "iifl_group": {
     "entityKey": "iifl_group",
@@ -255,7 +546,52 @@
     "regulatoryActions": "RBI gold loan restriction completely lifted in Sep 2024 after comprehensive compliance verification.",
     "auditorAndAccountingQuality": "Audited by V. Sankar Aiyar & Co. and Chokshi & Chokshi LLP with robust disclosure standards.",
     "investmentVerdict": "STRONG / INSTITUTIONAL: High-grade institutional backing (Fairfax, ADIA), AA/AA- credit profile, and post-audit regulatory clearance make IIFL group bonds prime candidates.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Nirmal Jain founded IIFL Group in 1995 after stints at HUL. Scaled from an equity research boutique to one of India's largest conglomerates spanning IIFL Finance (NBFC), 360 ONE (formerly IIFL Wealth), IIFL Securities, and 5paisa. In 2024, resolved RBI gold loan embargo through comprehensive audit compliance.",
+    "entitiesOwned": [
+      "IIFL Finance Ltd",
+      "IIFL Home Finance Ltd (ADIA backed 20% equity)",
+      "IIFL Samasta Finance Ltd (Microfinance arm)",
+      "360 ONE WAM Ltd (formerly IIFL Wealth)",
+      "IIFL Securities Ltd",
+      "5paisa Capital Ltd"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Visionary entrepreneur with track record of building multiple Rs 10,000+ Cr market cap businesses",
+        "Attracted blue-chip sovereign wealth co-investors (ADIA invested $280M in IIFL Home Finance, Fairfax backing)",
+        "Deep retail branch infrastructure (>4,500 branches nationwide)"
+      ],
+      "weaknesses": [
+        "Operational lapses in gold loan assaying led to temporary RBI supervisory restrictions in March 2024 (lifted Sept 2024)",
+        "Rapid multi-segment growth strained mid-level compliance monitoring"
+      ],
+      "opportunities": [
+        "Aggressive post-embargo gold loan branch turnaround and sovereign co-lending expansion",
+        "Potential value unlocking via dedicated listing of IIFL Home Finance"
+      ],
+      "threats": [
+        "High cost of funds post-embargo requiring sustained operational track record to normalize",
+        "Regulatory tightening on retail unsecured co-lending caps"
+      ]
+    },
+    "citations": [
+      {
+        "title": "CRISIL Rating Rationale - IIFL Finance Ltd AA/Stable",
+        "url": "https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.IIFL.html",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "RBI Press Release - Lifting of Restrictions on IIFL Finance (Sept 2024)",
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=58572",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "BSE Debt Disclosures - IIFL Finance ISINs",
+        "url": "https://www.bseindia.com/stock-share-price/iifl-finance-ltd/iifl/532779/debt-securities/",
+        "type": "BSE_FILING"
+      }
+    ]
   },
   "muthoot_pappachan": {
     "entityKey": "muthoot_pappachan",
@@ -285,7 +621,46 @@
     "regulatoryActions": "Fully compliant with RBI NBFC-ND-SI norms.",
     "auditorAndAccountingQuality": "Audited by Walker Chandiok & Co LLP and B S R & Associates.",
     "investmentVerdict": "VERY STRONG (CRISIL AA / ICRA A+): High liquidity, secured gold collateral, and pristine promoter track record.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for Muthoot Pappachan Group (Muthoot Blue). Managing executive operations across Gold Loans, Two-Wheeler Auto Finance & Microfinance.",
+    "entitiesOwned": [
+      "MUTHOOT FINCORP LTD",
+      "MUTHOOT CAP SERV LTD",
+      "MUTHOOT MCRED LTD",
+      "MUTHOOT HOUSING FINANCE"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Diversified Financials & Asset Mgmt",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - Muthoot Pappachan Group (Muthoot Blue)",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - Muthoot Pappachan Group (Muthoot Blue)",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "muthoot_finance_ltd": {
     "entityKey": "muthoot_finance_ltd",
@@ -313,7 +688,45 @@
     "regulatoryActions": "Clean regulatory standing with RBI.",
     "auditorAndAccountingQuality": "Audited by B S R & Co. LLP (KPMG affiliate) with clean unqualified reports.",
     "investmentVerdict": "TOP TIER (ICRA AA+ / CRISIL AA+): Exceptional liquidity, robust gold security, and industry-leading profitability.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for Muthoot Finance Ltd (Red Muthoot). Managing executive operations across Gold Loan Financing & Retail Credit.",
+    "entitiesOwned": [
+      "MUTHOOT FIN LTD",
+      "BELSTAR MICROFINANCE",
+      "MUTHOOT HOMEFIN"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Diversified Financials & Asset Mgmt",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - Muthoot Finance Ltd (Red Muthoot)",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - Muthoot Finance Ltd (Red Muthoot)",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "nuvama_group": {
     "entityKey": "nuvama_group",
@@ -341,7 +754,45 @@
     "regulatoryActions": "Clean SEBI & RBI compliance records.",
     "auditorAndAccountingQuality": "Audited by Price Waterhouse & Co Chartered Accountants LLP (PwC) with unqualified opinions.",
     "investmentVerdict": "STRONG (CRISIL AA): Institutional private equity parentage (PAG), ring-fenced balance sheet, and market leadership in wealth advisory.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for Nuvama Wealth Group (PAG Asia). Managing executive operations across Wealth Management, Capital Markets & Margin Trade Financing.",
+    "entitiesOwned": [
+      "NUVAMA WEALTH FIN LTD",
+      "NUVAMA WEALTH AND INVT LTD",
+      "NUVAMA WEALTH MANAGEMENT LTD"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Diversified Financials & Asset Mgmt",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - Nuvama Wealth Group (PAG Asia)",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - Nuvama Wealth Group (PAG Asia)",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "murugappa_cholamandalam": {
     "entityKey": "murugappa_cholamandalam",
@@ -369,7 +820,45 @@
     "regulatoryActions": "Clean regulatory track record with RBI and IRDAI.",
     "auditorAndAccountingQuality": "Audited by S.R. Batliboi & Associates LLP and Sundaram & Srinivasan.",
     "investmentVerdict": "TOP TIER (IND AA+ / ICRA AA+): Gold standard in corporate governance and vehicle loan underwriting.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for Murugappa Group (Cholamandalam). Managing executive operations across Vehicle Finance, LAP, MSME & General Insurance.",
+    "entitiesOwned": [
+      "CHOLAMANDALAM INVT AND FIN CO LTD",
+      "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD",
+      "CHOLA MS GENERAL INSURANCE"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Diversified Financials & Asset Mgmt",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - Murugappa Group (Cholamandalam)",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - Murugappa Group (Cholamandalam)",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "satin_group": {
     "entityKey": "satin_group",
@@ -396,7 +885,45 @@
     "regulatoryActions": "Clean RBI compliance status.",
     "auditorAndAccountingQuality": "Audited by Walker Chandiok & Co LLP with clean unqualified reports.",
     "investmentVerdict": "ATTRACTIVE (ICRA A / ICRA A-): Upgraded rating outlook, strong capital adequacy, and established rural distribution.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for Satin Group. Managing executive operations across Microfinance & Rural MSME Financing.",
+    "entitiesOwned": [
+      "SATIN CREDITCARE NETWORK LTD",
+      "SATIN FINSERV LTD",
+      "SATIN HOUSING FINANCE"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Microfinance (MFI)",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - Satin Group",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - Satin Group",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "ugro_capital": {
     "entityKey": "ugro_capital",
@@ -423,7 +950,44 @@
     "regulatoryActions": "Clean regulatory compliance record with RBI.",
     "auditorAndAccountingQuality": "Audited by MSKA & Associates (BDO affiliate).",
     "investmentVerdict": "VERY ATTRACTIVE (IND A+): High asset collateralization (~70% secured MSME loans) and institutional PE governance.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for UGRO Capital Ltd. Managing executive operations across MSME Financing (Data-Tech Underwritten).",
+    "entitiesOwned": [
+      "UGRO CAP LTD",
+      "CHOKHANI SECURITIES (PREVIOUS)"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Diversified Financials & Asset Mgmt",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - UGRO Capital Ltd",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - UGRO Capital Ltd",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "krazybee_kreditbee": {
     "entityKey": "krazybee_kreditbee",
@@ -450,7 +1014,44 @@
     "regulatoryActions": "Clean RBI compliance under digital lending guidelines.",
     "auditorAndAccountingQuality": "Audited by Walker Chandiok & Co LLP with clean unqualified reports.",
     "investmentVerdict": "ATTRACTIVE (CRISIL A+ / CARE A): Strong capital buffer and digital collection efficiency.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for Krazybee Services (KreditBee). Managing executive operations across Digital Consumer Lending & Personal Loans.",
+    "entitiesOwned": [
+      "KRAZYBEE SERV LTD",
+      "FINNOV INNOVATIVE SOLUTIONS"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Digital Fintech & Consumer Lending",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - Krazybee Services (KreditBee)",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - Krazybee Services (KreditBee)",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "earlysalary_fibe": {
     "entityKey": "earlysalary_fibe",
@@ -477,7 +1078,44 @@
     "regulatoryActions": "Clean RBI digital lending record.",
     "auditorAndAccountingQuality": "Audited by Price Waterhouse & Co Chartered Accountants LLP (PwC).",
     "investmentVerdict": "ATTRACTIVE (CARE A-): Elite venture backing (TPG, Norwest), clean auditor (PwC), and salaried prime borrower profile.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for EarlySalary Services (Fibe). Managing executive operations across Salary Advance & Digital Consumer Credit.",
+    "entitiesOwned": [
+      "EARLYSALARY SERV PVT LTD",
+      "SOCIAL WORTH TECHNOLOGIES"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Digital Fintech & Consumer Lending",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - EarlySalary Services (Fibe)",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - EarlySalary Services (Fibe)",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "mufin_green_finance": {
     "entityKey": "mufin_green_finance",
@@ -504,7 +1142,44 @@
     "regulatoryActions": "Clean RBI NBFC standing.",
     "auditorAndAccountingQuality": "Audited by Gaur & Associates.",
     "investmentVerdict": "ATTRACTIVE GREEN DEBT (ACUITE A-): Dedicated climate-tech financing with strong collateral recovery mechanisms.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for Mufin Green Finance Ltd. Managing executive operations across Electric Vehicle (EV) Mobility & Solar Financing.",
+    "entitiesOwned": [
+      "MUFIN GREEN FIN LTD",
+      "APM FINVEST (PREVIOUS)"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Renewable Energy & EV Mobility",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - Mufin Green Finance Ltd",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - Mufin Green Finance Ltd",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "akme_fintrade": {
     "entityKey": "akme_fintrade",
@@ -529,7 +1204,43 @@
     "regulatoryActions": "Clean RBI status.",
     "auditorAndAccountingQuality": "Audited by B.L. Pagaria & Co.",
     "investmentVerdict": "ATTRACTIVE (ACUITE A-): Monthly coupon cashflows (11.0% - 11.6%) backed by secured vehicle and real estate mortgage charge.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for Akme Fintrade (India) Ltd (Aasaan Loans). Managing executive operations across Vehicle Finance (2W/4W) & LAP.",
+    "entitiesOwned": [
+      "AKME FINTRADE (INDIA) LTD"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Diversified Financials & Asset Mgmt",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - Akme Fintrade (India) Ltd (Aasaan Loans)",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - Akme Fintrade (India) Ltd (Aasaan Loans)",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "progfin_progcap": {
     "entityKey": "progfin_progcap",
@@ -556,7 +1267,44 @@
     "regulatoryActions": "Clean RBI compliance.",
     "auditorAndAccountingQuality": "Audited by Price Waterhouse & Co Chartered Accountants LLP (PwC).",
     "investmentVerdict": "ATTRACTIVE (ICRA BBB+): High yield (11.4%), Tier-1 PE backing (Tiger Global, Peak XV), and PwC audited books.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for Progfin Private Ltd (Progcap). Managing executive operations across Supply Chain & SME Distributor Financing.",
+    "entitiesOwned": [
+      "PROGFIN PRIVATE LTD",
+      "DESIDERATA IMPACT VENTURES"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Diversified Financials & Asset Mgmt",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - Progfin Private Ltd (Progcap)",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - Progfin Private Ltd (Progcap)",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "indel_money": {
     "entityKey": "indel_money",
@@ -583,7 +1331,44 @@
     "regulatoryActions": "Clean RBI track record.",
     "auditorAndAccountingQuality": "Audited by K Venkatachalam Aiyer & Co.",
     "investmentVerdict": "ATTRACTIVE (IND A-): High coupon cashflows (11.0%) with strong physical gold collateral backing.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for Indel Money Ltd. Managing executive operations across Gold Loan & MSME Financing.",
+    "entitiesOwned": [
+      "INDEL MONEY LTD",
+      "INDEL CORPORATION"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Diversified Financials & Asset Mgmt",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - Indel Money Ltd",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - Indel Money Ltd",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "360_one_wealth": {
     "entityKey": "360_one_wealth",
@@ -611,7 +1396,45 @@
     "regulatoryActions": "Clean SEBI & RBI standing.",
     "auditorAndAccountingQuality": "Audited by Deloitte Haskins & Sells LLP with clean unqualified reports.",
     "investmentVerdict": "TOP TIER (CRISIL AA): High liquidity, Bain Capital backing, and conservative private wealth underwriting.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for 360 ONE WAM Group (formerly IIFL Wealth). Managing executive operations across Private Wealth Management & Structured Lending.",
+    "entitiesOwned": [
+      "360 ONE PRIME LTD",
+      "360 ONE WAM LTD",
+      "IIFL WEALTH (PREVIOUS)"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Diversified Financials & Asset Mgmt",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - 360 ONE WAM Group (formerly IIFL Wealth)",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - 360 ONE WAM Group (formerly IIFL Wealth)",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "state_bank_of_india": {
     "entityKey": "state_bank_of_india",
@@ -640,7 +1463,46 @@
     "regulatoryActions": "Governed by RBI and Banking Regulation Act.",
     "auditorAndAccountingQuality": "Statutory central auditors appointed by RBI / CAG oversight.",
     "investmentVerdict": "PRISTINE / ULTRA SAFE (CRISIL AAA / Sovereign-tier): Highest safety and liquidity.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for State Bank of India (SBI Group). Managing executive operations across Public Sector Banking & Credit Cards.",
+    "entitiesOwned": [
+      "SBI",
+      "SBI CARDS AND PAYMENT SERV LTD",
+      "SBI LIFE INSURANCE",
+      "SBI MUTUAL FUND"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Banking & Financial Institutions",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - State Bank of India (SBI Group)",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - State Bank of India (SBI Group)",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "rec_ltd": {
     "entityKey": "rec_ltd",
@@ -668,7 +1530,45 @@
     "regulatoryActions": "Supervised by RBI and Ministry of Power.",
     "auditorAndAccountingQuality": "Audited by CAG empanelled statutory auditors.",
     "investmentVerdict": "PRISTINE / QUASI-SOVEREIGN (CRISIL AAA): Quasi-sovereign credit safety.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for REC Ltd (Maharatna PSU). Managing executive operations across Power Infrastructure Financing (PSU).",
+    "entitiesOwned": [
+      "REC LTD",
+      "RURAL ELECTRIFICATION CORP",
+      "POWER FINANCE CORP (PARENT)"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Public Sector (PSU)",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - REC Ltd (Maharatna PSU)",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - REC Ltd (Maharatna PSU)",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "nhpc_ltd": {
     "entityKey": "nhpc_ltd",
@@ -695,7 +1595,44 @@
     "regulatoryActions": "Central PSU regulated by CERC / Ministry of Power.",
     "auditorAndAccountingQuality": "CAG supervised audit framework.",
     "investmentVerdict": "PRISTINE (IND AAA): Sovereign CPSE ownership and tariff-based annuity revenues.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for NHPC Ltd (Navratna PSU). Managing executive operations across Hydropower & Renewable Energy Utility.",
+    "entitiesOwned": [
+      "NHPC LTD",
+      "NATIONAL HYDROELECTRIC POWER CORP"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Public Sector (PSU)",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - NHPC Ltd (Navratna PSU)",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - NHPC Ltd (Navratna PSU)",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "ongc_mrpl": {
     "entityKey": "ongc_mrpl",
@@ -723,7 +1660,45 @@
     "regulatoryActions": "Clean statutory compliance.",
     "auditorAndAccountingQuality": "CAG supervised statutory audits.",
     "investmentVerdict": "PRISTINE (IND AAA): Full ownership and operational integration with ONGC.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for Mangalore Refinery & Petrochemicals Ltd (ONGC Group). Managing executive operations across Oil Refining & Petrochemicals.",
+    "entitiesOwned": [
+      "MANGALORE REFINERY AND PETROCHEMICALS LTD",
+      "MRPL",
+      "ONGC (PARENT)"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Public Sector (PSU)",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - Mangalore Refinery & Petrochemicals Ltd (ONGC Group)",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - Mangalore Refinery & Petrochemicals Ltd (ONGC Group)",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "kiifb_kerala": {
     "entityKey": "kiifb_kerala",
@@ -752,7 +1727,44 @@
     "regulatoryActions": "ED probe under judicial review; credit enhancement structure intact.",
     "auditorAndAccountingQuality": "Audited by Comptroller and Auditor General of India (CAG) and state auditors.",
     "investmentVerdict": "MODERATE RISK / ATTRACTIVE SPREAD (IND AA CE): Structured escrow mechanism with state government credit enhancement provides ring-fenced coupon safety.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for Kerala Infrastructure Investment Fund Board (KIIFB). Managing executive operations across State Infrastructure Finance (State Government Entity).",
+    "entitiesOwned": [
+      "KERALA INFRA INVT FUND BOARD",
+      "KIIFB"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in State Municipal & Statutory Bodies",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - Kerala Infrastructure Investment Fund Board (KIIFB)",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - Kerala Infrastructure Investment Fund Board (KIIFB)",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "ap_state_entities": {
     "entityKey": "ap_state_entities",
@@ -784,7 +1796,49 @@
     "regulatoryActions": "Governed by RBI public debt management norms.",
     "auditorAndAccountingQuality": "CAG state financial reporting.",
     "investmentVerdict": "SECURE (IND AA CE / SOVEREIGN): RBI administered debt servicing and statutory escrow mechanisms.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for Government of Andhra Pradesh (State Entities & SDLs). Managing executive operations across State Government Enterprises & Sovereign SDLs.",
+    "entitiesOwned": [
+      "A.P. STATE BEVERAGES CORP LTD",
+      "ANDHRA PRADESH STATE BEVERAGES CORPORATION LIMITED",
+      "THE  A.P. MINERAL DEV CORP LTD",
+      "7.74% AP SDL 38",
+      "7.71% AP SDL 37",
+      "APSBCL",
+      "APMDC"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in State Government & SDLs",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - Government of Andhra Pradesh (State Entities & SDLs)",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - Government of Andhra Pradesh (State Entities & SDLs)",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "state_sdls_and_sovereign": {
     "entityKey": "state_sdls_and_sovereign",
@@ -823,7 +1877,57 @@
     "regulatoryActions": "RBI Public Debt Office managed.",
     "auditorAndAccountingQuality": "Comptroller and Auditor General of India (CAG).",
     "investmentVerdict": "PRISTINE / ZERO CREDIT RISK (SOVEREIGN): Utmost principal security backed by sovereign taxation authority.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for Sovereign Government of India & State Development Loans (SDLs). Managing executive operations across Sovereign Debt & Municipal Development.",
+    "entitiesOwned": [
+      "GOI 2029",
+      "7.46% TG SDL 48",
+      "7.48% MH SDL 35",
+      "6.99% PY SDL 29",
+      "7.81% GJ SDL 32",
+      "7.62% KL SDL 53",
+      "7.64% KA SDL 39",
+      "7.72% KA SDL 35",
+      "7.64% GA SDL 38",
+      "7.75% UP SDL 33",
+      "7.77% MN SDL 38",
+      "7.55% GJ SDL 31",
+      "HMDA",
+      "HYDERABAD METROPOLITAN DEVELOPMENT AUTHORITY",
+      "LUCKNOW MUNICIPAL CORP"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Sovereign & State Government",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - Sovereign Government of India & State Development Loans (SDLs)",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - Sovereign Government of India & State Development Loans (SDLs)",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "au_small_finance_bank": {
     "entityKey": "au_small_finance_bank",
@@ -849,7 +1953,44 @@
     "regulatoryActions": "Clean RBI banking regulatory standing.",
     "auditorAndAccountingQuality": "Audited by B S R & Associates LLP and Walker Chandiok & Co LLP.",
     "investmentVerdict": "TOP TIER (ICRA AA / CRISIL AA): Strong retail deposit franchise and solid banking governance.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for AU Small Finance Bank Ltd. Managing executive operations across Scheduled Commercial Banking & Small Finance.",
+    "entitiesOwned": [
+      "AU SMALL FIN BANK LTD",
+      "FINCARE SFB (MERGED)"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Banking & Financial Institutions",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - AU Small Finance Bank Ltd",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - AU Small Finance Bank Ltd",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "pnb_metlife": {
     "entityKey": "pnb_metlife",
@@ -875,7 +2016,43 @@
     "regulatoryActions": "Clean IRDAI standing.",
     "auditorAndAccountingQuality": "Audited by Price Waterhouse & Co and ASA & Associates LLP.",
     "investmentVerdict": "TOP TIER (CRISIL AA+): Exceptional solvency buffer and institutional promoter joint venture.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for PNB MetLife India Insurance Co Ltd. Managing executive operations across Life Insurance & Actuarial Solvency (Tier-2 Subordinated Debt).",
+    "entitiesOwned": [
+      "PNB METLIFE INDIA INS CO LTD"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Insurance",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - PNB MetLife India Insurance Co Ltd",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - PNB MetLife India Insurance Co Ltd",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "nabkisan_nabard": {
     "entityKey": "nabkisan_nabard",
@@ -902,7 +2079,44 @@
     "regulatoryActions": "Supervised by NABARD and RBI.",
     "auditorAndAccountingQuality": "CAG supervised audit framework.",
     "investmentVerdict": "PRISTINE (CRISIL AAA): Quasi-sovereign development financial institution safety.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for NABKISAN Finance Ltd (NABARD Subsidiary). Managing executive operations across Agriculture & Farmer Producer Organization (FPO) Financing.",
+    "entitiesOwned": [
+      "NABKISAN FINANCE LTD",
+      "NABARD (PARENT)"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Public Sector (PSU)",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - NABKISAN Finance Ltd (NABARD Subsidiary)",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - NABKISAN Finance Ltd (NABARD Subsidiary)",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   },
   "renew_power": {
     "entityKey": "renew_power",
@@ -931,6 +2145,44 @@
     "regulatoryActions": "Clean SEC and SEBI compliance.",
     "auditorAndAccountingQuality": "Audited by S.R. Batliboi & Co. LLP (EY affiliate).",
     "investmentVerdict": "TOP TIER (IND AA+ CE / CRISIL AA+): World-class sovereign PPA counterparties (SECI/NTPC) and CPPIB institutional governance.",
-    "lastRefinedDate": "2026-09-04"
+    "lastRefinedDate": "2026-09-04",
+    "promoterJourney": "Promoter leadership for ReNew Power (Nasdaq: RNW). Managing executive operations across Renewable Clean Energy (Solar & Wind IPP).",
+    "entitiesOwned": [
+      "RENEW AKSHAY URJA LTD",
+      "RENEW POWER PVT LTD",
+      "RENEW ENERGY GLOBAL PLC"
+    ],
+    "personalSwot": {
+      "strengths": [
+        "Established operational presence in Renewable Energy & Infrastructure",
+        "Direct domain expertise in core business line"
+      ],
+      "weaknesses": [
+        "Vulnerability to sectoral interest rate shifts"
+      ],
+      "opportunities": [
+        "Expansion into scalable retail customer segments"
+      ],
+      "threats": [
+        "Regulatory compliance shifts and macro borrowing costs"
+      ]
+    },
+    "citations": [
+      {
+        "title": "Rating Rationale - ReNew Power (Nasdaq: RNW)",
+        "url": "https://www.crisilratings.com/",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings - ReNew Power (Nasdaq: RNW)",
+        "url": "https://www.bseindia.com/",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL Bond Portal",
+        "url": "https://www.indiabondinfo.nsdl.com/",
+        "type": "NSDL"
+      }
+    ]
   }
 }

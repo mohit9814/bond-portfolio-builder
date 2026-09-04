@@ -1,5 +1,18 @@
 import promoterData from './promoterRiskDatabase.json';
 
+export interface CitationLink {
+  title: string;
+  url: string;
+  type: 'RATING_REPORT' | 'BSE_FILING' | 'NSDL' | 'REGULATORY' | 'MEDIA';
+}
+
+export interface PersonalSwot {
+  strengths: string[];
+  weaknesses: string[];
+  opportunities: string[];
+  threats: string[];
+}
+
 export interface PromoterRiskRecord {
   entityKey: string;
   entityName: string;
@@ -19,6 +32,10 @@ export interface PromoterRiskRecord {
   auditorAndAccountingQuality: string;
   investmentVerdict: string;
   lastRefinedDate: string;
+  promoterJourney?: string;
+  entitiesOwned?: string[];
+  personalSwot?: PersonalSwot;
+  citations?: CitationLink[];
 }
 
 const PROMOTER_DATABASE: Record<string, PromoterRiskRecord> = promoterData as Record<string, PromoterRiskRecord>;
@@ -57,6 +74,9 @@ export function getPromoterRiskRecord(issuerOrIsin: string): PromoterRiskRecord 
   if (normalized.includes('sammaan') || normalized.includes('indiabulls') || normalized.includes('lucina') || normalized.includes('tapir') || normalized.includes('cyqure')) {
     return PROMOTER_DATABASE['sammaan_indiabulls'] || null;
   }
+  if (normalized.includes('keertana') || normalized.includes('padmaja')) {
+    return PROMOTER_DATABASE['keertana_spandana'] || null;
+  }
   if (normalized.includes('iifl') || normalized.includes('samasta')) {
     return PROMOTER_DATABASE['iifl_group'] || null;
   }
@@ -64,7 +84,40 @@ export function getPromoterRiskRecord(issuerOrIsin: string): PromoterRiskRecord 
     return PROMOTER_DATABASE['muthoot_pappachan'] || null;
   }
   if (normalized.includes('muthoot fin')) {
-    return PROMOTER_DATABASE['muthoot_finance_ltd'] || null;
+    return PROMOTER_DATABASE['muthoot_finance_ltd'] || PROMOTER_DATABASE['muthoot_group'] || null;
+  }
+  if (normalized.includes('haldiram')) {
+    return PROMOTER_DATABASE['haldiram_group'] || null;
+  }
+  if (normalized.includes('tata')) {
+    return PROMOTER_DATABASE['tata_group'] || null;
+  }
+  if (normalized.includes('piramal')) {
+    return PROMOTER_DATABASE['piramal_group'] || null;
+  }
+  if (normalized.includes('birla') || normalized.includes('aditya birla')) {
+    return PROMOTER_DATABASE['aditya_birla_group'] || null;
+  }
+  if (normalized.includes('poonawalla')) {
+    return PROMOTER_DATABASE['poonawalla_fincorp'] || null;
+  }
+  if (normalized.includes('shriram')) {
+    return PROMOTER_DATABASE['shriram_group'] || null;
+  }
+  if (normalized.includes('chola') || normalized.includes('murugappa') || normalized.includes('royal sundaram')) {
+    return PROMOTER_DATABASE['chola_group'] || PROMOTER_DATABASE['murugappa_cholamandalam'] || null;
+  }
+  if (normalized.includes('l&t') || normalized.includes('larsen') || normalized.includes('lt finance')) {
+    return PROMOTER_DATABASE['lt_group'] || null;
+  }
+  if (normalized.includes('kotak')) {
+    return PROMOTER_DATABASE['kotak_group'] || null;
+  }
+  if (normalized.includes('godrej')) {
+    return PROMOTER_DATABASE['godrej_group'] || null;
+  }
+  if (normalized.includes('yes bank')) {
+    return PROMOTER_DATABASE['yesbank_ecosystem'] || null;
   }
   if (normalized.includes('nuvama')) {
     return PROMOTER_DATABASE['nuvama_group'] || null;
@@ -75,11 +128,8 @@ export function getPromoterRiskRecord(issuerOrIsin: string): PromoterRiskRecord 
   if (normalized.includes('adani') || normalized.includes('alipurduar')) {
     return PROMOTER_DATABASE['adani_group'] || null;
   }
-  if (normalized.includes('chola') || normalized.includes('royal sundaram')) {
-    return PROMOTER_DATABASE['murugappa_cholamandalam'] || null;
-  }
-  if (normalized.includes('sdl') || normalized.includes('goi') || normalized.includes('hmda') || normalized.includes('lucknow municipal')) {
-    return PROMOTER_DATABASE['state_sdls_and_sovereign'] || null;
+  if (normalized.includes('sdl') || normalized.includes('goi') || normalized.includes('pfc') || normalized.includes('rec') || normalized.includes('nabard') || normalized.includes('sidbi') || normalized.includes('irfc')) {
+    return PROMOTER_DATABASE['generic_psu_sovereign'] || PROMOTER_DATABASE['state_sdls_and_sovereign'] || null;
   }
   if (normalized.includes('beverages') || normalized.includes('mineral dev') || normalized.includes('ap state')) {
     return PROMOTER_DATABASE['ap_state_entities'] || null;

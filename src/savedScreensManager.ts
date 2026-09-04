@@ -14,6 +14,7 @@ export interface ScreenerFilterState {
   guarantorOnly?: boolean;
   securedOnly?: boolean;
   governanceRisk?: string;
+  swotProfile?: string;
 }
 
 export interface SavedScreen {
@@ -28,6 +29,14 @@ export interface SavedScreen {
 const STORAGE_KEY = 'bond-saved-screens';
 
 export const PRESET_SCREENS: SavedScreen[] = [
+  {
+    id: 'preset-swot-high-capital',
+    name: '💪 Strong Capital Buffer (CRAR ≥ 20%)',
+    description: 'Bonds with verified rating agency CRAR buffer >= 20% and clean governance',
+    isPreset: true,
+    filters: { swotProfile: 'high_crar', governanceRisk: 'EXCLUDE_CRITICAL_HIGH' },
+    createdAt: 1700000000000
+  },
   {
     id: 'preset-clean-governance',
     name: '🛡️ Clean Governance & High Yield',
@@ -78,70 +87,64 @@ export const PRESET_SCREENS: SavedScreen[] = [
   }
 ];
 
-/**
- * Retrieve user-created custom screens from localStorage.
- */
 export function getCustomSavedScreens(): SavedScreen[] {
   try {
-    const data = localStorage.getItem(STORAGE_KEY);
+    const data = typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;
     return data ? JSON.parse(data) : [];
-  } catch (e) {
-    console.error('Error reading saved screens from localStorage', e);
+  } catch {
     return [];
   }
 }
 
-/**
- * Retrieve all screens (both built-in presets and user-saved custom screens).
- */
 export function getAllScreens(): SavedScreen[] {
   return [...PRESET_SCREENS, ...getCustomSavedScreens()];
 }
 
-/**
- * Save a new custom screen or update an existing one.
- */
-export function saveCustomScreen(name: string, filters: ScreenerFilterState, description?: string): SavedScreen {
-  const customScreens = getCustomSavedScreens();
-  const trimmedName = name.trim();
-  
-  // Check if a screen with this name already exists
-  const existingIdx = customScreens.findIndex(s => s.name.toLowerCase() === trimmedName.toLowerCase());
-  
-  const screen: SavedScreen = {
-    id: existingIdx >= 0 ? customScreens[existingIdx].id : `custom-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
-    name: trimmedName,
-    description: description?.trim() || `Custom screen with ${Object.keys(filters).length} active filters`,
+export function saveCustomScreen(
+  name: string,
+  arg2: string | ScreenerFilterState,
+  arg3?: ScreenerFilterState | string
+): SavedScreen {
+  let description = '';
+  let filters: ScreenerFilterState = {};
+
+  if (typeof arg2 === 'string') {
+    description = arg2;
+    filters = (arg3 as ScreenerFilterState) || {};
+  } else {
+    filters = arg2;
+    description = typeof arg3 === 'string' ? arg3 : '';
+  }
+
+  const current = getCustomSavedScreens();
+  const newScreen: SavedScreen = {
+    id: 'screen-' + Date.now(),
+    name,
+    description,
     isPreset: false,
     filters,
     createdAt: Date.now()
   };
 
-  if (existingIdx >= 0) {
-    customScreens[existingIdx] = screen;
-  } else {
-    customScreens.unshift(screen);
+  current.push(newScreen);
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
   }
-
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(customScreens));
-  window.dispatchEvent(new Event('saved-screens-changed'));
-  return screen;
+  return newScreen;
 }
 
-/**
- * Delete a custom saved screen by ID.
- */
 export function deleteSavedScreen(id: string): boolean {
-  if (id.startsWith('preset-')) return false; // Cannot delete built-in presets
-  const customScreens = getCustomSavedScreens().filter(s => s.id !== id);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(customScreens));
-  window.dispatchEvent(new Event('saved-screens-changed'));
-  return true;
+  const current = getCustomSavedScreens();
+  const filtered = current.filter(s => s.id !== id);
+  if (filtered.length !== current.length) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+    }
+    return true;
+  }
+  return false;
 }
 
-/**
- * Get a specific screen by ID.
- */
 export function getScreenById(id: string): SavedScreen | undefined {
   return getAllScreens().find(s => s.id === id);
 }
