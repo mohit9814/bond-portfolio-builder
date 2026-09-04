@@ -15,13 +15,34 @@ function linkifyText(text: string): string {
 
 /**
  * Opens the interactive Promoter Governance, Scams & Negative Media Audit Modal.
+ * Clearly communicates subsidiary to parent conglomerate linkage and single-entity diversification rules.
  */
-export function openPromoterAuditModal(bondOrIssuer: DefaultBond | string): void {
+export function openPromoterAuditModal(bondOrIssuer: DefaultBond | any | string): void {
   const entityRes = resolveBondEntity(bondOrIssuer);
   const rec = entityRes.promoterRecord;
-  const isin = typeof bondOrIssuer === 'string' ? '' : bondOrIssuer.isin;
+  
+  let specificIssuer = '';
+  let isin = '';
+  if (typeof bondOrIssuer === 'string') {
+    if (bondOrIssuer.toUpperCase().startsWith('INE')) {
+      isin = bondOrIssuer.trim();
+    } else {
+      specificIssuer = bondOrIssuer.trim();
+    }
+  } else if (bondOrIssuer && typeof bondOrIssuer === 'object') {
+    specificIssuer = bondOrIssuer.issuer || bondOrIssuer.issuerName || bondOrIssuer.readableName || '';
+    isin = bondOrIssuer.isin || '';
+  }
+
   const entityName = rec ? rec.entityName : entityRes.canonicalEntityName;
-  const swotRecord = getBusinessSwot(isin || entityName);
+  const isSubsidiary = Boolean(
+    specificIssuer &&
+    entityName &&
+    !entityName.toLowerCase().includes(specificIssuer.toLowerCase()) &&
+    !specificIssuer.toLowerCase().includes(entityName.toLowerCase())
+  );
+
+  const swotRecord = getBusinessSwot(isin || specificIssuer || entityName);
 
   // Remove existing modal if any
   document.getElementById('promoter-audit-modal')?.remove();
@@ -35,14 +56,14 @@ export function openPromoterAuditModal(bondOrIssuer: DefaultBond | string): void
   const scoreColor = entityRes.governanceScore >= 80 ? '#10b981' : entityRes.governanceScore >= 60 ? '#f59e0b' : '#ef4444';
 
   const citations = getVerifiedCitationsForEntity(
-    entityName,
+    specificIssuer || entityName,
     entityRes.canonicalEntityName,
     isin,
     swotRecord?.ratingAgency || 'CRISIL / ICRA / CARE'
   );
 
   modal.innerHTML = `
-    <div class="modal-content" style="background: #0f172a; border: 1px solid var(--border-glass); border-radius: 16px; width: 100%; max-width: 820px; max-height: 90vh; overflow-y: auto; padding: 1.75rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); font-family: var(--font-sans); color: #f8fafc;">
+    <div class="modal-content" style="background: #0f172a; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 16px; width: 100%; max-width: 840px; max-height: 90vh; overflow-y: auto; padding: 1.75rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); font-family: var(--font-sans, system-ui, sans-serif); color: #f8fafc;">
       
       <!-- Modal Header -->
       <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 1rem; margin-bottom: 1.25rem;">
@@ -50,20 +71,40 @@ export function openPromoterAuditModal(bondOrIssuer: DefaultBond | string): void
           <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
             <span style="font-size: 1.25rem;">⚖️</span>
             <h2 style="font-size: 1.35rem; color: #fff; margin: 0; font-weight: 800;">
-              ${entityName}
+              ${specificIssuer ? specificIssuer : entityName}
             </h2>
+            ${isSubsidiary ? `
+              <span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.35rem;">
+                🏢 Group: ${entityName}
+              </span>
+            ` : ''}
             <span style="background: ${styling.bg}; color: ${styling.color}; border: 1px solid ${styling.border}; font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.35rem;">
               ${styling.icon} ${styling.label}
             </span>
           </div>
           <p style="font-size: 0.82rem; color: #94a3b8; margin: 0.35rem 0 0 0;">
-            Promoter Background, Legal Track Record, Regulatory Actions & Corporate Governance Audit
+            ${isSubsidiary 
+              ? `Forensic Audit for ${specificIssuer} • Evaluated under parent group conglomerate governance` 
+              : 'Promoter Background, Legal Track Record, Regulatory Actions & Corporate Governance Audit'}
           </p>
         </div>
         <button id="close-promoter-modal-btn" style="background: transparent; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer; padding: 0 0.5rem; line-height: 1;">
           &times;
         </button>
       </div>
+
+      ${isSubsidiary ? `
+        <!-- Subsidiary to Parent Conglomerate Mapping Banner -->
+        <div style="background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
+          <div style="font-size: 0.8rem; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.3rem;">
+            🏢 Corporate Structure & Single-Entity Linkage
+          </div>
+          <div style="font-size: 0.82rem; color: #e2e8f0; line-height: 1.45;">
+            You are auditing <strong>${specificIssuer}</strong>, which is a subsidiary / entity under <strong>${entityName}</strong> (Promoters: ${rec ? rec.promotersAndKeyPersons.join(', ') : 'Group Management'}).
+            Under Single-Entity Diversification & Forensic Governance rules, all conglomerate entities (such as ECL Finance, Edelweiss ARC, ECap Equities, and Nido Home Finance) are evaluated under the parent group's unified promoter track record, regulatory actions, and supervisory rulings.
+          </div>
+        </div>
+      ` : ''}
 
       <!-- Governance Scorecard & Key Persons -->
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.85rem; margin-bottom: 1.25rem;">
@@ -75,7 +116,7 @@ export function openPromoterAuditModal(bondOrIssuer: DefaultBond | string): void
         </div>
 
         <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 0.85rem;">
-          <div style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Key Promoters / Leaders</div>
+          <div style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Key Promoters / Group Leaders</div>
           <div style="font-size: 0.85rem; font-weight: 600; color: #e2e8f0; margin-top: 0.25rem;">
             ${rec ? rec.promotersAndKeyPersons.join(', ') : 'Professional / Institutional Management'}
           </div>
@@ -147,8 +188,14 @@ export function openPromoterAuditModal(bondOrIssuer: DefaultBond | string): void
           <div style="font-size: 0.75rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; margin-bottom: 0.35rem;">
             🔗 Conglomerate Entities Under Single-Entity Diversification Cap:
           </div>
-          <div style="font-size: 0.78rem; color: #cbd5e1; line-height: 1.4;">
-            ${rec.aliasesAndSubsidiaries.join(' • ')}
+          <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; font-size: 0.78rem; color: #cbd5e1; line-height: 1.4;">
+            ${rec.aliasesAndSubsidiaries.map(a => {
+              const isMatch = specificIssuer && a.toLowerCase().includes(specificIssuer.toLowerCase());
+              if (isMatch) {
+                return `<span style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 700;">★ ${a} (Current Bond Issuer)</span>`;
+              }
+              return `<span style="background: rgba(255, 255, 255, 0.05); padding: 0.2rem 0.5rem; border-radius: 4px;">${a}</span>`;
+            }).join('')}
           </div>
         </div>
       ` : ''}
@@ -183,7 +230,7 @@ export function openPromoterAuditModal(bondOrIssuer: DefaultBond | string): void
       <!-- Action Footer -->
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 1rem;">
         <button id="open-full-promoter-dossier-btn" style="background: rgba(99, 102, 241, 0.2); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.4); font-weight: 700; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; gap: 0.4rem;">
-          👤 Full Executive Dossier & Personal SWOT ↗
+          👤 Full Executive Dossier: ${rec ? rec.promotersAndKeyPersons[0] : entityName} ↗
         </button>
         <button id="close-promoter-modal-bottom-btn" class="btn" style="background: rgba(255, 255, 255, 0.1); color: #fff; border: 1px solid rgba(255, 255, 255, 0.2); font-weight: 600; padding: 0.5rem 1.25rem; border-radius: 8px; cursor: pointer;">
           Close Audit
@@ -205,7 +252,7 @@ export function openPromoterAuditModal(bondOrIssuer: DefaultBond | string): void
 
   openDossierBtn?.addEventListener('click', () => {
     closeFn();
-    openPromoterProfileModal(entityName);
+    openPromoterProfileModal(entityName, specificIssuer);
   });
 
   // Global link interceptor to guarantee open in new window

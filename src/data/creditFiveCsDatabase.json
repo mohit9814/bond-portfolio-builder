@@ -670,5 +670,61 @@
         "sectorOutlook": "Improving with retail scale"
       }
     }
+  },
+  "nido_home_finance": {
+    "entityKey": "nido_home_finance",
+    "issuerName": "NIDO HOME FINANCE LIMITED",
+    "parentGroup": "Edelweiss Group",
+    "rating": "CRISIL A+ (Negative) / CARE A+",
+    "ratingAgency": "CRISIL / CARE",
+    "quantitativeCoverage": {
+      "dscr": 1.35,
+      "iscr": 1.95,
+      "fccr": 1.6,
+      "ocfToDebtPercent": 11.2,
+      "cfoCr": 380,
+      "cashEquivalentsCr": 650,
+      "gearingRatio": 2.8,
+      "securityCoverRatio": 1.25,
+      "operatingEbitdaMarginPercent": 28.4
+    },
+    "fiveCsAssessment": {
+      "compositeScore": 54,
+      "creditGrade": "SPECULATIVE",
+      "character": {
+        "score": 42,
+        "summary": "Subsidiary of Edelweiss Financial Services (EFSL). While Nido Home Finance operates independently in retail housing, parent group faces RBI supervisory ban on ECL Finance & EARC.",
+        "governanceRating": "Group Contagion Overhang",
+        "auditorQuality": "S.R. Batliboi & Co. LLP",
+        "creditorTrackRecord": "Punctual debt servicing across all retail NCD tranches."
+      },
+      "capacity": {
+        "score": 62,
+        "summary": "Granular retail affordable housing book generates predictable monthly EMI collections; DSCR of 1.35x and ISCR of 1.95x.",
+        "cashFlowPredictability": "High (Granular Home Loan EMIs)",
+        "debtServicingRunway": "8-10 Months liquidity cover"
+      },
+      "collateral": {
+        "score": 68,
+        "summary": "1.25x first pari-passu charge over standard housing loan receivables pool with debenture trustee monitoring.",
+        "collateralType": "First charge on retail home loan hypothecated assets",
+        "chargeExclusivity": "Pari-passu with consortium lenders",
+        "escrowMechanism": "Dedicated collections escrow account"
+      },
+      "capital": {
+        "score": 64,
+        "summary": "Robust standalone CRAR of 25.2% providing solid equity cushion, with conservative balance sheet gearing of 2.8x.",
+        "netWorthCr": 940,
+        "crarPercent": 25.2,
+        "leverageBuffer": "Low Gearing (2.8x)"
+      },
+      "conditions": {
+        "score": 36,
+        "summary": "Challenging wholesale funding environment for Edelweiss-affiliated entities post-RBI regulatory action, despite strong underlying housing demand.",
+        "macroSensitivity": "Moderate to interest rate cycles",
+        "regulatoryTailwindHeadwind": "Parent Group Regulatory Headwind",
+        "sectorOutlook": "Positive for affordable housing, offset by conglomerate scrutiny"
+      }
+    }
   }
 }

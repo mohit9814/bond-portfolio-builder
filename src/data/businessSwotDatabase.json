@@ -600,5 +600,45 @@
       "liquidityCoverRatio": 125,
       "gearingRatio": 3
     }
+  },
+  "nido_home_finance": {
+    "isin": "INE530L07970",
+    "issuerName": "NIDO HOME FINANCE LIMITED",
+    "canonicalEntity": "Nido Home Finance Ltd (formerly Edelweiss Housing Finance)",
+    "parentGroup": "Edelweiss Group",
+    "ratingAgency": "CRISIL / CARE",
+    "currentRating": "CRISIL A+ (Negative) / CARE A+",
+    "rationaleDate": "2024-06-20",
+    "sourceDocument": "CRISIL Rating Rationale - Nido Home Finance Limited (formerly Edelweiss Housing Finance)",
+    "sourceUrl": "https://www.google.com/search?q=CRISIL%20rating%20rationale%20%22Nido%20Home%20Finance%20Limited%22%20INE530L07970",
+    "bseFilingUrl": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20memorandum%20%22INE530L07970%22%20GID",
+    "nsdlDirectoryUrl": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22INE530L07970%22",
+    "swot": {
+      "strengths": [
+        "Dedicated affordable retail housing finance franchise with established loan origination network",
+        "Strong capital adequacy with CRAR of 25.2% (Tier-I: 23.8%) well above 15% regulatory norm",
+        "Granular retail mortgage loan book reducing single-borrower concentration"
+      ],
+      "weaknesses": [
+        "Reputational and wholesale funding overhang due to parent Edelweiss Group RBI supervisory ban on ECL Finance",
+        "Moderate asset quality seasoning in newer affordable housing geographic clusters",
+        "Elevated borrowing costs compared to top-tier bank-sponsored housing finance companies"
+      ],
+      "opportunities": [
+        "Expansion into Tier-2 and Tier-3 home loan markets under government affordable housing incentives",
+        "Co-lending partnerships with public sector banks to drive fee-based origination"
+      ],
+      "threats": [
+        "Parent group contagion risk impacting market liquidity and refinancing lines",
+        "Intense competition from commercial banks and large NBFC-HFCs in the prime mortgage segment"
+      ]
+    },
+    "financialMetrics": {
+      "crarPercent": 25.2,
+      "gnpaPercent": 1.8,
+      "nnpaPercent": 1.1,
+      "liquidityCoverRatio": 145,
+      "gearingRatio": 2.8
+    }
   }
 }
