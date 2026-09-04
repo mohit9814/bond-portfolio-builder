@@ -15,6 +15,7 @@ import { initEngineSettingsModal, openEngineSettingsModal } from './engineSettin
 import { initPortfolioAnalyzer, setAnalyzerInventory, loadClientIntoAnalyzer } from './analyzer/analyzerView';
 import { initMultiClientDashboard, setMultiClientInventory } from './clients/multiClientDashboardView';
 import { openPromoterAuditModal } from './promoterModal';
+import { renderAuditView } from './audit/auditView';
 
 Chart.register(...registerables);
 
@@ -1095,6 +1096,7 @@ fileInput.addEventListener('change', async (e) => {
       setScreenerInventory(activeInventory);
       setAnalyzerInventory(activeInventory);
       setMultiClientInventory(activeInventory);
+      if (auditView) renderAuditView(auditView, activeInventory);
       fileStatus.textContent = `✓ Uploaded ${file.name} successfully (${parsedBonds.length} bonds parsed)`;
       fileStatus.style.color = 'var(--accent-green)';
       updateDashboard();
@@ -1744,22 +1746,25 @@ window.addEventListener('portfolio-overrides-changed', () => {
   updateDashboard();
 });
 
-// --- 4-Way Tab Switching Logic ---
+// --- 5-Way Tab Switching Logic ---
 const tabBuilder = document.getElementById('tab-builder');
 const tabScreener = document.getElementById('tab-screener');
 const tabAnalyzer = document.getElementById('tab-analyzer');
 const tabMultiClient = document.getElementById('tab-multi-client');
+const tabAudit = document.getElementById('tab-audit');
 const builderView = document.getElementById('builder-view');
 const screenerView = document.getElementById('screener-view');
 const analyzerView = document.getElementById('analyzer-view');
 const multiClientView = document.getElementById('multi-client-view');
+const auditView = document.getElementById('audit-view');
 
-function switchActiveTab(activeTab: 'builder' | 'screener' | 'analyzer' | 'multi-client') {
+export function switchActiveTab(activeTab: 'builder' | 'screener' | 'analyzer' | 'multi-client' | 'audit') {
   const tabs = [
     { id: 'builder', btn: tabBuilder, view: builderView },
     { id: 'screener', btn: tabScreener, view: screenerView },
     { id: 'analyzer', btn: tabAnalyzer, view: analyzerView },
-    { id: 'multi-client', btn: tabMultiClient, view: multiClientView }
+    { id: 'multi-client', btn: tabMultiClient, view: multiClientView },
+    { id: 'audit', btn: tabAudit, view: auditView }
   ];
 
   tabs.forEach(t => {
@@ -1770,6 +1775,9 @@ function switchActiveTab(activeTab: 'builder' | 'screener' | 'analyzer' | 'multi
       t.btn.style.borderBottom = '2px solid var(--accent-gold)';
       t.btn.style.fontWeight = '600';
       t.view.style.display = 'block';
+      if (t.id === 'audit' && auditView) {
+        renderAuditView(auditView, activeInventory);
+      }
     } else {
       t.btn.classList.remove('tab-active');
       t.btn.style.color = 'var(--text-secondary)';
@@ -1779,11 +1787,13 @@ function switchActiveTab(activeTab: 'builder' | 'screener' | 'analyzer' | 'multi
     }
   });
 }
+(window as any).switchActiveTab = switchActiveTab;
 
 tabBuilder?.addEventListener('click', () => switchActiveTab('builder'));
 tabScreener?.addEventListener('click', () => switchActiveTab('screener'));
 tabAnalyzer?.addEventListener('click', () => switchActiveTab('analyzer'));
 tabMultiClient?.addEventListener('click', () => switchActiveTab('multi-client'));
+tabAudit?.addEventListener('click', () => switchActiveTab('audit'));
 
 document.addEventListener('DOMContentLoaded', () => {
   if (fileStatus) {
@@ -1797,6 +1807,9 @@ document.addEventListener('DOMContentLoaded', () => {
     switchActiveTab('analyzer');
     loadClientIntoAnalyzer(clientId);
   });
+  if (auditView) {
+    renderAuditView(auditView, activeInventory);
+  }
   initOverridesModal({
     getActiveInventory: () => activeInventory,
     getExcludedIsins: () => excludedIsins,
