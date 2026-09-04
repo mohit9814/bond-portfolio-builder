@@ -191,6 +191,8 @@ export function parsePortfolioInput(rawText: string, referenceInventory: Default
       subSector: knowledge.subSector || 'General Debt',
       isSecured: !row.securityName.toLowerCase().includes('unsecured'),
       weightPercent: 0, // populated below
+      principalRedemption: matchedBond?.principalRedemption || 'ON MATURITY',
+      amortizationSummary: matchedBond?.principalRedemption && matchedBond.principalRedemption !== 'ON MATURITY' ? matchedBond.principalRedemption : undefined,
       historicalRatings: knowledge.historicalRatings || []
     };
 

@@ -2,6 +2,8 @@ import { DefaultBond } from './defaultInventory';
 import { setCompanyOverride } from './overridesManager';
 import { getCompanyInsights } from './companyReference';
 import { openPromoterAuditModal } from './promoterModal';
+import { getBseGidRecord } from './data/bseGidIntelligence';
+import { parseRedemptionSchedule } from './redemptionEngine';
 
 /**
  * Renders a full-detail slide-in modal for a selected bond.
@@ -75,6 +77,13 @@ export function openBondDetailModal(bond: DefaultBond): void {
   });
 
   const insights = getCompanyInsights(bond);
+  const gid = getBseGidRecord(bond.isin || bond.issuer);
+  const redPlan = parseRedemptionSchedule(
+    bond.principalRedemption,
+    bond.maturity,
+    bond.months,
+    bond.faceValue || 100000
+  );
   
   // Trend badge (use explicit bond trend, fallback to insight trend, fallback to stable)
   const trend = bond.ratingTrend || insights.ratingTrend;
@@ -87,11 +96,36 @@ export function openBondDetailModal(bond: DefaultBond): void {
   // Calculate unit price if available
   const calculatedUnitPrice = (bond.totalTradableFV && bond.totalTradableQty) ? Math.floor(bond.totalTradableFV / bond.totalTradableQty) : bond.faceValue;
 
+  // Render structured redemption milestones table if amortizing
+  let redemptionScheduleHtml = '';
+  if (redPlan.hasAmortization) {
+    const tranchesHtml = redPlan.tranches.map(t => `
+      <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.35rem 0.6rem; background: rgba(0,0,0,0.25); border-radius: 6px; font-size: 0.78rem;">
+        <span style="color: #38bdf8; font-weight: 600;">Month ${t.month} ${t.targetDateStr ? `(${t.targetDateStr})` : ''}</span>
+        <span style="color: var(--text-secondary);">${t.label}</span>
+        <span style="color: #4ade80; font-weight: 700;">${(t.percent * 100).toFixed(1)}%</span>
+      </div>
+    `).join('');
+
+    redemptionScheduleHtml = `
+      <div style="grid-column: 1 / -1; margin-top: 0.6rem; padding: 0.8rem; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 8px;">
+        <div style="font-size: 0.78rem; font-weight: 700; color: #38bdf8; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.4rem;">
+          ⚡ Structured Principal Amortization Schedule
+        </div>
+        <div style="font-size: 0.76rem; color: var(--text-secondary); margin-bottom: 0.6rem;">${redPlan.summaryDescription}</div>
+        <div style="display: flex; flex-direction: column; gap: 0.3rem;">
+          ${tranchesHtml}
+        </div>
+      </div>
+    `;
+  }
+
   // Build field grid
   const fields = `
-    ${section('Identification')}
+    ${section('Identification & Group')}
     ${row('ISIN', `<span style="font-family: monospace; font-size: 0.95rem;">${bond.isin}</span>`)}
     ${row('Issuer Name', bond.issuer)}
+    ${row('Parent / Conglomerate', gid?.parentGroup || 'Independent')}
     ${row('Sector', bond.sector || insights.sector)}
     ${bond.category ? row('Category', bond.category) : ''}
 
@@ -108,8 +142,18 @@ export function openBondDetailModal(bond: DefaultBond): void {
     ${row('Offer Yield (YTM)', pct(bond.yield), true)}
     ${bond.coupon !== null && bond.coupon !== undefined ? row('Coupon Rate', pct(bond.coupon)) : ''}
     ${row('Interest Payment', bond.frequency)}
-    ${bond.principalRedemption ? row('Principal Redemption', bond.principalRedemption) : ''}
+    ${bond.principalRedemption ? row('Principal Redemption', `<span style="color: #38bdf8; font-weight: 600;">${bond.principalRedemption}</span>`) : ''}
     ${calculatedUnitPrice ? row('Face Value / Unit Price', fmtCurrency(calculatedUnitPrice)) : ''}
+    ${redemptionScheduleHtml}
+
+    ${section('📑 BSE GID & NSDL Terms Breakdown')}
+    ${row('Security Cover Ratio', `<span style="color: #4ade80; font-weight: 700;">${gid?.securityCoverRatio || '1.25x (Standard)'}</span>`)}
+    ${row('Debenture Trustee', gid?.debentureTrustee || 'Catalyst Trusteeship Ltd')}
+    ${row('Collateral Backing', gid?.collateralDescription)}
+    ${row('DSRA Requirement', gid?.dsraRequirement)}
+    ${row('Escrow Waterfall', gid?.escrowWaterfall)}
+    ${row('Key Covenants', gid?.financialCovenants ? gid.financialCovenants.map(c => `• ${c}`).join('<br>') : 'Standard Asset Cover & CRAR covenants')}
+    ${row('Listing & Depository', `${gid?.listingExchange || 'BSE'} | ${gid?.depository || 'NSDL & CDSL'}`)}
 
     ${section('Tenure & Liquidity (Availability)')}
     ${row('Redemption Date', bond.maturity)}

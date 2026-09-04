@@ -265,12 +265,18 @@ function renderCashFlowTable(summary: PortfolioSummary) {
     // Find the bond details for this ISIN
     const bond = summary.selectedBonds.find(b => b.isin === cf.isin);
     const maturityDate = bond ? bond.maturity : '-';
+    const amortBadge = cf.isAmortizingPrincipal
+      ? `<span style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; font-size: 0.7rem; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 700; margin-left: 0.4rem;">⚡ Amortization</span>`
+      : '';
 
     tr.innerHTML = `
-      <td style="padding: 1rem;">Month ${cf.month}</td>
+      <td style="padding: 1rem;">Month ${cf.month} ${amortBadge}</td>
       <td style="padding: 1rem; color: var(--text-secondary);">${maturityDate}</td>
       <td style="padding: 1rem; font-family: monospace; font-weight: 500; color: var(--accent-gold);">${cf.isin}</td>
-      <td style="padding: 1rem; font-weight: 500;">${cf.issuer}</td>
+      <td style="padding: 1rem; font-weight: 500;">
+        ${cf.issuer}
+        <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 0.2rem;">${cf.paymentLabel}</div>
+      </td>
       <td style="padding: 1rem; text-align: right; color: var(--text-primary); font-weight: 600;">${cf.principal > 0 ? formatCurrency(cf.principal) : '—'}</td>
       <td style="padding: 1rem; text-align: right; color: var(--accent-green); font-weight: 600;">+${formatCurrency(Math.round(cf.coupon))}</td>
       <td style="padding: 1rem; text-align: right; color: var(--text-primary); font-weight: 700;">${formatCurrency(Math.round(cf.total))}</td>
@@ -451,6 +457,7 @@ function renderTable(summary: PortfolioSummary) {
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
           <div>
             <strong>${bond.issuer}</strong>
+            ${(bond.amortizationType === 'AMORTIZING' || bond.amortizationType === 'STAGGERED') ? `<span title="${(bond.principalRedemption || 'Structured Amortizing Principal').replace(/"/g, '&quot;')}" style="cursor: help; background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); padding: 1px 5px; border-radius: 4px; font-size: 0.65rem; font-weight: 700; margin-left: 0.3rem;">⚡ AMORTIZING</span>` : ''}
             ${bond.canonicalEntityName && bond.canonicalEntityName !== bond.issuer ? `<div style="font-size: 0.7rem; color: #94a3b8; font-weight: 500;">Group: ${bond.canonicalEntityName}</div>` : ''}
             ${bond.overrideJustification ? `<span title="Force Included: ${bond.overrideJustification.replace(/"/g, '&quot;')}" style="cursor: help; background: rgba(59, 130, 246, 0.2); color: #60a5fa; padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; font-weight: 700;">OVERRIDE</span>` : ''}
           </div>

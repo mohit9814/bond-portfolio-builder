@@ -53,6 +53,8 @@ export interface PortfolioHolding {
   subSector: string;
   isSecured: boolean;
   weightPercent: number;
+  principalRedemption?: string;
+  amortizationSummary?: string;
   historicalRatings?: HistoricalRating[];
 }
 

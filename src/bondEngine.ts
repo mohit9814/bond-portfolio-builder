@@ -1,6 +1,12 @@
 import { DefaultBond } from './defaultInventory';
 import { EngineHyperparameters, DEFAULT_HYPERPARAMETERS } from './engineSettingsManager';
 import { resolveBondEntity } from './entityResolver';
+import {
+  AmortizationType,
+  StructuredRedemptionPlan,
+  parseRedemptionSchedule,
+  generateStructuredCashFlows
+} from './redemptionEngine';
 
 export interface SelectedBond extends DefaultBond {
   allocationPercent: number;
@@ -13,6 +19,8 @@ export interface SelectedBond extends DefaultBond {
   canonicalEntityName?: string;
   governanceScore?: number;
   promoterRiskSeverity?: string;
+  amortizationType?: AmortizationType;
+  structuredRedemptionPlan?: StructuredRedemptionPlan;
 }
 
 export interface FDRateConfig {
@@ -41,16 +49,20 @@ export interface CashFlow {
 export interface PeriodicCashFlow {
   /** Which month (from today) this payment arrives */
   month: number;
-  /** Principal returned (non-zero only at maturity) */
+  /** Principal returned (non-zero when principal amortization or maturity occurs) */
   principal: number;
-  /** Coupon interest amount for this period */
+  /** Coupon interest amount for this period (calculated on reducing balance) */
   coupon: number;
   /** Total cash received = principal + coupon */
   total: number;
   isin: string;
   issuer: string;
-  /** Human-readable label e.g. "Q3 Coupon", "Maturity" */
+  /** Human-readable label e.g. "Q3 Coupon", "Maturity", "8% Amortization" */
   paymentLabel: string;
+  /** Remaining outstanding principal after this payment */
+  outstandingPrincipalAfter?: number;
+  /** Whether this event returned partial amortizing principal prior to final maturity */
+  isAmortizingPrincipal?: boolean;
 }
 
 export interface CompanyAllocation {
@@ -878,6 +890,7 @@ export function generateBondPortfolio(
     const fdRateForBond = getFDRateForTenure(s.bond.months);
 
     const entityRes = resolveBondEntity(s.bond);
+    const plan = parseRedemptionSchedule(s.bond.principalRedemption, s.bond.maturity, s.bond.months, allocatedAmount);
 
     selectedBonds.push({
       ...s.bond,
@@ -890,7 +903,9 @@ export function generateBondPortfolio(
       canonicalEntityKey: entityRes.canonicalEntityKey,
       canonicalEntityName: entityRes.canonicalEntityName,
       governanceScore: entityRes.governanceScore,
-      promoterRiskSeverity: entityRes.riskSeverity
+      promoterRiskSeverity: entityRes.riskSeverity,
+      amortizationType: plan.amortizationType,
+      structuredRedemptionPlan: plan
     });
 
     const issuer = s.bond.issuer;
@@ -950,93 +965,55 @@ export function generateBondPortfolio(
     ratingDistribution[cat] = (ratingDistribution[cat] || 0) + 1;
   });
 
-  // Calculate maturing cash flows
-  const monthlyCashFlows: CashFlow[] = selectedBonds.map(b => {
-    const principal = b.allocatedAmount;
-    const interest = b.allocatedAmount * b.yield * (b.months / 12);
-    return {
-      month: Math.round(b.months),
-      principal,
-      interest,
-      total: principal + interest,
-      isin: b.isin,
-      issuer: b.issuer
-    };
-  }).sort((a, b) => a.month - b.month);
+  // Calculate maturing cash flows (including structured amortizing tranches)
+  const monthlyCashFlows: CashFlow[] = [];
+  selectedBonds.forEach(b => {
+    const plan = b.structuredRedemptionPlan || parseRedemptionSchedule(b.principalRedemption, b.maturity, b.months, b.allocatedAmount);
+    plan.tranches.forEach(tranche => {
+      const trancheInterest = tranche.principalAmount * b.yield * (tranche.month / 12);
+      monthlyCashFlows.push({
+        month: tranche.month,
+        principal: tranche.principalAmount,
+        interest: trancheInterest,
+        total: tranche.principalAmount + trancheInterest,
+        isin: b.isin,
+        issuer: b.issuer
+      });
+    });
+  });
+  monthlyCashFlows.sort((a, b) => a.month - b.month);
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Generate Periodic Coupon Payment Events
-  // Each bond generates individual payment events based on its frequency.
-  // This correctly models the income a customer receives each period.
+  // Generate Periodic Coupon & Structured Principal Payment Events
+  // Models reducing-balance coupon distributions for amortizing bonds
   // ─────────────────────────────────────────────────────────────────────────
   const periodicCashFlows: PeriodicCashFlow[] = [];
 
-  /**
-   * Returns the coupon payment interval in months for a given frequency string.
-   * Returns 0 for ON MATURITY (no periodic payments; all at end).
-   */
-  const getCouponIntervalMonths = (frequency: string): number => {
-    const f = frequency.trim().toUpperCase();
-    if (f.includes('MONTHLY')) return 1;
-    if (f.includes('QUARTERLY') || f.includes('QUARTER')) return 3;
-    if (f.includes('SEMI') || f.includes('HALF') || f.includes('BI-ANNUAL') || f.includes('BIANNUAL')) return 6;
-    if (f.includes('ANNUAL') || f.includes('YEARLY')) return 12;
-    // ON MATURITY, ZERO COUPON etc. — no periodic payments
-    return 0;
-  };
-
   selectedBonds.forEach(bond => {
-    const maturityMonth = Math.round(bond.months);
-    const intervalMonths = getCouponIntervalMonths(bond.frequency || 'ON MATURITY');
-    // Annual coupon income = allocated × yield rate
-    const annualCoupon = bond.allocatedAmount * bond.yield;
+    const { periodicFlows } = generateStructuredCashFlows({
+      isin: bond.isin,
+      issuer: bond.issuer,
+      yield: bond.yield,
+      months: bond.months,
+      maturity: bond.maturity,
+      frequency: bond.frequency,
+      allocatedAmount: bond.allocatedAmount,
+      principalRedemption: bond.principalRedemption
+    });
 
-    if (intervalMonths > 0) {
-      // Periodic coupon-paying bond: generate one coupon event per interval
-      const couponPerPeriod = annualCoupon * (intervalMonths / 12);
-      let couponCount = 0;
-
-      for (let m = intervalMonths; m < maturityMonth; m += intervalMonths) {
-        couponCount++;
-        periodicCashFlows.push({
-          month: m,
-          principal: 0,
-          coupon: couponPerPeriod,
-          total: couponPerPeriod,
-          isin: bond.isin,
-          issuer: bond.issuer,
-          paymentLabel: `Coupon #${couponCount}`
-        });
-      }
-
-      // Final maturity event: last coupon stub (if any remaining) + full principal
-      const monthsSinceLastCoupon = maturityMonth - Math.floor(maturityMonth / intervalMonths) * intervalMonths;
-      const stubCoupon = monthsSinceLastCoupon > 0
-        ? annualCoupon * (monthsSinceLastCoupon / 12)
-        : couponPerPeriod; // last regular coupon coincides with maturity
-
+    periodicFlows.forEach(flow => {
       periodicCashFlows.push({
-        month: maturityMonth,
-        principal: bond.allocatedAmount,
-        coupon: stubCoupon,
-        total: bond.allocatedAmount + stubCoupon,
-        isin: bond.isin,
-        issuer: bond.issuer,
-        paymentLabel: 'Maturity'
+        month: flow.month,
+        principal: flow.principal,
+        coupon: flow.coupon,
+        total: flow.total,
+        isin: flow.isin,
+        issuer: flow.issuer,
+        paymentLabel: flow.paymentLabel,
+        outstandingPrincipalAfter: flow.outstandingPrincipalAfter,
+        isAmortizingPrincipal: flow.isAmortizingPrincipal
       });
-    } else {
-      // ON MATURITY bond: single bullet payment at maturity (principal + all accumulated interest)
-      const totalInterest = annualCoupon * (bond.months / 12);
-      periodicCashFlows.push({
-        month: maturityMonth,
-        principal: bond.allocatedAmount,
-        coupon: totalInterest,
-        total: bond.allocatedAmount + totalInterest,
-        isin: bond.isin,
-        issuer: bond.issuer,
-        paymentLabel: 'Maturity (Bullet)'
-      });
-    }
+    });
   });
 
   periodicCashFlows.sort((a, b) => a.month - b.month);

@@ -1,5 +1,6 @@
 import { DefaultBond } from './defaultInventory';
 import { getPromoterRiskRecord, PromoterRiskRecord } from './data/promoterIntelligence';
+import { getBseGidRecord } from './data/bseGidIntelligence';
 
 export interface EntityResolutionResult {
   canonicalEntityKey: string;
@@ -33,6 +34,20 @@ export function resolveBondEntity(bondOrIssuer: DefaultBond | string): EntityRes
       riskSeverity: promoter.riskSeverity,
       autoExclude: promoter.autoExcludeFromProposals,
       exclusionReason: promoter.exclusionReason
+    };
+  }
+
+  // Check BSE GID / NSDL Registry mapping
+  const gidRecord = getBseGidRecord(isinStr || issuerStr);
+  if (gidRecord && gidRecord.groupEntityKey && gidRecord.groupEntityKey !== 'independent_corporate') {
+    return {
+      canonicalEntityKey: gidRecord.groupEntityKey,
+      canonicalEntityName: gidRecord.parentGroup || gidRecord.issuerName,
+      isMultiBondConglomerate: true,
+      promoterRecord: null,
+      governanceScore: 78,
+      riskSeverity: 'LOW',
+      autoExclude: false
     };
   }
 
