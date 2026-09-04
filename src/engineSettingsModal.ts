@@ -79,6 +79,22 @@ function createModalElement(): HTMLDialogElement {
   return dialog;
 }
 
+function updateToggleUI(
+  checkbox: HTMLInputElement | null,
+  activeBg: string,
+  activeLeft: string,
+  inactiveLeft = '3px'
+) {
+  if (!checkbox) return;
+  const parent = checkbox.closest('label');
+  const track = parent?.querySelector('.toggle-track') as HTMLElement | null;
+  const knob = parent?.querySelector('.toggle-knob') as HTMLElement | null;
+  if (track && knob) {
+    track.style.backgroundColor = checkbox.checked ? activeBg : '#475569';
+    knob.style.left = checkbox.checked ? activeLeft : inactiveLeft;
+  }
+}
+
 function renderModalContent() {
   const modal = document.getElementById('engine-settings-modal') as HTMLDialogElement;
   if (!modal) return;
@@ -136,10 +152,10 @@ function renderModalContent() {
               <strong>Higher risk on bond &rarr; Lower allowable tenure:</strong> Automatically limits holding periods for high-risk / low-fundamental score bonds to reduce exposure duration.
             </p>
           </div>
-          <label style="position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; margin-top: 4px;">
-            <input type="checkbox" id="hp-enable-tenure-cap" ${currentHp.enableFundamentalTenureCapping ? 'checked' : ''} style="opacity: 0; width: 0; height: 0;" />
-            <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: ${currentHp.enableFundamentalTenureCapping ? '#10b981' : '#475569'}; border-radius: 24px; transition: .3s;">
-              <span style="position: absolute; height: 18px; width: 18px; left: ${currentHp.enableFundamentalTenureCapping ? '23px' : '3px'}; bottom: 3px; background-color: white; border-radius: 50%; transition: .3s;"></span>
+          <label style="position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; margin-top: 4px; cursor: pointer;">
+            <input type="checkbox" id="hp-enable-tenure-cap" ${currentHp.enableFundamentalTenureCapping ? 'checked' : ''} style="position: absolute; opacity: 0; width: 0; height: 0; margin: 0;" />
+            <span class="toggle-track" style="position: absolute; inset: 0; background-color: ${currentHp.enableFundamentalTenureCapping ? '#10b981' : '#475569'}; border-radius: 24px; transition: background-color 0.2s ease;">
+              <span class="toggle-knob" style="position: absolute; height: 18px; width: 18px; left: ${currentHp.enableFundamentalTenureCapping ? '23px' : '3px'}; bottom: 3px; background-color: white; border-radius: 50%; transition: left 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 1px 3px rgba(0,0,0,0.4);"></span>
             </span>
           </label>
         </div>
@@ -180,10 +196,10 @@ function renderModalContent() {
               <strong>Higher risk appetite &rarr; Lower concentration of risky bonds:</strong> Aggressive portfolios accept higher-yield bonds but enforce granular caps (e.g. max 8% per risky issuer) to prevent single-default damage.
             </p>
           </div>
-          <label style="position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; margin-top: 4px;">
-            <input type="checkbox" id="hp-enable-risk-conc" ${currentHp.enableInvestorRiskConcentration ? 'checked' : ''} style="opacity: 0; width: 0; height: 0;" />
-            <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: ${currentHp.enableInvestorRiskConcentration ? '#38bdf8' : '#475569'}; border-radius: 24px; transition: .3s;">
-              <span style="position: absolute; height: 18px; width: 18px; left: ${currentHp.enableInvestorRiskConcentration ? '23px' : '3px'}; bottom: 3px; background-color: white; border-radius: 50%; transition: .3s;"></span>
+          <label style="position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; margin-top: 4px; cursor: pointer;">
+            <input type="checkbox" id="hp-enable-risk-conc" ${currentHp.enableInvestorRiskConcentration ? 'checked' : ''} style="position: absolute; opacity: 0; width: 0; height: 0; margin: 0;" />
+            <span class="toggle-track" style="position: absolute; inset: 0; background-color: ${currentHp.enableInvestorRiskConcentration ? '#38bdf8' : '#475569'}; border-radius: 24px; transition: background-color 0.2s ease;">
+              <span class="toggle-knob" style="position: absolute; height: 18px; width: 18px; left: ${currentHp.enableInvestorRiskConcentration ? '23px' : '3px'}; bottom: 3px; background-color: white; border-radius: 50%; transition: left 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 1px 3px rgba(0,0,0,0.4);"></span>
             </span>
           </label>
         </div>
@@ -235,10 +251,10 @@ function renderModalContent() {
             </div>
             <div style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 0.2rem;">Permit unit > issuer cap</div>
           </div>
-          <label style="position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0;">
-            <input type="checkbox" id="hp-allow-overflow" ${currentHp.allowUnitOverflow ? 'checked' : ''} style="opacity: 0; width: 0; height: 0;" />
-            <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: ${currentHp.allowUnitOverflow ? '#10b981' : '#475569'}; border-radius: 22px; transition: .3s;">
-              <span style="position: absolute; height: 16px; width: 16px; left: ${currentHp.allowUnitOverflow ? '21px' : '3px'}; bottom: 3px; background-color: white; border-radius: 50%; transition: .3s;"></span>
+          <label style="position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0; cursor: pointer;">
+            <input type="checkbox" id="hp-allow-overflow" ${currentHp.allowUnitOverflow ? 'checked' : ''} style="position: absolute; opacity: 0; width: 0; height: 0; margin: 0;" />
+            <span class="toggle-track" style="position: absolute; inset: 0; background-color: ${currentHp.allowUnitOverflow ? '#10b981' : '#475569'}; border-radius: 22px; transition: background-color 0.2s ease;">
+              <span class="toggle-knob" style="position: absolute; height: 16px; width: 16px; left: ${currentHp.allowUnitOverflow ? '21px' : '3px'}; bottom: 3px; background-color: white; border-radius: 50%; transition: left 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 1px 3px rgba(0,0,0,0.4);"></span>
             </span>
           </label>
         </div>
@@ -270,22 +286,22 @@ function attachModalEventListeners(modal: HTMLDialogElement) {
   const saveBtn = modal.querySelector('#save-hp-btn');
   const resetBtn = modal.querySelector('#reset-hp-defaults-btn');
 
-  const issuerRange = modal.querySelector('#hp-issuer-range') as HTMLInputElement;
-  const issuerInput = modal.querySelector('#hp-issuer-input') as HTMLInputElement;
-  const issuerCalc = modal.querySelector('#hp-issuer-calc') as HTMLDivElement;
+  const issuerRange = modal.querySelector('#hp-issuer-range') as HTMLInputElement | null;
+  const issuerInput = modal.querySelector('#hp-issuer-input') as HTMLInputElement | null;
+  const issuerCalc = modal.querySelector('#hp-issuer-calc') as HTMLDivElement | null;
 
-  const sectorInput = modal.querySelector('#hp-sector-input') as HTMLInputElement;
-  const allowOverflow = modal.querySelector('#hp-allow-overflow') as HTMLInputElement;
-  const enableTenureCap = modal.querySelector('#hp-enable-tenure-cap') as HTMLInputElement;
-  const highRiskTenorInput = modal.querySelector('#hp-high-risk-tenor-input') as HTMLInputElement;
-  const modRiskTenorInput = modal.querySelector('#hp-mod-risk-tenor-input') as HTMLInputElement;
-  const enableRiskConc = modal.querySelector('#hp-enable-risk-conc') as HTMLInputElement;
-  const riskyConcInput = modal.querySelector('#hp-risky-conc-input') as HTMLInputElement;
-  const consSubAInput = modal.querySelector('#hp-cons-suba-input') as HTMLInputElement;
+  const sectorInput = modal.querySelector('#hp-sector-input') as HTMLInputElement | null;
+  const allowOverflow = modal.querySelector('#hp-allow-overflow') as HTMLInputElement | null;
+  const enableTenureCap = modal.querySelector('#hp-enable-tenure-cap') as HTMLInputElement | null;
+  const highRiskTenorInput = modal.querySelector('#hp-high-risk-tenor-input') as HTMLInputElement | null;
+  const modRiskTenorInput = modal.querySelector('#hp-mod-risk-tenor-input') as HTMLInputElement | null;
+  const enableRiskConc = modal.querySelector('#hp-enable-risk-conc') as HTMLInputElement | null;
+  const riskyConcInput = modal.querySelector('#hp-risky-conc-input') as HTMLInputElement | null;
+  const consSubAInput = modal.querySelector('#hp-cons-suba-input') as HTMLInputElement | null;
 
   const currentInvestment = context?.getCurrentInvestment() || 1000000;
 
-  if (issuerRange && issuerInput) {
+  if (issuerRange && issuerInput && issuerCalc) {
     issuerRange.addEventListener('input', () => {
       issuerInput.value = issuerRange.value;
       const pct = parseFloat(issuerRange.value) || 15;
@@ -300,10 +316,16 @@ function attachModalEventListeners(modal: HTMLDialogElement) {
     });
   }
 
-  // Toggles update UI state
-  allowOverflow?.addEventListener('change', () => renderModalContent());
-  enableTenureCap?.addEventListener('change', () => renderModalContent());
-  enableRiskConc?.addEventListener('change', () => renderModalContent());
+  // Smooth toggle interactivity without destructive DOM wipe
+  allowOverflow?.addEventListener('change', () => {
+    updateToggleUI(allowOverflow, '#10b981', '21px', '3px');
+  });
+  enableTenureCap?.addEventListener('change', () => {
+    updateToggleUI(enableTenureCap, '#10b981', '23px', '3px');
+  });
+  enableRiskConc?.addEventListener('change', () => {
+    updateToggleUI(enableRiskConc, '#38bdf8', '23px', '3px');
+  });
 
   closeBtn?.addEventListener('click', closeEngineSettingsModal);
   cancelBtn?.addEventListener('click', closeEngineSettingsModal);
@@ -318,15 +340,15 @@ function attachModalEventListeners(modal: HTMLDialogElement) {
 
   saveBtn?.addEventListener('click', () => {
     const updated: Partial<EngineHyperparameters> = {
-      maxSingleIssuerPct: parseFloat(issuerInput.value) || 15,
-      maxSingleSectorPct: parseFloat(sectorInput.value) || 35,
-      allowUnitOverflow: !!allowOverflow.checked,
-      enableFundamentalTenureCapping: !!enableTenureCap.checked,
-      maxHighRiskTenorMonths: parseFloat(highRiskTenorInput.value) || 18,
-      maxModerateRiskTenorMonths: parseFloat(modRiskTenorInput.value) || 36,
-      enableInvestorRiskConcentration: !!enableRiskConc.checked,
-      maxRiskyIssuerConcentrationPct: parseFloat(riskyConcInput.value) || 8,
-      conservativeSubAACapPct: parseFloat(consSubAInput.value) || 10
+      maxSingleIssuerPct: parseFloat(issuerInput?.value || '15') || 15,
+      maxSingleSectorPct: parseFloat(sectorInput?.value || '35') || 35,
+      allowUnitOverflow: !!allowOverflow?.checked,
+      enableFundamentalTenureCapping: !!enableTenureCap?.checked,
+      maxHighRiskTenorMonths: parseFloat(highRiskTenorInput?.value || '18') || 18,
+      maxModerateRiskTenorMonths: parseFloat(modRiskTenorInput?.value || '36') || 36,
+      enableInvestorRiskConcentration: !!enableRiskConc?.checked,
+      maxRiskyIssuerConcentrationPct: parseFloat(riskyConcInput?.value || '8') || 8,
+      conservativeSubAACapPct: parseFloat(consSubAInput?.value || '10') || 10
     };
     saveEngineHyperparameters(updated);
     closeEngineSettingsModal();
