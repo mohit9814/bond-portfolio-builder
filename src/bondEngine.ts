@@ -1,38 +1,38 @@
 import { DefaultBond } from './defaultInventory';
+import { parseRedemptionSchedule, generateStructuredCashFlows, StructuredRedemptionPlan, AmortizationType } from './redemptionEngine';
 import { EngineHyperparameters, DEFAULT_HYPERPARAMETERS } from './engineSettingsManager';
 import { resolveBondEntity } from './entityResolver';
-import { assessBondFundamentalRisk, getRiskAdjustedIssuerCap } from './riskAdjustedEngine';
-import { ClientRiskProfile } from './clients/types';
-import {
-  AmortizationType,
-  StructuredRedemptionPlan,
-  parseRedemptionSchedule,
-  generateStructuredCashFlows
-} from './redemptionEngine';
 
 export interface SelectedBond extends DefaultBond {
-  allocationPercent: number;
   allocatedAmount: number;
-  expectedAnnualReturn: number;
+  allocatedPercent: number;
+  allocationPercent: number;
+  groupPercent?: number;
+  annualInterest?: number;
+  expectedAnnualReturn?: number;
   bucketIndex: number;
-  fdRate?: number;
   overrideJustification?: string;
+  units?: number;
+  fdRate?: number;
+  months: number;
   canonicalEntityKey?: string;
   canonicalEntityName?: string;
   governanceScore?: number;
   promoterRiskSeverity?: string;
-  amortizationType?: AmortizationType;
+  hasForeignBacking?: boolean;
+  institutionalBadges?: string[];
+  amortizationType?: AmortizationType | 'BULLET' | 'AMORTIZING' | 'STAGGERED' | 'EQUAL_ANNUAL_AMORTIZING' | 'STRUCTURED_TRANCHE_AMORTIZING' | string;
   structuredRedemptionPlan?: StructuredRedemptionPlan;
 }
 
 export interface FDRateConfig {
-  t1: number; // < 46 days
-  t2: number; // 46 to 183 days
-  t3: number; // 184 to 365 days
-  t4: number; // 1 year to 2 years
-  t5: number; // 2 to 3 years
-  t6: number; // 3 to 5 years
-  t7: number; // 5 to 10 years
+  t1: number;
+  t2: number;
+  t3: number;
+  t4: number;
+  t5: number;
+  t6: number;
+  t7: number;
 }
 
 export interface CashFlow {
@@ -44,27 +44,16 @@ export interface CashFlow {
   issuer: string;
 }
 
-/**
- * A single periodic coupon/principal payment event for a bond.
- * Used to model true quarterly cashflow income (e.g., quarterly coupon, monthly coupon).
- */
 export interface PeriodicCashFlow {
-  /** Which month (from today) this payment arrives */
   month: number;
-  /** Principal returned (non-zero when principal amortization or maturity occurs) */
   principal: number;
-  /** Coupon interest amount for this period (calculated on reducing balance) */
   coupon: number;
-  /** Total cash received = principal + coupon */
   total: number;
   isin: string;
   issuer: string;
-  /** Human-readable label e.g. "Q3 Coupon", "Maturity", "8% Amortization" */
   paymentLabel: string;
-  /** Remaining outstanding principal after this payment */
-  outstandingPrincipalAfter?: number;
-  /** Whether this event returned partial amortizing principal prior to final maturity */
-  isAmortizingPrincipal?: boolean;
+  outstandingPrincipalAfter: number;
+  isAmortizingPrincipal: boolean;
 }
 
 export interface CompanyAllocation {
@@ -76,11 +65,26 @@ export interface CompanyAllocation {
   sector?: string;
   guarantor?: string;
   guarantorRating?: string;
-  ratingTrend?: 'stable' | 'improving' | 'deteriorating';
+  ratingTrend?: 'improving' | 'stable' | 'deteriorating';
   canonicalEntityKey?: string;
   canonicalEntityName?: string;
   governanceScore?: number;
   promoterRiskSeverity?: string;
+  groupPercent?: number;
+}
+
+export interface GroupAllocation {
+  groupKey: string;
+  groupName: string;
+  amount: number;
+  percent: number;
+  bondCount: number;
+  issuers: string[];
+  governanceScore?: number;
+  promoterRiskSeverity?: string;
+  hasForeignBacking?: boolean;
+  institutionalBadges?: string[];
+  ratings: string[];
 }
 
 export interface QuarterlyCashflowItem {
@@ -101,7 +105,6 @@ export interface QuarterlyCashflowAnalysis {
   items: QuarterlyCashflowItem[];
 }
 
-/** Reason categories for bond elimination — shown in the transparency panel. */
 export type EliminationReason =
   | 'TENURE_MISMATCH'      // Outside min/max tenure window selected by user
   | 'BUNDLE_FLEXI'         // Excluded category (Bundle-Flexi products)
@@ -136,6 +139,7 @@ export interface PortfolioSummary {
   /** Detailed periodic coupon payment events (monthly/quarterly/semi-annual/annual per bond). Used for Quarterly Cashflow tracker. */
   periodicCashFlows: PeriodicCashFlow[];
   companyAllocations: CompanyAllocation[];
+  groupAllocations: GroupAllocation[];
   quarterlyCashflow?: QuarterlyCashflowAnalysis;
   /** All bonds that were screened out, with the reason and explanation for each. */
   eliminatedBonds: EliminatedBond[];
@@ -262,8 +266,6 @@ export function generateBondPortfolio(
     return Math.round(months * 10) / 10;
   };
 
-
-
   // ─── Elimination tracking ─────────────────────────────────────────────────
   // Collect every bond that is screened out with the specific reason and a
   // human-readable explanation. This powers the transparency panel in the UI.
@@ -342,339 +344,156 @@ export function generateBondPortfolio(
     totalInvestment * (hp.maxSingleIssuerPct / 100),
     totalInvestment / Math.min(targetNumIssuers, maxPossibleStandardBonds)
   );
-  candidateBonds = candidateBonds.filter(b => {
-    const u = getUnitPrice(b);
-    // If company is explicitly force-included by user or manually swapped in, bypass ticket size guard
-    if (companyOverrides[b.issuer]?.action === 'INCLUDE') return true;
-    if (manualReplacements && Array.from(manualReplacements.values()).includes(b.isin)) return true;
-    // If user explicitly enabled allowUnitOverflow, allow it
-    if (hp.allowUnitOverflow) return true;
 
-    if (u > maxSingleIssuerCap) {
+  candidateBonds = candidateBonds.filter(b => {
+    const override = companyOverrides[b.issuer];
+    if (override?.action === 'INCLUDE') return true;
+
+    const unitPrice = getUnitPrice(b);
+    if (!hp.allowUnitOverflow && unitPrice > maxSingleIssuerCap) {
       return eliminate(b, 'TICKET_SIZE_TOO_LARGE',
-        `Physical unit ticket price ₹${(u / 100000).toFixed(2)}L exceeds max single issuer cap of ${hp.maxSingleIssuerPct}% (₹${(maxSingleIssuerCap / 100000).toFixed(2)}L) for a ₹${(totalInvestment / 100000).toFixed(2)}L portfolio. Diversification rule.`);
+        `Ticket size (₹${unitPrice.toLocaleString('en-IN')}) exceeds single-issuer diversification cap (₹${Math.round(maxSingleIssuerCap).toLocaleString('en-IN')}).`);
     }
     return true;
   });
 
-  // ─── Stage 5: BBB > Tenor Cap (Configurable, Sane Default: 12m) ──────────
+  // ─── Stage 5: BBB tenure rule ─────────────────────────────────────────────
   candidateBonds = candidateBonds.filter(b => {
+    const override = companyOverrides[b.issuer];
+    if (override?.action === 'INCLUDE') return true;
+
     const symbol = getCleanRatingSymbol(b.rating);
-    const isBetterThanBBB = symbol.includes('SOVEREIGN') || symbol.includes('GOI') ||
-                            symbol.includes('AAA') || symbol.includes('AA') ||
-                            symbol.includes('A');
-    if (!isBetterThanBBB && b.months > hp.maxBBBTenorMonths && !relaxBBBCap) {
+    const isBBB = symbol.startsWith('BBB') && !symbol.includes('AAA') && !symbol.includes('AA') && !symbol.startsWith('A');
+    if (isBBB && !relaxBBBCap && b.months > 12) {
       return eliminate(b, 'BBB_TENOR_VIOLATION',
-        `Rating ${b.rating} (BBB tier) with tenure ${b.months.toFixed(1)}m exceeds the ${hp.maxBBBTenorMonths}-month cap for sub-A bonds. Regulatory risk management rule.`);
+        `Rating is ${b.rating} with tenure of ${b.months.toFixed(1)}m. BBB-rated bonds cannot exceed 12 months for capital protection.`);
     }
     return true;
   });
 
-  // ─── Stage 5b: Promoter Governance, Negative Media & Regulatory Risk Gate ──
+  // ─── Stage 6: Rating threshold ───────────────────────────────────────────
   candidateBonds = candidateBonds.filter(b => {
-    // If company is explicitly force-included by user or manually swapped in, bypass promoter risk filter
-    if (companyOverrides[b.issuer]?.action === 'INCLUDE') return true;
-    if (manualReplacements && Array.from(manualReplacements.values()).includes(b.isin)) return true;
+    const override = companyOverrides[b.issuer];
+    if (override?.action === 'INCLUDE') return true;
 
-    const entityRes = resolveBondEntity(b);
-    if (entityRes.autoExclude) {
-      return eliminate(b, 'PROMOTER_GOVERNANCE_RISK',
-        `Promoter Governance & Negative Media Alert: ${entityRes.exclusionReason || 'Adverse regulatory action or corporate governance dispute.'}`);
-    }
-    return true;
-  });
-
-  // ─── Stage 6: Minimum rating filter ──────────────────────────────────────
-  if (minRatingGrade === 'A') {
-    candidateBonds = candidateBonds.filter(b => {
+    if (minRatingGrade === 'A') {
       if (!isAOrBetter(b.rating)) {
         return eliminate(b, 'BELOW_MIN_RATING',
-          `Rating ${b.rating} is below the minimum "A" grade selected for this portfolio.`);
+          `Rating ${b.rating} is below the minimum required grade of A.`);
       }
-      return true;
-    });
-  } else if (minRatingGrade === 'BBB-') {
-    candidateBonds = candidateBonds.filter(b => {
+    } else if (minRatingGrade === 'BBB-') {
       if (!isBBBMinusOrBetter(b.rating)) {
         return eliminate(b, 'BELOW_MIN_RATING',
-          `Rating ${b.rating} is below the minimum "BBB-" grade selected for this portfolio.`);
+          `Rating ${b.rating} is below the minimum required grade of BBB-.`);
       }
-      return true;
-    });
-  }
+    }
+    return true;
+  });
 
-  // Group into buckets
-  const bucketedBonds: DefaultBond[][] = buckets.map(() => []);
+  // ─── Stage 6b: Promoter / Entity Governance Risk Screening ───────────────
+  candidateBonds = candidateBonds.filter(b => {
+    const override = companyOverrides[b.issuer];
+    if (override?.action === 'INCLUDE') return true;
+
+    const entity = resolveBondEntity(b);
+    if (entity.autoExclude || entity.riskSeverity === 'CRITICAL' || entity.riskSeverity === 'HIGH') {
+      return eliminate(b, 'PROMOTER_GOVERNANCE_RISK',
+        `Flagged due to high promoter/entity governance risk (${entity.canonicalEntityName}). Score: ${entity.governanceScore}/100.`);
+    }
+    return true;
+  });
+
+  // 2. Distribute into dynamic buckets
+  const bucketCandidates: DefaultBond[][] = buckets.map(() => []);
+
   candidateBonds.forEach(bond => {
-    for (let i = 0; i < buckets.length; i++) {
-      if (bond.months >= buckets[i].min && bond.months <= buckets[i].max) {
-        bucketedBonds[i].push(bond);
-        break;
+    buckets.forEach((bucket, idx) => {
+      if (bond.months >= bucket.min && bond.months <= bucket.max) {
+        bucketCandidates[idx].push(bond);
       }
+    });
+  });
+
+  // Sort each bucket by yield descending
+  bucketCandidates.forEach(bList => {
+    bList.sort((a, b) => b.yield - a.yield);
+  });
+
+  // 3. Selection Strategy:
+  let selected: { bond: DefaultBond; bucketIndex: number }[] = [];
+  const selectedIssuers = new Set<string>();
+
+  // Check manual replacements first
+  if (manualReplacements) {
+    manualReplacements.forEach((isin, bIdx) => {
+      const b = candidateBonds.find(c => c.isin === isin);
+      if (b) {
+        selected.push({ bond: b, bucketIndex: bIdx });
+        selectedIssuers.add(b.issuer);
+      }
+    });
+  }
+
+  // Pick unique issuers across buckets
+  buckets.forEach((_, idx) => {
+    if (manualReplacements && manualReplacements.has(idx)) {
+      return;
+    }
+    const cand = bucketCandidates[idx].find(b => !selectedIssuers.has(b.issuer));
+    if (cand) {
+      selected.push({ bond: cand, bucketIndex: idx });
+      selectedIssuers.add(cand.issuer);
+    } else if (bucketCandidates[idx].length > 0) {
+      // If unique issuer not found in bucket, pick highest yield from that bucket
+      const anyCand = bucketCandidates[idx][0];
+      selected.push({ bond: anyCand, bucketIndex: idx });
     }
   });
 
-  /**
-   * Returns a bonus score for a bond's payment frequency.
-   * Higher score = bond pays coupons more frequently = better for quarterly cashflow targets.
-   * Used only when targetQuarterlyCashflowPct is set.
-   */
-  const getFrequencyScore = (frequency: string): number => {
-    const f = (frequency || '').trim().toUpperCase();
-    if (f.includes('MONTHLY')) return 4;
-    if (f.includes('QUARTERLY') || f.includes('QUARTER')) return 3;
-    if (f.includes('SEMI') || f.includes('HALF') || f.includes('BI-ANNUAL') || f.includes('BIANNUAL')) return 2;
-    if (f.includes('ANNUAL') || f.includes('YEARLY')) return 1;
-    return 0; // ON MATURITY / ZERO COUPON — no periodic income
-  };
+  // Fallback: If we didn't get targetNumIssuers, fill with highest yielding remaining unique bonds
+  if (selected.length < targetNumIssuers && candidateBonds.length > 0) {
+    const remaining = candidateBonds
+      .filter(b => !selected.some(s => s.bond.isin === b.isin))
+      .sort((a, b) => b.yield - a.yield);
 
-  /**
-   * Combined bond score for sorting within a bucket.
-   * When a quarterly cashflow target is set, frequency preference is blended in (30% weight)
-   * so periodic-coupon bonds rank above ON MATURITY bonds of similar yield.
-   */
-  const getBondScore = (bond: DefaultBond): number => {
-    const yieldScore = bond.yield * 100;
-    const ratingBonus = getRatingScore(bond.rating) / 100;
-    if (targetQuarterlyCashflowPct && targetQuarterlyCashflowPct > 0) {
-      // Blend: 70% yield + 30% frequency preference (normalized to yield-comparable scale)
-      const freqBonus = getFrequencyScore(bond.frequency || '') * 0.5;
-      return yieldScore * 0.7 + freqBonus + ratingBonus;
-    }
-    return yieldScore + ratingBonus;
-  };
-
-  // Sort each bucket by combined score (yield-first if no target; frequency-blended if target set)
-  bucketedBonds.forEach(bucketList => {
-    bucketList.sort((a, b) => getBondScore(b) - getBondScore(a));
-  });
-
-  // 3. Selection: Find optimal issuer count K (minK <= K <= maxK) that maximizes portfolio yield
-  // Note: Minimum K is enforced to be at least 7 so that no single company exceeds 15% allocation (1/7 = 14.28% <= 15%)
-  // Upper bound maxK is capped by available candidate bonds count so we never pick more issuers than available bonds
-  const availableCandidateCount = candidateBonds.length;
-  const targetK = Math.min(availableCandidateCount, Math.max(7, targetNumIssuers));
-  const minK = targetK;
-  const maxK = targetK;
-
-  let bestSelected: { bond: DefaultBond; bucketIndex: number }[] = [];
-  let maxEvaluatedYield = -1;
-
-  for (let K = minK; K <= maxK; K++) {
-    const tempBuckets = getMaturityBuckets(minTenure, maxTenure, K);
-    const tempBucketedBonds: DefaultBond[][] = tempBuckets.map(() => []);
-
-    candidateBonds.forEach(bond => {
-      for (let i = 0; i < tempBuckets.length; i++) {
-        if (bond.months >= tempBuckets[i].min && bond.months <= tempBuckets[i].max) {
-          tempBucketedBonds[i].push(bond);
-          break;
-        }
-      }
-    });
-
-    tempBucketedBonds.forEach(bucketList => {
-      // Use same frequency-blended scoring so the K-search also favours periodic coupon bonds
-      bucketList.sort((a, b) => getBondScore(b) - getBondScore(a));
-    });
-
-    const tempSelected: { bond: DefaultBond; bucketIndex: number }[] = [];
-    const tempIssuers = new Set<string>();
-    const tempEntities = new Set<string>();
-
-    if (manualReplacements) {
-      for (const [bIndex, isin] of manualReplacements.entries()) {
-        const targetBond = candidateBonds.find(b => b.isin === isin);
-        if (targetBond) {
-          tempSelected.push({ bond: targetBond, bucketIndex: bIndex });
-          tempIssuers.add(targetBond.issuer);
-          const entityRes = resolveBondEntity(targetBond);
-          tempEntities.add(entityRes.canonicalEntityKey);
-        }
-      }
-    }
-
-    const tryAddTemp = (bond: DefaultBond, bIdx: number): boolean => {
-      if (tempSelected.some(s => s.bond.isin === bond.isin)) return false;
-      if (tempIssuers.has(bond.issuer)) return false;
-      const entityRes = resolveBondEntity(bond);
-      if (tempEntities.has(entityRes.canonicalEntityKey)) return false;
-      tempSelected.push({ bond, bucketIndex: bIdx });
-      tempIssuers.add(bond.issuer);
-      tempEntities.add(entityRes.canonicalEntityKey);
-      return true;
-    };
-
-    let attempts = 0;
-    while (tempIssuers.size < K && attempts < 100) {
-      let addedInPass = false;
-      for (let bIdx = 0; bIdx < tempBuckets.length; bIdx++) {
-        if (tempIssuers.size >= K) break;
-        if (attempts === 0 && tempSelected.some(s => s.bucketIndex === bIdx)) continue;
-        const list = tempBucketedBonds[bIdx];
-        for (const bond of list) {
-          if (tryAddTemp(bond, bIdx)) {
-            addedInPass = true;
-            break;
-          }
-        }
-      }
-      if (!addedInPass) break;
-      attempts++;
-    }
-
-    if (tempSelected.length > 0) {
-      const avgYield = tempSelected.reduce((sum, s) => sum + s.bond.yield, 0) / tempSelected.length;
-      if (avgYield > maxEvaluatedYield || bestSelected.length === 0) {
-        maxEvaluatedYield = avgYield;
-        bestSelected = tempSelected;
+    for (const rem of remaining) {
+      if (selected.length >= targetNumIssuers) break;
+      if (!selectedIssuers.has(rem.issuer) || selected.length < buckets.length) {
+        selected.push({ bond: rem, bucketIndex: 0 });
+        selectedIssuers.add(rem.issuer);
       }
     }
   }
 
-  const selected = bestSelected;
-  const selectedIssuers = new Set(selected.map(s => s.bond.issuer));
-
-  // Fallback if absolutely empty
-  if (selected.length === 0) {
-    bonds.slice(0, targetNumIssuers).forEach((b, i) => {
-      selected.push({ bond: b, bucketIndex: i % 6 });
-      selectedIssuers.add(b.issuer);
-    });
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // 3b. COUPON STAGGER OPTIMIZATION (only when quarterly cashflow target is set)
-  //
-  // Goal: ensure coupon payment months are spread across all 4 quarters of
-  // the year so the customer receives income in every quarter, not just at
-  // maturity or clustered in one period.
-  //
-  // Strategy:
-  //   For each selected bond that pays ON MATURITY, try to swap it for a
-  //   periodic-coupon bond from the same bucket whose issuer is not already
-  //   in the portfolio. Accept the swap only if it does not drop average
-  //   portfolio yield by more than CF_YIELD_TOLERANCE.
-  // ─────────────────────────────────────────────────────────────────────────
-  if (targetQuarterlyCashflowPct && targetQuarterlyCashflowPct > 0 && selected.length > 0) {
-    const CF_YIELD_TOLERANCE = (hp.cashflowYieldTolerancePct || 0.5) / 100; // Configurable yield drop tolerance
-
-    /** Returns the payment interval months (0 = ON MATURITY). */
-    const getInterval = (frequency: string): number => {
-      const f = (frequency || '').trim().toUpperCase();
-      if (f.includes('MONTHLY')) return 1;
-      if (f.includes('QUARTERLY') || f.includes('QUARTER')) return 3;
-      if (f.includes('SEMI') || f.includes('HALF') || f.includes('BI-ANNUAL') || f.includes('BIANNUAL')) return 6;
-      if (f.includes('ANNUAL') || f.includes('YEARLY')) return 12;
-      return 0;
-    };
-
-    /** Which calendar quarters (1-4) does a bond pay coupons in, based on its maturity month? */
-    const getCouponQuarters = (bond: DefaultBond): Set<number> => {
-      const interval = getInterval(bond.frequency || '');
-      const matMonth = Math.round(bond.months);
-      const quarters = new Set<number>();
-      if (interval === 0) return quarters; // ON MATURITY pays nothing periodically
-      for (let m = interval; m <= matMonth; m += interval) {
-        quarters.add(((m - 1) % 12) + 1 > 9 ? 4 : ((m - 1) % 12) + 1 > 6 ? 3 : ((m - 1) % 12) + 1 > 3 ? 2 : 1);
-      }
-      return quarters;
-    };
-
-    // Determine which annual quarters (1-4) currently have coupon coverage
-    const coveredQuarters = new Set<number>();
-    selected.forEach(s => {
-      getCouponQuarters(s.bond).forEach(q => coveredQuarters.add(q));
-    });
-
-    // Only swap if some quarters are uncovered
-    const allQuarters = [1, 2, 3, 4];
-    const missingQuarters = allQuarters.filter(q => !coveredQuarters.has(q));
-
-    if (missingQuarters.length > 0) {
-      const currentAvgYield = selected.reduce((s, x) => s + x.bond.yield, 0) / selected.length;
-      const minAllowedYield = currentAvgYield - CF_YIELD_TOLERANCE;
-
-      // Find ON MATURITY bonds in selection that are candidates for swapping
-      for (let i = 0; i < selected.length; i++) {
-        if (missingQuarters.every(q => coveredQuarters.has(q))) break; // All covered now
-
-        const current = selected[i];
-        if (getInterval(current.bond.frequency || '') !== 0) continue; // Already periodic
-        if (manualReplacements && manualReplacements.has(current.bucketIndex)) continue; // Locked
-
-        // Find best periodic-coupon replacement in the same bucket
-        const bucketCandidates = bucketedBonds[current.bucketIndex] || [];
-        let bestReplacement: DefaultBond | null = null;
-        let bestReplacementScore = -1;
-
-        for (const cand of bucketCandidates) {
-          if (selected.some(s => s.bond.isin === cand.isin)) continue; // Already in portfolio
-          if (selectedIssuers.has(cand.issuer)) continue; // Issuer already present
-          if (getInterval(cand.frequency || '') === 0) continue; // Also ON MATURITY — no benefit
-
-          // Check yield tolerance: simulate swap
-          const hypotheticalYields = selected.map((s, idx) => idx === i ? cand.yield : s.bond.yield);
-          const hypotheticalAvg = hypotheticalYields.reduce((a, b) => a + b, 0) / hypotheticalYields.length;
-          if (hypotheticalAvg < minAllowedYield) continue;
-
-          // Score: prefer bonds that cover currently missing quarters + high frequency
-          const candQuarters = getCouponQuarters(cand);
-          const newCoverage = missingQuarters.filter(q => candQuarters.has(q)).length;
-          const score = newCoverage * 10 + getFrequencyScore(cand.frequency || '') + cand.yield;
-
-          if (score > bestReplacementScore) {
-            bestReplacementScore = score;
-            bestReplacement = cand;
-          }
-        }
-
-        if (bestReplacement) {
-          // Perform the swap
-          selectedIssuers.delete(current.bond.issuer);
-          selected[i] = { bond: bestReplacement, bucketIndex: current.bucketIndex };
-          selectedIssuers.add(bestReplacement.issuer);
-          // Update covered quarters
-          getCouponQuarters(bestReplacement).forEach(q => coveredQuarters.add(q));
-        }
-      }
-    }
-  }
-
-  // 4. OPTIMIZE FOR TARGET YIELD
-  if (targetYieldPercent !== undefined && targetYieldPercent > 0) {
+  // 4. Optimization Loop (Target Yield Optimization if targetYieldPercent provided)
+  if (targetYieldPercent && selected.length > 0) {
     const targetYield = targetYieldPercent / 100;
-    
-    // Greedy Swap Optimization
     let currentBlendedYield = selected.reduce((sum, s) => sum + s.bond.yield, 0) / selected.length;
+
     let improved = true;
     let loopLimit = 0;
-
     while (improved && loopLimit < 50) {
       improved = false;
-      
       if (currentBlendedYield < targetYield) {
-        // Need HIGHER yield: swap a low-yield bond for a high-yield candidate
-        let bestSwap: { selectedIndex: number; newBond: DefaultBond } | null = null;
-        let maxYieldGain = 0;
+        // Find best yield upgrade
+        let bestSwap: { selectedIndex: number; newBond: DefaultBond; yieldGain: number } | null = null;
 
         for (let i = 0; i < selected.length; i++) {
           const current = selected[i];
-          if (manualReplacements && manualReplacements.has(current.bucketIndex)) continue; // Lock manual choice
-          const candidates = bucketedBonds[current.bucketIndex];
+          const bIdx = current.bucketIndex;
+          const candidates = bucketCandidates[bIdx] || candidateBonds;
 
           for (const cand of candidates) {
-            // Must not be already selected, and either same issuer or new issuer if not exceeding limit
             if (selected.some(s => s.bond.isin === cand.isin)) continue;
-            
-            // Check issuer swap compatibility
+
             const wouldBeUnique = new Set(selected.map((s, idx) => idx === i ? cand.issuer : s.bond.issuer));
-            if (wouldBeUnique.size < selectedIssuers.size) continue; // Keep uniqueness count intact
+            if (wouldBeUnique.size < selectedIssuers.size) continue;
 
             const yieldGain = cand.yield - current.bond.yield;
-            if (yieldGain > maxYieldGain) {
-              maxYieldGain = yieldGain;
-              bestSwap = { selectedIndex: i, newBond: cand };
+            if (yieldGain > 0) {
+              if (!bestSwap || yieldGain > bestSwap.yieldGain) {
+                bestSwap = { selectedIndex: i, newBond: cand, yieldGain };
+              }
             }
           }
         }
@@ -685,13 +504,13 @@ export function generateBondPortfolio(
           improved = true;
         }
       } else {
-        // We have excess yield: swap higher-yield for HIGHER safety (rating score) while staying above target
+        // If yield is satisfied, maximize rating/safety while keeping yield >= targetYield
         let bestSwap: { selectedIndex: number; newBond: DefaultBond; safetyGain: number } | null = null;
 
         for (let i = 0; i < selected.length; i++) {
           const current = selected[i];
-          if (manualReplacements && manualReplacements.has(current.bucketIndex)) continue; // Lock manual choice
-          const candidates = bucketedBonds[current.bucketIndex];
+          const bIdx = current.bucketIndex;
+          const candidates = bucketCandidates[bIdx] || candidateBonds;
 
           for (const cand of candidates) {
             if (selected.some(s => s.bond.isin === cand.isin)) continue;
@@ -785,7 +604,7 @@ export function generateBondPortfolio(
       
       // zero-allocation deadlock prevention:
       if (alloc === 0 && rawEqual > 0 && maxAllowed >= u) {
-          alloc = u;
+        alloc = u;
       }
 
       if (alloc > maxAllowed) {
@@ -878,8 +697,6 @@ export function generateBondPortfolio(
     }
   }
 
-
-
   // Map allocations back to selected bonds & build company summary
   const selectedBonds: SelectedBond[] = [];
   const companyAllocMap: Record<string, { amount: number; count: number; rating: string; sampleBond: DefaultBond }> = {};
@@ -898,6 +715,7 @@ export function generateBondPortfolio(
       ...s.bond,
       allocationPercent,
       allocatedAmount,
+      allocatedPercent: allocationPercent,
       expectedAnnualReturn: allocatedAmount * s.bond.yield,
       bucketIndex: s.bucketIndex,
       fdRate: fdRateForBond,
@@ -906,6 +724,8 @@ export function generateBondPortfolio(
       canonicalEntityName: entityRes.canonicalEntityName,
       governanceScore: entityRes.governanceScore,
       promoterRiskSeverity: entityRes.riskSeverity,
+      hasForeignBacking: entityRes.hasForeignBacking,
+      institutionalBadges: entityRes.institutionalBadges,
       amortizationType: plan.amortizationType,
       structuredRedemptionPlan: plan
     });
@@ -918,13 +738,79 @@ export function generateBondPortfolio(
     companyAllocMap[issuer].count += 1;
   });
 
+  const totalActualAllocated = selectedBonds.reduce((sum, b) => sum + b.allocatedAmount, 0);
+  const effectiveTotalInvestment = totalActualAllocated > 0 ? totalActualAllocated : totalInvestment;
+
+  // Build Group / Conglomerate Summary Map
+  const groupMap: Record<string, {
+    key: string;
+    name: string;
+    amount: number;
+    bondCount: number;
+    issuers: Set<string>;
+    governanceScore?: number;
+    promoterRiskSeverity?: string;
+    hasForeignBacking?: boolean;
+    institutionalBadges?: string[];
+    ratings: Set<string>;
+  }> = {};
+
+  selectedBonds.forEach(b => {
+    const gKey = b.canonicalEntityKey || 'independent';
+    const gName = b.canonicalEntityName || b.issuer;
+    if (!groupMap[gKey]) {
+      groupMap[gKey] = {
+        key: gKey,
+        name: gName,
+        amount: 0,
+        bondCount: 0,
+        issuers: new Set<string>(),
+        governanceScore: b.governanceScore,
+        promoterRiskSeverity: b.promoterRiskSeverity,
+        hasForeignBacking: b.hasForeignBacking,
+        institutionalBadges: b.institutionalBadges,
+        ratings: new Set<string>()
+      };
+    }
+    groupMap[gKey].amount += b.allocatedAmount;
+    groupMap[gKey].bondCount += 1;
+    groupMap[gKey].issuers.add(b.issuer);
+    groupMap[gKey].ratings.add(b.rating);
+  });
+
+  const groupAllocations: GroupAllocation[] = Object.values(groupMap).map(g => ({
+    groupKey: g.key,
+    groupName: g.name,
+    amount: g.amount,
+    percent: g.amount / effectiveTotalInvestment,
+    bondCount: g.bondCount,
+    issuers: Array.from(g.issuers),
+    governanceScore: g.governanceScore,
+    promoterRiskSeverity: g.promoterRiskSeverity,
+    hasForeignBacking: g.hasForeignBacking,
+    institutionalBadges: g.institutionalBadges,
+    ratings: Array.from(g.ratings)
+  })).sort((a, b) => b.amount - a.amount);
+
+  // Decorate selectedBonds with groupPercent
+  selectedBonds.forEach(b => {
+    const gKey = b.canonicalEntityKey || 'independent';
+    const grp = groupMap[gKey];
+    if (grp) {
+      b.groupPercent = grp.amount / effectiveTotalInvestment;
+    }
+  });
+
   const companyAllocations: CompanyAllocation[] = Object.keys(companyAllocMap).map(company => {
     const data = companyAllocMap[company];
     const entityRes = resolveBondEntity(data.sampleBond);
+    const gKey = entityRes.canonicalEntityKey;
+    const grp = groupMap[gKey];
     return {
       company,
       amount: data.amount,
-      percent: data.amount / totalInvestment,
+      percent: data.amount / effectiveTotalInvestment,
+      groupPercent: grp ? grp.amount / effectiveTotalInvestment : undefined,
       bondCount: data.count,
       rating: data.rating,
       sector: data.sampleBond.sector,
@@ -939,9 +825,6 @@ export function generateBondPortfolio(
   });
 
   // Calculate Metrics
-  const totalActualAllocated = selectedBonds.reduce((sum, b) => sum + b.allocatedAmount, 0);
-  const effectiveTotalInvestment = totalActualAllocated > 0 ? totalActualAllocated : totalInvestment;
-
   const portfolioYield = selectedBonds.reduce((sum, b) => sum + (b.yield * b.allocatedAmount), 0) / effectiveTotalInvestment;
   const blendedFDRate = selectedBonds.reduce((sum, b) => sum + ((b.fdRate || 0) * b.allocatedAmount), 0) / effectiveTotalInvestment;
 
@@ -1093,6 +976,7 @@ export function generateBondPortfolio(
     monthlyCashFlows,
     periodicCashFlows,
     companyAllocations: companyAllocations.sort((a, b) => b.amount - a.amount),
+    groupAllocations,
     quarterlyCashflow,
     eliminatedBonds: eliminated
   };

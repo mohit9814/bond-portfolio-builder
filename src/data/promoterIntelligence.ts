@@ -13,6 +13,35 @@ export interface PersonalSwot {
   threats: string[];
 }
 
+export interface DatedNewsEvent {
+  headline: string;
+  date: string; // ISO date string e.g. '2024-05-30'
+  severity: 'CRITICAL' | 'HIGH' | 'MODERATE' | 'LOW';
+  category: 'REGULATORY' | 'GOVERNANCE' | 'LEVERAGE' | 'LITIGATION' | 'DEFAULT';
+  description: string;
+  isResolved?: boolean;
+}
+
+export interface InstitutionalBackingEvent {
+  institutionName: string;
+  isForeign: boolean;
+  investmentType: 'EQUITY_STAKE' | 'STRATEGIC_MAJORITY' | 'DEBT_ANCHOR' | 'ACQUISITION';
+  date: string; // ISO date string e.g. '2024-08-15'
+  amountCr?: number;
+  description: string;
+}
+
+export interface DynamicPromoterScoreResult {
+  baseScore: number;
+  timeDecayedNewsPenalty: number;
+  institutionalBackingBoost: number;
+  turnaroundMitigationBonus: number;
+  finalGovernanceScore: number;
+  hasForeignBacking: boolean;
+  institutionalBadges: string[];
+  explanation: string;
+}
+
 export interface PromoterRiskRecord {
   entityKey: string;
   entityName: string;
@@ -36,9 +65,119 @@ export interface PromoterRiskRecord {
   entitiesOwned?: string[];
   personalSwot?: PersonalSwot;
   citations?: CitationLink[];
+  datedNewsEvents?: DatedNewsEvent[];
+  institutionalBacking?: InstitutionalBackingEvent[];
 }
 
 const PROMOTER_DATABASE: Record<string, PromoterRiskRecord> = promoterData as Record<string, PromoterRiskRecord>;
+
+/**
+ * Dynamically computes a promoter's governance & credit health score:
+ * 1. Time-Decayed Negative Events: Older news carries lower weightage than recent news via half-life decay.
+ * 2. Institutional & Foreign Capital Factor: Major institutional investment (esp. foreign Tier-1 e.g. Fairfax, Bain, GIC, Temasek, GQG)
+ *    provides strong positive scores and actively mitigates historical negative event penalties.
+ */
+export function computeDynamicPromoterScore(
+  record: PromoterRiskRecord | null,
+  referenceDateStr = '2026-09-04'
+): DynamicPromoterScoreResult {
+  if (!record) {
+    return {
+      baseScore: 75,
+      timeDecayedNewsPenalty: 0,
+      institutionalBackingBoost: 0,
+      turnaroundMitigationBonus: 0,
+      finalGovernanceScore: 75,
+      hasForeignBacking: false,
+      institutionalBadges: [],
+      explanation: 'Standard baseline score for unflagged corporate issuer.'
+    };
+  }
+
+  const baseScore = record.governanceScore || 75;
+  const refDate = new Date(referenceDateStr).getTime();
+
+  let totalNewsPenalty = 0;
+  let latestEventTimestamp = 0;
+
+  if (record.datedNewsEvents && record.datedNewsEvents.length > 0) {
+    for (const evt of record.datedNewsEvents) {
+      const evtDate = new Date(evt.date).getTime();
+      if (evtDate > latestEventTimestamp) latestEventTimestamp = evtDate;
+      const deltaDays = Math.max(0, (refDate - evtDate) / (1000 * 3600 * 24));
+      const deltaMonths = deltaDays / 30.4375;
+
+      // Half-life decay: recent news has factor ~1.0, 24m old news is ~0.54, 48m old news is ~0.37
+      const decayFactor = 1 / (1 + 0.035 * deltaMonths);
+
+      let rawPenalty = 10;
+      if (evt.severity === 'CRITICAL') rawPenalty = 26;
+      else if (evt.severity === 'HIGH') rawPenalty = 18;
+      else if (evt.severity === 'MODERATE') rawPenalty = 10;
+      else if (evt.severity === 'LOW') rawPenalty = 4;
+
+      if (evt.isResolved) rawPenalty *= 0.5;
+
+      totalNewsPenalty += rawPenalty * decayFactor;
+    }
+  }
+
+  let institutionalBoost = 0;
+  let turnaroundMitigation = 0;
+  let hasForeign = false;
+  const badges: string[] = [];
+
+  if (record.institutionalBacking && record.institutionalBacking.length > 0) {
+    for (const inst of record.institutionalBacking) {
+      const instDate = new Date(inst.date).getTime();
+      const deltaDays = Math.max(0, (refDate - instDate) / (1000 * 3600 * 24));
+      const deltaMonths = deltaDays / 30.4375;
+
+      // Foreign institutional backing receives higher positive weight (Tier-1 global governance validation)
+      const baseBoost = inst.isForeign ? 16 : 9;
+      if (inst.isForeign) hasForeign = true;
+
+      // Slow decay on institutional backing (ownership stability remains strong)
+      const persistenceFactor = 1 / (1 + 0.012 * deltaMonths);
+      institutionalBoost += baseBoost * persistenceFactor;
+
+      badges.push(`${inst.isForeign ? '🌐' : '🏛️'} ${inst.institutionName} (${inst.investmentType.replace(/_/g, ' ')})`);
+
+      // Turnaround Bonus: If institutional investment arrived after adverse news events, validate turnaround
+      if (latestEventTimestamp > 0 && instDate >= latestEventTimestamp) {
+        turnaroundMitigation += inst.isForeign ? 8 : 4;
+      }
+    }
+  }
+
+  // Mitigation offsets up to 65% of news penalty
+  const effectiveMitigation = Math.min(turnaroundMitigation, totalNewsPenalty * 0.65);
+  const netScore = Math.round(
+    Math.min(99, Math.max(15, baseScore - totalNewsPenalty + institutionalBoost + effectiveMitigation))
+  );
+
+  const explanationParts: string[] = [];
+  if (totalNewsPenalty > 0) {
+    explanationParts.push(`Time-decayed event impact: -${totalNewsPenalty.toFixed(1)} pts`);
+  }
+  if (institutionalBoost > 0) {
+    explanationParts.push(`Institutional endorsement boost: +${institutionalBoost.toFixed(1)} pts`);
+  }
+  if (effectiveMitigation > 0) {
+    explanationParts.push(`Post-event turnaround validation: +${effectiveMitigation.toFixed(1)} pts`);
+  }
+
+  return {
+    baseScore,
+    timeDecayedNewsPenalty: Math.round(totalNewsPenalty * 10) / 10,
+    institutionalBackingBoost: Math.round(institutionalBoost * 10) / 10,
+    turnaroundMitigationBonus: Math.round(effectiveMitigation * 10) / 10,
+    finalGovernanceScore: netScore,
+    hasForeignBacking: hasForeign,
+    institutionalBadges: badges,
+    explanation: explanationParts.length > 0 ? explanationParts.join(' | ') : 'Clean governance with no adverse event flags.'
+  };
+}
 
 function normalizeText(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, ' ').trim();

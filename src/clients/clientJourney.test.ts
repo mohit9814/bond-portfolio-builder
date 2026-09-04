@@ -19,10 +19,7 @@ if (typeof window === 'undefined') {
 
 import {
   createClient,
-  getClientById,
-  getAllClients,
-  setActiveClientId,
-  getActiveClient
+  getClientById
 } from './clientManager';
 import { commitProposalToClient, setActiveProposalClientId, getActiveProposalClientId } from './clientJourney';
 import { generateBondPortfolio } from '../bondEngine';

@@ -566,6 +566,67 @@ function renderMaturitySummary(summary: PortfolioSummary) {
 function renderCompanyAllocations(summary: PortfolioSummary) {
   companyAllocationsList.innerHTML = '';
 
+  // 1. Group Level Allocation Section (Conglomerate / Group Exposure)
+  if (summary.groupAllocations && summary.groupAllocations.length > 0) {
+    const groupContainer = document.createElement('div');
+    groupContainer.style.gridColumn = '1 / -1';
+    groupContainer.style.background = 'linear-gradient(135deg, rgba(30, 41, 59, 0.45) 0%, rgba(15, 23, 42, 0.75) 100%)';
+    groupContainer.style.border = '1px solid rgba(212, 175, 55, 0.25)';
+    groupContainer.style.borderRadius = '12px';
+    groupContainer.style.padding = '1rem 1.25rem';
+    groupContainer.style.marginBottom = '0.75rem';
+
+    const groupCardsHtml = summary.groupAllocations.map(g => {
+      const instChips = (g.institutionalBadges || []).map(badge => 
+        `<span style="font-size: 0.65rem; background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); padding: 1px 6px; border-radius: 4px; white-space: nowrap;">${badge}</span>`
+      ).join(' ');
+
+      const isHighGroupConc = g.percent > 0.20;
+      const pctColor = isHighGroupConc ? '#f87171' : '#34d399';
+
+      return `
+        <div style="background: rgba(0, 0, 0, 0.35); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.75rem 0.9rem; display: flex; flex-direction: column; gap: 0.35rem;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;">
+            <div>
+              <div style="font-weight: 700; font-size: 0.88rem; color: #fff; display: flex; align-items: center; gap: 0.3rem;">
+                <span>🏢</span> ${g.groupName}
+              </div>
+              <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 0.15rem;">
+                ${g.issuers.length} issuer${g.issuers.length > 1 ? 's' : ''} (${g.bondCount} bond${g.bondCount > 1 ? 's' : ''}): <span style="color: #cbd5e1;">${g.issuers.slice(0, 2).join(', ')}${g.issuers.length > 2 ? '...' : ''}</span>
+              </div>
+            </div>
+            <div style="text-align: right; flex-shrink: 0;">
+              <div style="font-weight: 700; font-size: 0.92rem; color: ${pctColor};">${(g.percent * 100).toFixed(1)}%</div>
+              <div style="font-size: 0.72rem; color: #cbd5e1;">${formatCurrency(g.amount)}</div>
+            </div>
+          </div>
+          ${instChips ? `<div style="display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.25rem;">${instChips}</div>` : ''}
+        </div>
+      `;
+    }).join('');
+
+    groupContainer.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.1rem;">🏢</span>
+          <div>
+            <h4 style="margin: 0; font-size: 0.95rem; color: var(--accent-gold);">Conglomerate & Group Level Allocation %</h4>
+            <p style="margin: 0.1rem 0 0 0; font-size: 0.75rem; color: var(--text-secondary);">Total consolidated group exposures across all subsidiary issuers</p>
+          </div>
+        </div>
+        <span style="font-size: 0.72rem; background: rgba(212, 175, 55, 0.15); color: var(--accent-gold); padding: 2px 8px; border-radius: 10px; font-weight: 600;">
+          ${summary.groupAllocations.length} Conglomerate Groups
+        </span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.6rem;">
+        ${groupCardsHtml}
+      </div>
+    `;
+
+    companyAllocationsList.appendChild(groupContainer);
+  }
+
+  // 2. Individual Issuer Cards
   summary.companyAllocations.filter(alloc => alloc.amount > 0).forEach((alloc, idx) => {
     const div = document.createElement('div');
     div.style.display = 'flex';
@@ -587,6 +648,10 @@ function renderCompanyAllocations(summary: PortfolioSummary) {
       trendBadge = `<span class="trend-badge deteriorating" style="font-size: 0.68rem; padding: 0.1rem 0.35rem;">▼ Deteriorating</span>`;
     }
 
+    const groupWeightText = alloc.groupPercent !== undefined
+      ? `<span style="color: #60a5fa; font-weight: 600;">Group Total: ${(alloc.groupPercent * 100).toFixed(1)}%</span>`
+      : '';
+
     div.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: start;">
         <div>
@@ -606,8 +671,13 @@ function renderCompanyAllocations(summary: PortfolioSummary) {
       </div>
       <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.1rem;">
         <span>${guarantorText}</span>
-        <span style="color: var(--accent-green); font-weight: 600;">${(alloc.percent * 100).toFixed(1)}% weight</span>
+        <span style="color: var(--accent-green); font-weight: 600;">${(alloc.percent * 100).toFixed(1)}% issuer weight</span>
       </div>
+      ${groupWeightText ? `
+        <div style="display: flex; justify-content: flex-end; font-size: 0.7rem; margin-top: 0.1rem;">
+          ${groupWeightText}
+        </div>
+      ` : ''}
     `;
 
     companyAllocationsList.appendChild(div);
@@ -1200,6 +1270,7 @@ window.addEventListener('DOMContentLoaded', () => {
         // periodicCashFlows is not stored in the share payload; default to empty for read-only shared views
         periodicCashFlows: [],
         companyAllocations: payload.ca,
+        groupAllocations: [],
         ratingDistribution: ratingDistribution,
         // Eliminated bonds are not stored in the share payload — shared view is read-only
         eliminatedBonds: []

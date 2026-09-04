@@ -1,4 +1,4 @@
-import { getClientById, updateClient, setActiveClientId, getActiveClient } from './clientManager';
+import { getClientById, updateClient, setActiveClientId } from './clientManager';
 import { PortfolioHolding } from '../analyzer/types';
 import { PortfolioSummary, getUnitPrice } from '../bondEngine';
 import { ClientPortfolio } from './types';
@@ -175,21 +175,36 @@ export function commitProposalToClient(clientId: string, summary: PortfolioSumma
   if (!client) return;
 
   const deployedAmount = summary.totalInvestment;
-  const newHoldings: PortfolioHolding[] = summary.selectedBonds.map(b => {
+  const currentHoldingsValue = client.holdings.reduce((sum, h) => sum + (h.estimatedMarketValue || 0), 0);
+  const totalNewPortfolioValue = currentHoldingsValue + summary.totalInvestment;
+
+  const newHoldings: PortfolioHolding[] = summary.selectedBonds.map((b, idx) => {
     const unitPrice = getUnitPrice(b);
     const qty = Math.round(b.allocatedAmount / unitPrice) || 1;
     return {
+      srNo: (client.holdings.length || 0) + idx + 1,
       isin: b.isin,
       securityName: b.issuer,
+      readableName: b.issuer,
+      qty,
       faceValue: b.faceValue || 100000,
-      quantity: qty,
-      acquisitionPrice: unitPrice,
-      couponRate: (b.coupon ?? b.yield) * 100,
-      maturityDate: b.maturity,
       estimatedMarketValue: b.allocatedAmount,
-      category: 'Bonds',
+      couponPercent: (b.coupon ?? b.yield) * 100,
+      yieldPercent: b.yield * 100,
+      maturityDate: b.maturity,
+      monthsToMaturity: b.months,
+      frequency: b.frequency || 'Annual',
+      rating: b.rating,
+      ratingAgency: 'CRISIL/ICRA',
+      ratingTrend: 'stable',
+      issuerName: b.issuer,
+      parentGroup: b.canonicalEntityName || b.issuer,
+      sector: b.sector || 'Financial Services',
+      broadSector: b.category || 'Financials',
       subSector: b.category || 'NBFC',
-      creditRating: b.rating
+      isSecured: true,
+      weightPercent: (b.allocatedAmount / (totalNewPortfolioValue || 1)) * 100,
+      principalRedemption: b.principalRedemption
     };
   });
 

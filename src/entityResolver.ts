@@ -1,5 +1,5 @@
 import { DefaultBond } from './defaultInventory';
-import { getPromoterRiskRecord, PromoterRiskRecord } from './data/promoterIntelligence';
+import { getPromoterRiskRecord, PromoterRiskRecord, computeDynamicPromoterScore } from './data/promoterIntelligence';
 import { getBseGidRecord } from './data/bseGidIntelligence';
 
 export interface EntityResolutionResult {
@@ -11,6 +11,9 @@ export interface EntityResolutionResult {
   riskSeverity: 'CRITICAL' | 'HIGH' | 'MODERATE' | 'LOW' | 'CLEAN';
   autoExclude: boolean;
   exclusionReason?: string;
+  hasForeignBacking?: boolean;
+  institutionalBadges?: string[];
+  dynamicScoreExplanation?: string;
 }
 
 /**
@@ -40,15 +43,19 @@ export function resolveBondEntity(bondOrIssuer: DefaultBond | any | string): Ent
                    (groupHint ? getPromoterRiskRecord(groupHint) : null);
 
   if (promoter) {
+    const dynScore = computeDynamicPromoterScore(promoter);
     return {
       canonicalEntityKey: promoter.entityKey,
       canonicalEntityName: promoter.entityName,
       isMultiBondConglomerate: promoter.aliasesAndSubsidiaries.length > 1,
       promoterRecord: promoter,
-      governanceScore: promoter.governanceScore,
+      governanceScore: dynScore.finalGovernanceScore,
       riskSeverity: promoter.riskSeverity,
       autoExclude: promoter.autoExcludeFromProposals,
-      exclusionReason: promoter.exclusionReason
+      exclusionReason: promoter.exclusionReason,
+      hasForeignBacking: dynScore.hasForeignBacking,
+      institutionalBadges: dynScore.institutionalBadges,
+      dynamicScoreExplanation: dynScore.explanation
     };
   }
 

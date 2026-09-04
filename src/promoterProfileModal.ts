@@ -129,7 +129,7 @@ export function openPromoterProfileModal(entityKeyOrName: string, contextIssuer?
               Corporate Tree & Key Entities Owned
             </div>
             <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
-              ${record.entitiesOwned.map(e => {
+              ${(record.entitiesOwned || []).map(e => {
                 const isCurrent = contextIssuer && e.toLowerCase().includes(contextIssuer.toLowerCase());
                 if (isCurrent) {
                   return `<span style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); padding: 0.25rem 0.55rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700;">★ ${e} (Audited Issuer)</span>`;

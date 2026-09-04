@@ -102,7 +102,6 @@ function renderModalContent() {
   const currentHp = getEngineHyperparameters();
   const currentInvestment = context?.getCurrentInvestment() || 1000000;
   const currentIssuerRupeeCap = currentInvestment * (currentHp.maxSingleIssuerPct / 100);
-  const currentSectorRupeeCap = currentInvestment * (currentHp.maxSingleSectorPct / 100);
 
   modal.innerHTML = `
     <div style="padding: 1.4rem 1.75rem; border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.02);">

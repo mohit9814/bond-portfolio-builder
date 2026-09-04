@@ -91,6 +91,34 @@
         "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Edelweiss%20Group%22%20NCLT",
         "type": "NCLT_IBBI"
       }
+    ],
+    "datedNewsEvents": [
+      {
+        "headline": "RBI Supervisory Ban on ECL Finance & Edelweiss ARC",
+        "date": "2024-05-29",
+        "severity": "CRITICAL",
+        "category": "REGULATORY",
+        "description": "RBI prohibited ECL Finance from structured transactions and EARC from acquiring financial assets/SRs due to evergreening concerns.",
+        "isResolved": false
+      }
+    ],
+    "institutionalBacking": [
+      {
+        "institutionName": "PAG Asia Capital",
+        "isForeign": true,
+        "investmentType": "ACQUISITION",
+        "date": "2023-08-10",
+        "amountCr": 2400,
+        "description": "PAG Asia acquired majority control and completed independent demerger and listing of Nuvama Wealth Management."
+      },
+      {
+        "institutionName": "CDPQ (Caisse de dépôt et placement du Québec)",
+        "isForeign": true,
+        "investmentType": "EQUITY_STAKE",
+        "date": "2020-02-15",
+        "amountCr": 1800,
+        "description": "Canadian institutional pension fund co-invested in private debt and structured credit platforms."
+      }
     ]
   },
   "sammaan_indiabulls": {
@@ -183,6 +211,34 @@
         "title": "IBBI & NCLT Insolvency Orders - Indiabulls / Sammaan Capital Ecosystem",
         "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Indiabulls%20%2F%20Sammaan%20Capital%20Ecosystem%22%20NCLT",
         "type": "NCLT_IBBI"
+      }
+    ],
+    "datedNewsEvents": [
+      {
+        "headline": "Legacy Developer Wholesale Credit Strains",
+        "date": "2019-10-15",
+        "severity": "HIGH",
+        "category": "LEVERAGE",
+        "description": "Historical developer loan concentration prompted wholesale liquidity tightening and corporate PIL litigation.",
+        "isResolved": true
+      }
+    ],
+    "institutionalBacking": [
+      {
+        "institutionName": "Blackstone / Embassy Group Institutional Sponsor",
+        "isForeign": true,
+        "investmentType": "STRATEGIC_MAJORITY",
+        "date": "2023-04-18",
+        "amountCr": 3500,
+        "description": "Embassy and global institutional investors finalized re-organization into Sammaan Capital with professionally led governance board."
+      },
+      {
+        "institutionName": "Oaktree Capital & GIC Singapore",
+        "isForeign": true,
+        "investmentType": "DEBT_ANCHOR",
+        "date": "2024-02-10",
+        "amountCr": 1250,
+        "description": "Global credit institutions anchored structured credit facilities supporting retail mortgage pivot."
       }
     ]
   },
@@ -348,6 +404,50 @@
         "title": "IBBI & NCLT Insolvency Orders - Adani Group",
         "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Adani%20Group%22%20NCLT",
         "type": "NCLT_IBBI"
+      }
+    ],
+    "datedNewsEvents": [
+      {
+        "headline": "Hindenburg Short Seller Governance & Leverage Allegations",
+        "date": "2023-01-24",
+        "severity": "HIGH",
+        "category": "GOVERNANCE",
+        "description": "Offshore corporate structure and debt leverage allegations triggered short-term volatility in bond spreads.",
+        "isResolved": true
+      },
+      {
+        "headline": "Supreme Court of India & SEBI Regulatory Investigation Closure",
+        "date": "2024-01-03",
+        "severity": "LOW",
+        "category": "REGULATORY",
+        "description": "Supreme Court panel and regulatory review concluded without adverse structural findings against core operating utilities.",
+        "isResolved": true
+      }
+    ],
+    "institutionalBacking": [
+      {
+        "institutionName": "GQG Partners (Rajiv Jain)",
+        "isForeign": true,
+        "investmentType": "EQUITY_STAKE",
+        "date": "2023-03-02",
+        "amountCr": 15446,
+        "description": "US-based GQG Partners invested multi-billion dollars across Adani Ports, Green, and Energy entities, restoring global confidence."
+      },
+      {
+        "institutionName": "TotalEnergies SE",
+        "isForeign": true,
+        "investmentType": "STRATEGIC_MAJORITY",
+        "date": "2023-09-20",
+        "amountCr": 2500,
+        "description": "Global French energy giant expanded renewable energy joint venture partnerships."
+      },
+      {
+        "institutionName": "US International Development Finance Corp (DFC)",
+        "isForeign": true,
+        "investmentType": "DEBT_ANCHOR",
+        "date": "2023-11-08",
+        "amountCr": 4500,
+        "description": "US government agency committed infrastructure debt financing for container terminal operations."
       }
     ]
   },
@@ -579,6 +679,26 @@
         "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22IndoStar%20Capital%20Finance%20(Brookfield)%22%20NCLT",
         "type": "NCLT_IBBI"
       }
+    ],
+    "datedNewsEvents": [
+      {
+        "headline": "Commercial Vehicle Loan Provisioning Adjustments",
+        "date": "2022-05-06",
+        "severity": "HIGH",
+        "category": "GOVERNANCE",
+        "description": "Internal audit identified provisioning shortfalls in legacy commercial vehicle loan portfolios.",
+        "isResolved": true
+      }
+    ],
+    "institutionalBacking": [
+      {
+        "institutionName": "Brookfield Asset Management",
+        "isForeign": true,
+        "investmentType": "STRATEGIC_MAJORITY",
+        "date": "2022-07-15",
+        "amountCr": 1450,
+        "description": "Global asset manager Brookfield injected equity backstop and reconstituted board risk committee."
+      }
     ]
   },
   "iifl_group": {
@@ -665,6 +785,42 @@
         "title": "IBBI & NCLT Insolvency Orders - IIFL Group",
         "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22IIFL%20Group%22%20NCLT",
         "type": "NCLT_IBBI"
+      }
+    ],
+    "datedNewsEvents": [
+      {
+        "headline": "RBI Supervisory Embargo on Gold Loan Disbursals",
+        "date": "2024-03-04",
+        "severity": "HIGH",
+        "category": "REGULATORY",
+        "description": "RBI directed IIFL Finance to halt sanctioning/disbursing gold loans due to supervisory concerns on loan-to-value calculations.",
+        "isResolved": true
+      },
+      {
+        "headline": "RBI Lifts Gold Loan Restrictions Following Full Remediation Audit",
+        "date": "2024-09-19",
+        "severity": "LOW",
+        "category": "REGULATORY",
+        "description": "RBI officially lifted gold loan supervisory ban after comprehensive third-party audit confirmed compliance overhaul.",
+        "isResolved": true
+      }
+    ],
+    "institutionalBacking": [
+      {
+        "institutionName": "Fairfax Financial Holdings (Prem Watsa)",
+        "isForeign": true,
+        "investmentType": "STRATEGIC_MAJORITY",
+        "date": "2024-03-15",
+        "amountCr": 1650,
+        "description": "Fairfax Financial committed immediate equity backstop and liquidity support during regulatory review."
+      },
+      {
+        "institutionName": "Abu Dhabi Investment Authority (ADIA)",
+        "isForeign": true,
+        "investmentType": "EQUITY_STAKE",
+        "date": "2022-06-10",
+        "amountCr": 2200,
+        "description": "ADIA acquired 20% minority stake in IIFL Home Finance validating institutional governance."
       }
     ]
   },
@@ -1048,6 +1204,34 @@
         "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Satin%20Group%22%20NCLT",
         "type": "NCLT_IBBI"
       }
+    ],
+    "datedNewsEvents": [
+      {
+        "headline": "COVID-19 Rural MFI Collection Delinquency Pressure",
+        "date": "2021-06-30",
+        "severity": "MODERATE",
+        "category": "LEVERAGE",
+        "description": "MFI collection disruptions caused temporary surge in provisioning and credit costs.",
+        "isResolved": true
+      }
+    ],
+    "institutionalBacking": [
+      {
+        "institutionName": "British International Investment (BII / UK Sovereign DFI)",
+        "isForeign": true,
+        "investmentType": "EQUITY_STAKE",
+        "date": "2023-06-15",
+        "amountCr": 250,
+        "description": "UK government development finance institution injected equity capital and institutional governance controls."
+      },
+      {
+        "institutionName": "responsAbility & BlueOrchard",
+        "isForeign": true,
+        "investmentType": "DEBT_ANCHOR",
+        "date": "2024-03-20",
+        "amountCr": 180,
+        "description": "European impact funds anchored social impact bond issuances."
+      }
     ]
   },
   "ugro_capital": {
@@ -1121,6 +1305,16 @@
         "title": "IBBI & NCLT Insolvency Orders - UGRO Capital Ltd",
         "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22UGRO%20Capital%20Ltd%22%20NCLT",
         "type": "NCLT_IBBI"
+      }
+    ],
+    "institutionalBacking": [
+      {
+        "institutionName": "Dutch Entrepreneurial Development Bank (FMO) & Samena Capital",
+        "isForeign": true,
+        "investmentType": "EQUITY_STAKE",
+        "date": "2024-05-15",
+        "amountCr": 1332,
+        "description": "Major equity capital round anchored by Dutch sovereign development bank FMO."
       }
     ]
   },
@@ -1269,6 +1463,16 @@
         "title": "IBBI & NCLT Insolvency Orders - EarlySalary Services (Fibe)",
         "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22EarlySalary%20Services%20(Fibe)%22%20NCLT",
         "type": "NCLT_IBBI"
+      }
+    ],
+    "institutionalBacking": [
+      {
+        "institutionName": "TPG Capital (The Rise Fund) & Norwest Venture Partners",
+        "isForeign": true,
+        "investmentType": "EQUITY_STAKE",
+        "date": "2024-06-10",
+        "amountCr": 750,
+        "description": "Global tier-1 private equity fund TPG led growth funding round reinforcing corporate governance."
       }
     ]
   },
@@ -1639,6 +1843,16 @@
         "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22360%20ONE%20WAM%20Group%20(formerly%20IIFL%20Wealth)%22%20NCLT",
         "type": "NCLT_IBBI"
       }
+    ],
+    "institutionalBacking": [
+      {
+        "institutionName": "Bain Capital",
+        "isForeign": true,
+        "investmentType": "STRATEGIC_MAJORITY",
+        "date": "2022-11-20",
+        "amountCr": 3200,
+        "description": "Bain Capital acquired controlling sponsor stake in 360 ONE Wealth Management."
+      }
     ]
   },
   "state_bank_of_india": {
@@ -1717,6 +1931,16 @@
         "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22State%20Bank%20of%20India%20(SBI%20Group)%22%20NCLT",
         "type": "NCLT_IBBI"
       }
+    ],
+    "institutionalBacking": [
+      {
+        "institutionName": "Government of India (Sovereign 57% Stake)",
+        "isForeign": false,
+        "investmentType": "STRATEGIC_MAJORITY",
+        "date": "2024-01-01",
+        "amountCr": 100000,
+        "description": "Sovereign majority control, systemic importance (D-SIB), and unconditional credit backing."
+      }
     ]
   },
   "rec_ltd": {
@@ -1793,6 +2017,16 @@
         "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22REC%20Ltd%20(Maharatna%20PSU)%22%20NCLT",
         "type": "NCLT_IBBI"
       }
+    ],
+    "institutionalBacking": [
+      {
+        "institutionName": "Government of India / PFC (Maharatna PSU)",
+        "isForeign": false,
+        "investmentType": "STRATEGIC_MAJORITY",
+        "date": "2024-01-01",
+        "amountCr": 50000,
+        "description": "Quasi-sovereign nodal infrastructure financier with Maharatna status."
+      }
     ]
   },
   "nhpc_ltd": {
@@ -1866,6 +2100,16 @@
         "title": "IBBI & NCLT Insolvency Orders - NHPC Ltd (Navratna PSU)",
         "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22NHPC%20Ltd%20(Navratna%20PSU)%22%20NCLT",
         "type": "NCLT_IBBI"
+      }
+    ],
+    "institutionalBacking": [
+      {
+        "institutionName": "Government of India (Min of Power)",
+        "isForeign": false,
+        "investmentType": "STRATEGIC_MAJORITY",
+        "date": "2024-01-01",
+        "amountCr": 40000,
+        "description": "Premier hydro power utility with 70.95% President of India sovereign ownership."
       }
     ]
   },

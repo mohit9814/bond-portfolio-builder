@@ -318,6 +318,72 @@ function renderAnalysisResults() {
       ` : ''}
     </div>
 
+    <!-- Section: Conglomerate & Group Level Allocation % Breakdown -->
+    <div class="table-card" style="padding: 1.5rem; background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%); border: 1px solid rgba(212, 175, 55, 0.25);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.1rem; flex-wrap: wrap; gap: 0.75rem;">
+        <div>
+          <h3 style="margin: 0; font-size: 1.15rem; color: var(--accent-gold); display: flex; align-items: center; gap: 0.5rem; font-weight: 700;">
+            🏢 Conglomerate & Group Level Allocation % Breakdown
+          </h3>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0.25rem 0 0 0;">
+            Multi-holding single-entity exposures, ultimate parent group concentrations, and time-decayed governance scores
+          </p>
+        </div>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <span style="font-size: 0.75rem; background: rgba(212, 175, 55, 0.15); color: var(--accent-gold); padding: 3px 9px; border-radius: 6px; font-weight: 700; border: 1px solid rgba(212, 175, 55, 0.3);">
+            ${a.groupExposures.length} Total Groups
+          </span>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0.85rem;">
+        ${a.groupExposures.map(g => {
+          const isOverCap = g.percentage > 20;
+          const isWarnCap = g.percentage > 15 && g.percentage <= 20;
+          const barColor = isOverCap ? '#ef4444' : isWarnCap ? '#f59e0b' : '#10b981';
+          const badgeBg = isOverCap ? 'rgba(239,68,68,0.2)' : isWarnCap ? 'rgba(245,158,11,0.2)' : 'rgba(16,185,129,0.2)';
+          const badgeColor = isOverCap ? '#f87171' : isWarnCap ? '#fbbf24' : '#34d399';
+
+          return `
+            <div style="background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-glass); border-radius: 10px; padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;">
+                <div>
+                  <div style="font-weight: 700; font-size: 0.95rem; color: #ffffff; display: flex; align-items: center; gap: 0.4rem;">
+                    <span>🏢</span> ${g.parentGroup}
+                  </div>
+                  <div style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.15rem;">
+                    ${g.holdingCount} Holding${g.holdingCount > 1 ? 's' : ''} in Portfolio
+                  </div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-weight: 700; font-size: 1.05rem; color: ${badgeColor};">
+                    ${g.percentage.toFixed(1)}%
+                  </div>
+                  <div style="font-size: 0.75rem; color: #cbd5e1; font-family: monospace;">
+                    ₹${(g.totalAmount / 100000).toFixed(2)}L
+                  </div>
+                </div>
+              </div>
+
+              <!-- Allocation Progress Bar -->
+              <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin: 0.2rem 0;">
+                <div style="width: ${Math.min(100, g.percentage * 2)}%; height: 100%; background: ${barColor}; border-radius: 4px; transition: width 0.3s ease;"></div>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; margin-top: 0.1rem;">
+                <span style="background: ${badgeBg}; color: ${badgeColor}; padding: 1px 6px; border-radius: 4px; font-weight: 700;">
+                  ${g.riskLevel} RISK
+                </span>
+                <button onclick="window.openPromoterProfileByIsin('${g.parentGroup.replace(/'/g, "\\'")}')" class="btn" style="background: rgba(99,102,241,0.2); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.35); padding: 1px 7px; font-size: 0.72rem; border-radius: 4px; cursor: pointer;">
+                  👤 Dossier & Audit
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+
     <!-- Consolidated Portfolio Business SWOT & Fundamental Vulnerability Matrix -->
     <div class="table-card" style="padding: 1.5rem; background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.7) 100%); border: 1px solid rgba(255, 255, 255, 0.12);">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.75rem;">
@@ -832,10 +898,15 @@ function renderAnalysisResults() {
                     </div>
                   </td>
                   <td>
-                    <button onclick="window.openPromoterProfileByIsin('${h.parentGroup || h.issuerName}')" style="background: rgba(99,102,241,0.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3); padding: 2px 7px; border-radius: 4px; font-size: 0.78rem; font-weight: 600; cursor: pointer; text-align: left; display: inline-flex; align-items: center; gap: 4px;">
+                    <button onclick="window.openPromoterProfileByIsin('${(h.parentGroup || h.issuerName).replace(/'/g, "\\'")}')" style="background: rgba(99,102,241,0.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3); padding: 2px 7px; border-radius: 4px; font-size: 0.78rem; font-weight: 600; cursor: pointer; text-align: left; display: inline-flex; align-items: center; gap: 4px;">
                       <span>👤 ${h.parentGroup}</span>
                       <span style="font-size: 0.65rem; background: rgba(0,0,0,0.3); padding: 1px 4px; border-radius: 3px;">↗</span>
                     </button>
+                    ${currentAssessment ? `
+                      <div style="font-size: 0.7rem; color: #93c5fd; margin-top: 2px;">
+                        Group Total: <strong>${(currentAssessment.groupExposures.find(g => g.parentGroup === h.parentGroup)?.percentage || h.weightPercent).toFixed(1)}%</strong>
+                      </div>
+                    ` : ''}
                   </td>
                   <td>
                     <div style="font-size: 0.82rem; font-weight: 600; color: #e2e8f0;">${h.broadSector || h.sector}</div>
