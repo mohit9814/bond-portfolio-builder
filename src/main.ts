@@ -12,7 +12,8 @@ import { initScreener, setScreenerInventory } from './screener';
 import { initOverridesModal, openOverridesModal, updateOverridesBadge } from './overridesModal';
 import { getEngineHyperparameters } from './engineSettingsManager';
 import { initEngineSettingsModal, openEngineSettingsModal } from './engineSettingsModal';
-import { initPortfolioAnalyzer, setAnalyzerInventory } from './analyzer/analyzerView';
+import { initPortfolioAnalyzer, setAnalyzerInventory, loadClientIntoAnalyzer } from './analyzer/analyzerView';
+import { initMultiClientDashboard, setMultiClientInventory } from './clients/multiClientDashboardView';
 
 Chart.register(...registerables);
 
@@ -1064,6 +1065,7 @@ fileInput.addEventListener('change', async (e) => {
       (window as any).activeInventory = activeInventory;
       setScreenerInventory(activeInventory);
       setAnalyzerInventory(activeInventory);
+      setMultiClientInventory(activeInventory);
       fileStatus.textContent = `✓ Uploaded ${file.name} successfully (${parsedBonds.length} bonds parsed)`;
       fileStatus.style.color = 'var(--accent-green)';
       updateDashboard();
@@ -1713,19 +1715,22 @@ window.addEventListener('portfolio-overrides-changed', () => {
   updateDashboard();
 });
 
-// --- 3-Way Tab Switching Logic ---
+// --- 4-Way Tab Switching Logic ---
 const tabBuilder = document.getElementById('tab-builder');
 const tabScreener = document.getElementById('tab-screener');
 const tabAnalyzer = document.getElementById('tab-analyzer');
+const tabMultiClient = document.getElementById('tab-multi-client');
 const builderView = document.getElementById('builder-view');
 const screenerView = document.getElementById('screener-view');
 const analyzerView = document.getElementById('analyzer-view');
+const multiClientView = document.getElementById('multi-client-view');
 
-function switchActiveTab(activeTab: 'builder' | 'screener' | 'analyzer') {
+function switchActiveTab(activeTab: 'builder' | 'screener' | 'analyzer' | 'multi-client') {
   const tabs = [
     { id: 'builder', btn: tabBuilder, view: builderView },
     { id: 'screener', btn: tabScreener, view: screenerView },
-    { id: 'analyzer', btn: tabAnalyzer, view: analyzerView }
+    { id: 'analyzer', btn: tabAnalyzer, view: analyzerView },
+    { id: 'multi-client', btn: tabMultiClient, view: multiClientView }
   ];
 
   tabs.forEach(t => {
@@ -1749,11 +1754,16 @@ function switchActiveTab(activeTab: 'builder' | 'screener' | 'analyzer') {
 tabBuilder?.addEventListener('click', () => switchActiveTab('builder'));
 tabScreener?.addEventListener('click', () => switchActiveTab('screener'));
 tabAnalyzer?.addEventListener('click', () => switchActiveTab('analyzer'));
+tabMultiClient?.addEventListener('click', () => switchActiveTab('multi-client'));
 
 document.addEventListener('DOMContentLoaded', () => {
   initScreener();
   setScreenerInventory(activeInventory);
   initPortfolioAnalyzer(activeInventory);
+  initMultiClientDashboard(activeInventory, (clientId) => {
+    switchActiveTab('analyzer');
+    loadClientIntoAnalyzer(clientId);
+  });
   initOverridesModal({
     getActiveInventory: () => activeInventory,
     getExcludedIsins: () => excludedIsins,

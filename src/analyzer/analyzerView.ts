@@ -11,6 +11,9 @@ import {
   generateRebalancePlanCsvContent,
   removeAdoptedAction
 } from './rebalancingPlanManager';
+import { getActiveClient, getClientById, saveClient } from '../clients/clientManager';
+import { renderClientSelectorBar } from '../clients/clientSelectorBar';
+import { openPurchaseSuggestionsModal } from '../clients/purchaseModal';
 
 let currentInventory: DefaultBond[] = [];
 let currentHoldings: PortfolioHolding[] = [];
@@ -50,8 +53,30 @@ export function setAnalyzerInventory(inventory: DefaultBond[]) {
 export function initPortfolioAnalyzer(inventory: DefaultBond[]) {
   currentInventory = inventory;
   renderAnalyzerLayout();
-  // Automatically load sample portfolio by default for instant gratification
-  analyzePortfolioText(SAMPLE_PORTFOLIO_RAW);
+
+  const activeClient = getActiveClient();
+  if (activeClient && activeClient.holdings && activeClient.holdings.length > 0) {
+    currentHoldings = [...activeClient.holdings];
+    recalculatePortfolio();
+  } else {
+    analyzePortfolioText(SAMPLE_PORTFOLIO_RAW);
+  }
+}
+
+export function loadClientIntoAnalyzer(clientId: string) {
+  const client = getClientById(clientId);
+  if (!client) return;
+
+  if (client.holdings && client.holdings.length > 0) {
+    currentHoldings = [...client.holdings];
+    recalculatePortfolio();
+  } else {
+    analyzePortfolioText(SAMPLE_PORTFOLIO_RAW);
+  }
+
+  renderClientSelectorBar('analyzer-client-selector-container', currentInventory, (id) => {
+    loadClientIntoAnalyzer(id);
+  });
 }
 
 function renderAnalyzerLayout() {
@@ -60,18 +85,25 @@ function renderAnalyzerLayout() {
 
   container.innerHTML = `
     <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+      
+      <!-- Multi-Client Selector & Management Toolbar -->
+      <div id="analyzer-client-selector-container"></div>
+
       <!-- Header Banner -->
       <div style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%); border: 1px solid var(--border-glass); border-radius: 16px; padding: 1.5rem; backdrop-filter: blur(12px);">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
           <div>
             <h2 style="font-size: 1.4rem; color: var(--accent-gold); margin: 0; display: flex; align-items: center; gap: 0.6rem;">
-              🛡️ Current Bond Portfolio Analyzer & Rebalancer
+              🛡️ Client Bond Portfolio Analyzer & Rebalancer
             </h2>
             <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0.35rem 0 0 0;">
               Evidence-based credit ratings, promoter concentration, interactive drilldown analytics, and yield optimization
             </p>
           </div>
           <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+            <button id="analyzer-suggest-buys-btn" class="btn" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(5, 150, 105, 0.15) 100%); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); font-weight: 700; font-size: 0.85rem; padding: 0.5rem 1rem;">
+              🛒 Suggest Inventory Buys
+            </button>
             <button id="load-sample-portfolio-btn" class="btn" style="background: rgba(212, 175, 55, 0.15); color: var(--accent-gold); border: 1px solid rgba(212, 175, 55, 0.35); font-weight: 600; font-size: 0.85rem; padding: 0.5rem 1rem;">
               ⚡ Load Sample Portfolio (21 Holdings)
             </button>
@@ -105,6 +137,10 @@ function renderAnalyzerLayout() {
     </div>
   `;
 
+  renderClientSelectorBar('analyzer-client-selector-container', currentInventory, (clientId) => {
+    loadClientIntoAnalyzer(clientId);
+  });
+
   attachViewListeners();
 }
 
@@ -113,6 +149,7 @@ function attachViewListeners() {
   const runBtn = document.getElementById('run-portfolio-analysis-btn');
   const textarea = document.getElementById('portfolio-raw-input') as HTMLTextAreaElement;
   const exportBtn = document.getElementById('export-rebalancing-csv-btn');
+  const suggestBuysBtn = document.getElementById('analyzer-suggest-buys-btn');
 
   loadSampleBtn?.addEventListener('click', () => {
     if (textarea) textarea.value = SAMPLE_PORTFOLIO_RAW;
@@ -125,6 +162,13 @@ function attachViewListeners() {
   });
 
   exportBtn?.addEventListener('click', exportRebalancingReport);
+
+  suggestBuysBtn?.addEventListener('click', () => {
+    const activeClient = getActiveClient();
+    openPurchaseSuggestionsModal(activeClient, currentInventory, () => {
+      loadClientIntoAnalyzer(activeClient.id);
+    });
+  });
 }
 
 function analyzePortfolioText(rawText: string) {
@@ -139,6 +183,13 @@ function recalculatePortfolio() {
   currentHoldings.forEach(h => {
     h.weightPercent = totalVal > 0 ? (h.estimatedMarketValue / totalVal) * 100 : 0;
   });
+
+  // Sync back with active client
+  const activeClient = getActiveClient();
+  if (activeClient) {
+    activeClient.holdings = [...currentHoldings];
+    saveClient(activeClient);
+  }
 
   currentAssessment = assessPortfolioRisk(currentHoldings);
   currentExits = generateExitRecommendations(currentHoldings, currentAssessment);
