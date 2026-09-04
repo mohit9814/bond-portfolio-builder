@@ -1,3 +1,4 @@
+import { getVerifiedCitationsForEntity } from './data/citationResolver';
 import { getPromoterRiskRecord, PromoterRiskRecord, getRiskSeverityStyling } from './data/promoterIntelligence';
 import { getBusinessSwot } from './data/swotIntelligence';
 
@@ -33,11 +34,7 @@ export function openPromoterProfileModal(entityKeyOrName: string): void {
     threats: ['Regulatory and interest rate volatility']
   };
 
-  const citations = record.citations || [
-    { title: `CRISIL / ICRA Rating Rationale - ${record.entityName}`, url: 'https://www.crisilratings.com/', type: 'RATING_REPORT' },
-    { title: `BSE Debt Filings & GID Directory`, url: 'https://www.bseindia.com/markets/debt/debt_security_summary.html', type: 'BSE_FILING' },
-    { title: `NSDL Bond Information Directory`, url: 'https://www.indiabondinfo.nsdl.com/', type: 'NSDL' }
-  ];
+  const citations = getVerifiedCitationsForEntity(record.entityName, record.entityName, undefined, swotRecord?.ratingAgency);
 
   container.innerHTML = `
     <div class="relative w-full max-w-4xl bg-[#1e222d] border border-[#2a2e39] rounded-2xl shadow-2xl overflow-hidden text-gray-200 my-8">

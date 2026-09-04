@@ -3,10 +3,8 @@ import { resolveBondEntity } from './entityResolver';
 import { DefaultBond } from './defaultInventory';
 import { getBusinessSwot } from './data/swotIntelligence';
 import { openPromoterProfileModal } from './promoterProfileModal';
+import { getVerifiedCitationsForEntity } from './data/citationResolver';
 
-/**
- * Converts raw URLs in text into clickable HTML links with target="_blank"
- */
 function linkifyText(text: string): string {
   if (!text) return '';
   const urlRegex = /(https?:\/\/[^\s<>"'()]+)/g;
@@ -21,7 +19,9 @@ function linkifyText(text: string): string {
 export function openPromoterAuditModal(bondOrIssuer: DefaultBond | string): void {
   const entityRes = resolveBondEntity(bondOrIssuer);
   const rec = entityRes.promoterRecord;
-  const swotRecord = getBusinessSwot(rec ? rec.entityName : entityRes.canonicalEntityName);
+  const isin = typeof bondOrIssuer === 'string' ? '' : bondOrIssuer.isin;
+  const entityName = rec ? rec.entityName : entityRes.canonicalEntityName;
+  const swotRecord = getBusinessSwot(isin || entityName);
 
   // Remove existing modal if any
   document.getElementById('promoter-audit-modal')?.remove();
@@ -32,17 +32,14 @@ export function openPromoterAuditModal(bondOrIssuer: DefaultBond | string): void
   modal.style.cssText = 'position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 1.5rem;';
 
   const styling = getRiskSeverityStyling(entityRes.riskSeverity);
-  const entityName = rec ? rec.entityName : entityRes.canonicalEntityName;
   const scoreColor = entityRes.governanceScore >= 80 ? '#10b981' : entityRes.governanceScore >= 60 ? '#f59e0b' : '#ef4444';
 
-  const citations = (rec && rec.citations && rec.citations.length > 0)
-    ? rec.citations
-    : [
-        { title: `CRISIL / ICRA Rating Rationale - ${entityName}`, url: 'https://www.crisilratings.com/', type: 'RATING_REPORT' },
-        { title: `BSE Debt Filings & GID Directory`, url: 'https://www.bseindia.com/markets/debt/debt_security_summary.html', type: 'BSE_FILING' },
-        { title: `NSDL Bond Information Directory`, url: 'https://www.indiabondinfo.nsdl.com/', type: 'NSDL' },
-        { title: `SEBI Enforcement Actions & Orders`, url: 'https://www.sebi.gov.in/enforcement/orders.html', type: 'REGULATOR' }
-      ];
+  const citations = getVerifiedCitationsForEntity(
+    entityName,
+    entityRes.canonicalEntityName,
+    isin,
+    swotRecord?.ratingAgency || 'CRISIL / ICRA / CARE'
+  );
 
   modal.innerHTML = `
     <div class="modal-content" style="background: #0f172a; border: 1px solid var(--border-glass); border-radius: 16px; width: 100%; max-width: 820px; max-height: 90vh; overflow-y: auto; padding: 1.75rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); font-family: var(--font-sans); color: #f8fafc;">
@@ -159,10 +156,10 @@ export function openPromoterAuditModal(bondOrIssuer: DefaultBond | string): void
       <!-- Verified Online Citations & Source Links (CITE TO SOURCE) -->
       <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 1.1rem; margin-bottom: 1.25rem;">
         <div style="font-size: 0.85rem; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.5rem;">
-          <span>🔗</span> Verified Source Citations & Rating Rationales (Opens in New Window)
+          <span>🔗</span> Specific Resource Citations & Rating Rationales (Opens in New Window)
         </div>
         <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0 0 0.75rem 0;">
-          Direct verified links to live credit rating reports, BSE debt filings, NSDL directory, and regulatory databases:
+          Direct verified deep links to live credit rating rationales, BSE debt filings, NSDL directory, and regulatory databases:
         </p>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.6rem;">
@@ -172,17 +169,6 @@ export function openPromoterAuditModal(bondOrIssuer: DefaultBond | string): void
               <span style="font-size: 0.65rem; background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px; color: #94a3b8; font-family: monospace;">${c.type}</span>
             </a>
           `).join('')}
-
-          ${swotRecord ? `
-            <a href="${swotRecord.sourceUrl}" target="_blank" rel="noopener noreferrer" class="audit-external-link" style="display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0.8rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 8px; text-decoration: none; color: #34d399; font-size: 0.78rem; font-weight: 600; cursor: pointer;">
-              <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 0.4rem;">↗ ${swotRecord.ratingAgency} Rating Report</span>
-              <span style="font-size: 0.65rem; background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px; color: #a7f3d0; font-family: monospace;">RATING</span>
-            </a>
-            <a href="${swotRecord.bseFilingUrl}" target="_blank" rel="noopener noreferrer" class="audit-external-link" style="display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0.8rem; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 8px; text-decoration: none; color: #fbbf24; font-size: 0.78rem; font-weight: 600; cursor: pointer;">
-              <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 0.4rem;">↗ BSE Debt Covenants & GID</span>
-              <span style="font-size: 0.65rem; background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px; color: #fde68a; font-family: monospace;">BSE</span>
-            </a>
-          ` : ''}
         </div>
       </div>
 

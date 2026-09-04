@@ -67,24 +67,29 @@
     },
     "citations": [
       {
-        "title": "RBI Supervisory Direction on ECL Finance & EARC (May 2024)",
+        "title": "Credit Rating Rationale - Edelweiss Group",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22Edelweiss%20Group%22%20NCD%20debt",
+        "type": "RATING_REPORT"
+      },
+      {
+        "title": "BSE Debt Filings & GID Covenants - Edelweiss Group",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22Edelweiss%20Group%22",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL India Bond Info Repository - Edelweiss Group",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22Edelweiss%20Group%22",
+        "type": "NSDL"
+      },
+      {
+        "title": "RBI Official Press Release & Supervisory Direction",
         "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=58032",
         "type": "REGULATORY"
       },
       {
-        "title": "CRISIL Rating Rationale - Edelweiss Financial Services Ltd",
-        "url": "https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.EFSL.html",
-        "type": "RATING_REPORT"
-      },
-      {
-        "title": "BSE Debt Filings - Edelweiss Group ISINs",
-        "url": "https://www.bseindia.com/stock-share-price/edelweiss-financial-services-ltd/edelweiss/532922/debt-securities/",
-        "type": "BSE_FILING"
-      },
-      {
-        "title": "NSDL Bond Database Directory - EFSL",
-        "url": "https://www.indiabondinfo.nsdl.com/",
-        "type": "NSDL"
+        "title": "IBBI & NCLT Insolvency Orders - Edelweiss Group",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Edelweiss%20Group%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -155,24 +160,29 @@
     },
     "citations": [
       {
-        "title": "CARE Rating Rationale - Sammaan Capital Ltd (Rebranded from IBHFL)",
-        "url": "https://www.careratings.com/",
+        "title": "Credit Rating Rationale - Indiabulls / Sammaan Capital Ecosystem",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22Indiabulls%20%2F%20Sammaan%20Capital%20Ecosystem%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "ICRA Rating Rationale - Sammaan Capital Ltd AA+",
-        "url": "https://www.icra.in/",
-        "type": "RATING_REPORT"
-      },
-      {
-        "title": "BSE Corporate Announcements - Rebranding to Sammaan Capital",
-        "url": "https://www.bseindia.com/stock-share-price/sammaan-capital-ltd/sammaan/535789/corp-announcements/",
+        "title": "BSE Debt Filings & GID Covenants - Indiabulls / Sammaan Capital Ecosystem",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22Indiabulls%20%2F%20Sammaan%20Capital%20Ecosystem%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL ISIN Verification Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - Indiabulls / Sammaan Capital Ecosystem",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22Indiabulls%20%2F%20Sammaan%20Capital%20Ecosystem%22",
         "type": "NSDL"
+      },
+      {
+        "title": "RBI Official Press Release & Supervisory Direction",
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=48325",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - Indiabulls / Sammaan Capital Ecosystem",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Indiabulls%20%2F%20Sammaan%20Capital%20Ecosystem%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -231,14 +241,29 @@
     },
     "citations": [
       {
-        "title": "Acuité Rating Rationale - Keertana Finserv Ltd",
-        "url": "https://www.acuite.in/",
+        "title": "Credit Rating Rationale - Keertana Finserv (Padmaja Reddy)",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22Keertana%20Finserv%20(Padmaja%20Reddy)%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Security Information - Keertana Finserv",
-        "url": "https://www.bseindia.com/markets/debt/debt_security_summary.html",
+        "title": "BSE Debt Filings & GID Covenants - Keertana Finserv (Padmaja Reddy)",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22Keertana%20Finserv%20(Padmaja%20Reddy)%22",
         "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL India Bond Info Repository - Keertana Finserv (Padmaja Reddy)",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22Keertana%20Finserv%20(Padmaja%20Reddy)%22",
+        "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - Keertana Finserv (Padmaja Reddy)",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22Keertana%20Finserv%20(Padmaja%20Reddy)%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - Keertana Finserv (Padmaja Reddy)",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Keertana%20Finserv%20(Padmaja%20Reddy)%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -300,19 +325,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - Adani Group",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - Adani Group",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22Adani%20Group%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - Adani Group",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - Adani Group",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22Adani%20Group%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - Adani Group",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22Adani%20Group%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - Adani Group",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22Adani%20Group%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - Adani Group",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Adani%20Group%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -367,19 +402,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - Navi Group (Sachin Bansal)",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - Navi Group (Sachin Bansal)",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22Navi%20Group%20(Sachin%20Bansal)%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - Navi Group (Sachin Bansal)",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - Navi Group (Sachin Bansal)",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22Navi%20Group%20(Sachin%20Bansal)%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - Navi Group (Sachin Bansal)",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22Navi%20Group%20(Sachin%20Bansal)%22",
         "type": "NSDL"
+      },
+      {
+        "title": "RBI Official Press Release & Supervisory Direction",
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=58814",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - Navi Group (Sachin Bansal)",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Navi%20Group%20(Sachin%20Bansal)%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -434,19 +479,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - Manappuram Group (Asirvad Microfinance)",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - Manappuram Group (Asirvad Microfinance)",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22Manappuram%20Group%20(Asirvad%20Microfinance)%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - Manappuram Group (Asirvad Microfinance)",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - Manappuram Group (Asirvad Microfinance)",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22Manappuram%20Group%20(Asirvad%20Microfinance)%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - Manappuram Group (Asirvad Microfinance)",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22Manappuram%20Group%20(Asirvad%20Microfinance)%22",
         "type": "NSDL"
+      },
+      {
+        "title": "RBI Official Press Release & Supervisory Direction",
+        "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=58814",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - Manappuram Group (Asirvad Microfinance)",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Manappuram%20Group%20(Asirvad%20Microfinance)%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -500,19 +555,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - IndoStar Capital Finance (Brookfield)",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - IndoStar Capital Finance (Brookfield)",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22IndoStar%20Capital%20Finance%20(Brookfield)%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - IndoStar Capital Finance (Brookfield)",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - IndoStar Capital Finance (Brookfield)",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22IndoStar%20Capital%20Finance%20(Brookfield)%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - IndoStar Capital Finance (Brookfield)",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22IndoStar%20Capital%20Finance%20(Brookfield)%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - IndoStar Capital Finance (Brookfield)",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22IndoStar%20Capital%20Finance%20(Brookfield)%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - IndoStar Capital Finance (Brookfield)",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22IndoStar%20Capital%20Finance%20(Brookfield)%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -577,19 +642,29 @@
     },
     "citations": [
       {
-        "title": "CRISIL Rating Rationale - IIFL Finance Ltd AA/Stable",
-        "url": "https://www.crisilratings.com/en/home/our-businesses/ratings/company-factsheet.IIFL.html",
+        "title": "Credit Rating Rationale - IIFL Group",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22IIFL%20Group%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "RBI Press Release - Lifting of Restrictions on IIFL Finance (Sept 2024)",
+        "title": "BSE Debt Filings & GID Covenants - IIFL Group",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22IIFL%20Group%22",
+        "type": "BSE_FILING"
+      },
+      {
+        "title": "NSDL India Bond Info Repository - IIFL Group",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22IIFL%20Group%22",
+        "type": "NSDL"
+      },
+      {
+        "title": "RBI Official Press Release & Supervisory Direction",
         "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=58572",
         "type": "REGULATORY"
       },
       {
-        "title": "BSE Debt Disclosures - IIFL Finance ISINs",
-        "url": "https://www.bseindia.com/stock-share-price/iifl-finance-ltd/iifl/532779/debt-securities/",
-        "type": "BSE_FILING"
+        "title": "IBBI & NCLT Insolvency Orders - IIFL Group",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22IIFL%20Group%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -646,19 +721,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - Muthoot Pappachan Group (Muthoot Blue)",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - Muthoot Pappachan Group (Muthoot Blue)",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22Muthoot%20Pappachan%20Group%20(Muthoot%20Blue)%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - Muthoot Pappachan Group (Muthoot Blue)",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - Muthoot Pappachan Group (Muthoot Blue)",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22Muthoot%20Pappachan%20Group%20(Muthoot%20Blue)%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - Muthoot Pappachan Group (Muthoot Blue)",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22Muthoot%20Pappachan%20Group%20(Muthoot%20Blue)%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - Muthoot Pappachan Group (Muthoot Blue)",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22Muthoot%20Pappachan%20Group%20(Muthoot%20Blue)%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - Muthoot Pappachan Group (Muthoot Blue)",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Muthoot%20Pappachan%20Group%20(Muthoot%20Blue)%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -712,19 +797,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - Muthoot Finance Ltd (Red Muthoot)",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - Muthoot Finance Ltd (Red Muthoot)",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22Muthoot%20Finance%20Ltd%20(Red%20Muthoot)%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - Muthoot Finance Ltd (Red Muthoot)",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - Muthoot Finance Ltd (Red Muthoot)",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22Muthoot%20Finance%20Ltd%20(Red%20Muthoot)%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - Muthoot Finance Ltd (Red Muthoot)",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22Muthoot%20Finance%20Ltd%20(Red%20Muthoot)%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - Muthoot Finance Ltd (Red Muthoot)",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22Muthoot%20Finance%20Ltd%20(Red%20Muthoot)%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - Muthoot Finance Ltd (Red Muthoot)",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Muthoot%20Finance%20Ltd%20(Red%20Muthoot)%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -778,19 +873,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - Nuvama Wealth Group (PAG Asia)",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - Nuvama Wealth Group (PAG Asia)",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22Nuvama%20Wealth%20Group%20(PAG%20Asia)%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - Nuvama Wealth Group (PAG Asia)",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - Nuvama Wealth Group (PAG Asia)",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22Nuvama%20Wealth%20Group%20(PAG%20Asia)%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - Nuvama Wealth Group (PAG Asia)",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22Nuvama%20Wealth%20Group%20(PAG%20Asia)%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - Nuvama Wealth Group (PAG Asia)",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22Nuvama%20Wealth%20Group%20(PAG%20Asia)%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - Nuvama Wealth Group (PAG Asia)",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Nuvama%20Wealth%20Group%20(PAG%20Asia)%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -844,19 +949,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - Murugappa Group (Cholamandalam)",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - Murugappa Group (Cholamandalam)",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22Murugappa%20Group%20(Cholamandalam)%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - Murugappa Group (Cholamandalam)",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - Murugappa Group (Cholamandalam)",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22Murugappa%20Group%20(Cholamandalam)%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - Murugappa Group (Cholamandalam)",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22Murugappa%20Group%20(Cholamandalam)%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - Murugappa Group (Cholamandalam)",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22Murugappa%20Group%20(Cholamandalam)%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - Murugappa Group (Cholamandalam)",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Murugappa%20Group%20(Cholamandalam)%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -909,19 +1024,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - Satin Group",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - Satin Group",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22Satin%20Group%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - Satin Group",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - Satin Group",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22Satin%20Group%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - Satin Group",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22Satin%20Group%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - Satin Group",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22Satin%20Group%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - Satin Group",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Satin%20Group%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -973,19 +1098,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - UGRO Capital Ltd",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - UGRO Capital Ltd",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22UGRO%20Capital%20Ltd%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - UGRO Capital Ltd",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - UGRO Capital Ltd",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22UGRO%20Capital%20Ltd%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - UGRO Capital Ltd",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22UGRO%20Capital%20Ltd%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - UGRO Capital Ltd",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22UGRO%20Capital%20Ltd%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - UGRO Capital Ltd",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22UGRO%20Capital%20Ltd%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -1037,19 +1172,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - Krazybee Services (KreditBee)",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - Krazybee Services (KreditBee)",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22Krazybee%20Services%20(KreditBee)%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - Krazybee Services (KreditBee)",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - Krazybee Services (KreditBee)",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22Krazybee%20Services%20(KreditBee)%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - Krazybee Services (KreditBee)",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22Krazybee%20Services%20(KreditBee)%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - Krazybee Services (KreditBee)",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22Krazybee%20Services%20(KreditBee)%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - Krazybee Services (KreditBee)",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Krazybee%20Services%20(KreditBee)%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -1101,19 +1246,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - EarlySalary Services (Fibe)",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - EarlySalary Services (Fibe)",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22EarlySalary%20Services%20(Fibe)%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - EarlySalary Services (Fibe)",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - EarlySalary Services (Fibe)",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22EarlySalary%20Services%20(Fibe)%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - EarlySalary Services (Fibe)",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22EarlySalary%20Services%20(Fibe)%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - EarlySalary Services (Fibe)",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22EarlySalary%20Services%20(Fibe)%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - EarlySalary Services (Fibe)",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22EarlySalary%20Services%20(Fibe)%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -1165,19 +1320,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - Mufin Green Finance Ltd",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - Mufin Green Finance Ltd",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22Mufin%20Green%20Finance%20Ltd%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - Mufin Green Finance Ltd",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - Mufin Green Finance Ltd",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22Mufin%20Green%20Finance%20Ltd%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - Mufin Green Finance Ltd",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22Mufin%20Green%20Finance%20Ltd%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - Mufin Green Finance Ltd",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22Mufin%20Green%20Finance%20Ltd%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - Mufin Green Finance Ltd",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Mufin%20Green%20Finance%20Ltd%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -1226,19 +1391,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - Akme Fintrade (India) Ltd (Aasaan Loans)",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - Akme Fintrade (India) Ltd (Aasaan Loans)",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22Akme%20Fintrade%20(India)%20Ltd%20(Aasaan%20Loans)%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - Akme Fintrade (India) Ltd (Aasaan Loans)",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - Akme Fintrade (India) Ltd (Aasaan Loans)",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22Akme%20Fintrade%20(India)%20Ltd%20(Aasaan%20Loans)%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - Akme Fintrade (India) Ltd (Aasaan Loans)",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22Akme%20Fintrade%20(India)%20Ltd%20(Aasaan%20Loans)%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - Akme Fintrade (India) Ltd (Aasaan Loans)",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22Akme%20Fintrade%20(India)%20Ltd%20(Aasaan%20Loans)%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - Akme Fintrade (India) Ltd (Aasaan Loans)",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Akme%20Fintrade%20(India)%20Ltd%20(Aasaan%20Loans)%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -1290,19 +1465,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - Progfin Private Ltd (Progcap)",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - Progfin Private Ltd (Progcap)",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22Progfin%20Private%20Ltd%20(Progcap)%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - Progfin Private Ltd (Progcap)",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - Progfin Private Ltd (Progcap)",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22Progfin%20Private%20Ltd%20(Progcap)%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - Progfin Private Ltd (Progcap)",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22Progfin%20Private%20Ltd%20(Progcap)%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - Progfin Private Ltd (Progcap)",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22Progfin%20Private%20Ltd%20(Progcap)%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - Progfin Private Ltd (Progcap)",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Progfin%20Private%20Ltd%20(Progcap)%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -1354,19 +1539,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - Indel Money Ltd",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - Indel Money Ltd",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22Indel%20Money%20Ltd%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - Indel Money Ltd",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - Indel Money Ltd",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22Indel%20Money%20Ltd%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - Indel Money Ltd",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22Indel%20Money%20Ltd%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - Indel Money Ltd",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22Indel%20Money%20Ltd%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - Indel Money Ltd",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Indel%20Money%20Ltd%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -1420,19 +1615,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - 360 ONE WAM Group (formerly IIFL Wealth)",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - 360 ONE WAM Group (formerly IIFL Wealth)",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22360%20ONE%20WAM%20Group%20(formerly%20IIFL%20Wealth)%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - 360 ONE WAM Group (formerly IIFL Wealth)",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - 360 ONE WAM Group (formerly IIFL Wealth)",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22360%20ONE%20WAM%20Group%20(formerly%20IIFL%20Wealth)%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - 360 ONE WAM Group (formerly IIFL Wealth)",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22360%20ONE%20WAM%20Group%20(formerly%20IIFL%20Wealth)%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - 360 ONE WAM Group (formerly IIFL Wealth)",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22360%20ONE%20WAM%20Group%20(formerly%20IIFL%20Wealth)%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - 360 ONE WAM Group (formerly IIFL Wealth)",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22360%20ONE%20WAM%20Group%20(formerly%20IIFL%20Wealth)%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -1488,19 +1693,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - State Bank of India (SBI Group)",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - State Bank of India (SBI Group)",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22State%20Bank%20of%20India%20(SBI%20Group)%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - State Bank of India (SBI Group)",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - State Bank of India (SBI Group)",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22State%20Bank%20of%20India%20(SBI%20Group)%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - State Bank of India (SBI Group)",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22State%20Bank%20of%20India%20(SBI%20Group)%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - State Bank of India (SBI Group)",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22State%20Bank%20of%20India%20(SBI%20Group)%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - State Bank of India (SBI Group)",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22State%20Bank%20of%20India%20(SBI%20Group)%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -1554,19 +1769,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - REC Ltd (Maharatna PSU)",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - REC Ltd (Maharatna PSU)",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22REC%20Ltd%20(Maharatna%20PSU)%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - REC Ltd (Maharatna PSU)",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - REC Ltd (Maharatna PSU)",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22REC%20Ltd%20(Maharatna%20PSU)%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - REC Ltd (Maharatna PSU)",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22REC%20Ltd%20(Maharatna%20PSU)%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - REC Ltd (Maharatna PSU)",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22REC%20Ltd%20(Maharatna%20PSU)%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - REC Ltd (Maharatna PSU)",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22REC%20Ltd%20(Maharatna%20PSU)%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -1618,19 +1843,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - NHPC Ltd (Navratna PSU)",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - NHPC Ltd (Navratna PSU)",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22NHPC%20Ltd%20(Navratna%20PSU)%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - NHPC Ltd (Navratna PSU)",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - NHPC Ltd (Navratna PSU)",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22NHPC%20Ltd%20(Navratna%20PSU)%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - NHPC Ltd (Navratna PSU)",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22NHPC%20Ltd%20(Navratna%20PSU)%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - NHPC Ltd (Navratna PSU)",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22NHPC%20Ltd%20(Navratna%20PSU)%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - NHPC Ltd (Navratna PSU)",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22NHPC%20Ltd%20(Navratna%20PSU)%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -1684,19 +1919,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - Mangalore Refinery & Petrochemicals Ltd (ONGC Group)",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - Mangalore Refinery & Petrochemicals Ltd (ONGC Group)",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22Mangalore%20Refinery%20%26%20Petrochemicals%20Ltd%20(ONGC%20Group)%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - Mangalore Refinery & Petrochemicals Ltd (ONGC Group)",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - Mangalore Refinery & Petrochemicals Ltd (ONGC Group)",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22Mangalore%20Refinery%20%26%20Petrochemicals%20Ltd%20(ONGC%20Group)%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - Mangalore Refinery & Petrochemicals Ltd (ONGC Group)",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22Mangalore%20Refinery%20%26%20Petrochemicals%20Ltd%20(ONGC%20Group)%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - Mangalore Refinery & Petrochemicals Ltd (ONGC Group)",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22Mangalore%20Refinery%20%26%20Petrochemicals%20Ltd%20(ONGC%20Group)%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - Mangalore Refinery & Petrochemicals Ltd (ONGC Group)",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Mangalore%20Refinery%20%26%20Petrochemicals%20Ltd%20(ONGC%20Group)%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -1750,19 +1995,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - Kerala Infrastructure Investment Fund Board (KIIFB)",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - Kerala Infrastructure Investment Fund Board (KIIFB)",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22Kerala%20Infrastructure%20Investment%20Fund%20Board%20(KIIFB)%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - Kerala Infrastructure Investment Fund Board (KIIFB)",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - Kerala Infrastructure Investment Fund Board (KIIFB)",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22Kerala%20Infrastructure%20Investment%20Fund%20Board%20(KIIFB)%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - Kerala Infrastructure Investment Fund Board (KIIFB)",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22Kerala%20Infrastructure%20Investment%20Fund%20Board%20(KIIFB)%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - Kerala Infrastructure Investment Fund Board (KIIFB)",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22Kerala%20Infrastructure%20Investment%20Fund%20Board%20(KIIFB)%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - Kerala Infrastructure Investment Fund Board (KIIFB)",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Kerala%20Infrastructure%20Investment%20Fund%20Board%20(KIIFB)%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -1824,19 +2079,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - Government of Andhra Pradesh (State Entities & SDLs)",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - Government of Andhra Pradesh (State Entities & SDLs)",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22Government%20of%20Andhra%20Pradesh%20(State%20Entities%20%26%20SDLs)%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - Government of Andhra Pradesh (State Entities & SDLs)",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - Government of Andhra Pradesh (State Entities & SDLs)",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22Government%20of%20Andhra%20Pradesh%20(State%20Entities%20%26%20SDLs)%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - Government of Andhra Pradesh (State Entities & SDLs)",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22Government%20of%20Andhra%20Pradesh%20(State%20Entities%20%26%20SDLs)%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - Government of Andhra Pradesh (State Entities & SDLs)",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22Government%20of%20Andhra%20Pradesh%20(State%20Entities%20%26%20SDLs)%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - Government of Andhra Pradesh (State Entities & SDLs)",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Government%20of%20Andhra%20Pradesh%20(State%20Entities%20%26%20SDLs)%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -1913,19 +2178,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - Sovereign Government of India & State Development Loans (SDLs)",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - Sovereign Government of India & State Development Loans (SDLs)",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22Sovereign%20Government%20of%20India%20%26%20State%20Development%20Loans%20(SDLs)%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - Sovereign Government of India & State Development Loans (SDLs)",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - Sovereign Government of India & State Development Loans (SDLs)",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22Sovereign%20Government%20of%20India%20%26%20State%20Development%20Loans%20(SDLs)%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - Sovereign Government of India & State Development Loans (SDLs)",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22Sovereign%20Government%20of%20India%20%26%20State%20Development%20Loans%20(SDLs)%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - Sovereign Government of India & State Development Loans (SDLs)",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22Sovereign%20Government%20of%20India%20%26%20State%20Development%20Loans%20(SDLs)%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - Sovereign Government of India & State Development Loans (SDLs)",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22Sovereign%20Government%20of%20India%20%26%20State%20Development%20Loans%20(SDLs)%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -1976,19 +2251,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - AU Small Finance Bank Ltd",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - AU Small Finance Bank Ltd",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22AU%20Small%20Finance%20Bank%20Ltd%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - AU Small Finance Bank Ltd",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - AU Small Finance Bank Ltd",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22AU%20Small%20Finance%20Bank%20Ltd%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - AU Small Finance Bank Ltd",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22AU%20Small%20Finance%20Bank%20Ltd%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - AU Small Finance Bank Ltd",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22AU%20Small%20Finance%20Bank%20Ltd%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - AU Small Finance Bank Ltd",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22AU%20Small%20Finance%20Bank%20Ltd%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -2038,19 +2323,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - PNB MetLife India Insurance Co Ltd",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - PNB MetLife India Insurance Co Ltd",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22PNB%20MetLife%20India%20Insurance%20Co%20Ltd%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - PNB MetLife India Insurance Co Ltd",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - PNB MetLife India Insurance Co Ltd",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22PNB%20MetLife%20India%20Insurance%20Co%20Ltd%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - PNB MetLife India Insurance Co Ltd",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22PNB%20MetLife%20India%20Insurance%20Co%20Ltd%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - PNB MetLife India Insurance Co Ltd",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22PNB%20MetLife%20India%20Insurance%20Co%20Ltd%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - PNB MetLife India Insurance Co Ltd",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22PNB%20MetLife%20India%20Insurance%20Co%20Ltd%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -2102,19 +2397,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - NABKISAN Finance Ltd (NABARD Subsidiary)",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - NABKISAN Finance Ltd (NABARD Subsidiary)",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22NABKISAN%20Finance%20Ltd%20(NABARD%20Subsidiary)%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - NABKISAN Finance Ltd (NABARD Subsidiary)",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - NABKISAN Finance Ltd (NABARD Subsidiary)",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22NABKISAN%20Finance%20Ltd%20(NABARD%20Subsidiary)%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - NABKISAN Finance Ltd (NABARD Subsidiary)",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22NABKISAN%20Finance%20Ltd%20(NABARD%20Subsidiary)%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - NABKISAN Finance Ltd (NABARD Subsidiary)",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22NABKISAN%20Finance%20Ltd%20(NABARD%20Subsidiary)%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - NABKISAN Finance Ltd (NABARD Subsidiary)",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22NABKISAN%20Finance%20Ltd%20(NABARD%20Subsidiary)%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   },
@@ -2169,19 +2474,29 @@
     },
     "citations": [
       {
-        "title": "Rating Rationale - ReNew Power (Nasdaq: RNW)",
-        "url": "https://www.crisilratings.com/",
+        "title": "Credit Rating Rationale - ReNew Power (Nasdaq: RNW)",
+        "url": "https://www.google.com/search?q=CRISIL%20ICRA%20CARE%20rating%20rationale%20%22ReNew%20Power%20(Nasdaq%3A%20RNW)%22%20NCD%20debt",
         "type": "RATING_REPORT"
       },
       {
-        "title": "BSE Debt Filings - ReNew Power (Nasdaq: RNW)",
-        "url": "https://www.bseindia.com/",
+        "title": "BSE Debt Filings & GID Covenants - ReNew Power (Nasdaq: RNW)",
+        "url": "https://www.google.com/search?q=site%3Abseindia.com%20debt%20securities%20memorandum%20%22ReNew%20Power%20(Nasdaq%3A%20RNW)%22",
         "type": "BSE_FILING"
       },
       {
-        "title": "NSDL Bond Portal",
-        "url": "https://www.indiabondinfo.nsdl.com/",
+        "title": "NSDL India Bond Info Repository - ReNew Power (Nasdaq: RNW)",
+        "url": "https://www.google.com/search?q=site%3Aindiabondinfo.nsdl.com%20%22ReNew%20Power%20(Nasdaq%3A%20RNW)%22",
         "type": "NSDL"
+      },
+      {
+        "title": "SEBI & RBI Regulatory Orders - ReNew Power (Nasdaq: RNW)",
+        "url": "https://www.google.com/search?q=site%3Arbi.org.in%20OR%20site%3Asebi.gov.in%20%22ReNew%20Power%20(Nasdaq%3A%20RNW)%22%20press%20release%20OR%20order",
+        "type": "REGULATORY"
+      },
+      {
+        "title": "IBBI & NCLT Insolvency Orders - ReNew Power (Nasdaq: RNW)",
+        "url": "https://www.google.com/search?q=site%3Aibbi.gov.in%20%22ReNew%20Power%20(Nasdaq%3A%20RNW)%22%20NCLT",
+        "type": "NCLT_IBBI"
       }
     ]
   }
