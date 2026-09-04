@@ -1,5 +1,6 @@
 import { DefaultBond } from '../defaultInventory';
 import { assessPortfolioRisk } from '../analyzer/riskEngine';
+import { resolveBondEntity } from '../entityResolver';
 import {
   ClientPortfolio,
   MultiClientAggregateSummary,
@@ -40,6 +41,7 @@ export function calculateAggregateClientMetrics(
     clientIds: Set<string>;
     clientNames: Set<string>;
     holdingCount: number;
+    sampleIsin?: string;
   }>();
 
   const firmUpcomingMaturities: FirmUpcomingMaturityItem[] = [];
@@ -49,6 +51,7 @@ export function calculateAggregateClientMetrics(
     rating: string;
     coupon: number;
     rationale: string;
+    urgency: 'HIGH' | 'MEDIUM';
     clients: Array<{ clientId: string; clientName: string; value: number }>;
   }>();
 
@@ -66,19 +69,22 @@ export function calculateAggregateClientMetrics(
     // Weighted Yield
     client.holdings.forEach(h => {
       weightedIncomeSum += h.estimatedMarketValue * (h.yieldPercent / 100);
+      const entity = resolveBondEntity(h);
 
       // Group Aggregate
-      const grp = h.parentGroup || 'Independent';
+      const grp = entity.canonicalEntityName || h.parentGroup || 'Independent';
       const pData = promoterMap.get(grp) || {
         total: 0,
         clientIds: new Set<string>(),
         clientNames: new Set<string>(),
-        holdingCount: 0
+        holdingCount: 0,
+        sampleIsin: h.isin
       };
       pData.total += h.estimatedMarketValue;
       pData.clientIds.add(client.id);
       pData.clientNames.add(client.clientName);
       pData.holdingCount += 1;
+      if (!pData.sampleIsin) pData.sampleIsin = h.isin;
       promoterMap.set(grp, pData);
 
       // Maturities Radar (Upcoming within 14 months)
@@ -98,16 +104,33 @@ export function calculateAggregateClientMetrics(
         });
       }
 
-      // Detect Exits for Batch Actions (Deteriorating or Sub-9% Yield)
-      if (h.ratingTrend === 'deteriorating' || h.couponPercent < 9.0) {
+      // Detect Exits for Batch Actions (Forensic Risk, Rating Deterioration, or Sub-9% Yield)
+      const isCriticalOrHighRisk = entity.riskSeverity === 'CRITICAL' || entity.riskSeverity === 'HIGH';
+      if (isCriticalOrHighRisk || h.ratingTrend === 'deteriorating' || h.couponPercent < 9.0) {
+        let exitRationale = '';
+        let exitUrgency: 'HIGH' | 'MEDIUM' = 'MEDIUM';
+
+        if (entity.riskSeverity === 'CRITICAL') {
+          exitRationale = `CRITICAL Promoter Governance Risk (Score: ${entity.governanceScore}/100): ${entity.promoterRecord?.exclusionReason || entity.promoterRecord?.regulatoryActions || 'Regulatory supervision order / litigation'}`;
+          exitUrgency = 'HIGH';
+        } else if (entity.riskSeverity === 'HIGH') {
+          exitRationale = `High Governance Scrutiny (Score: ${entity.governanceScore}/100): ${entity.promoterRecord?.exclusionReason || entity.promoterRecord?.regulatoryActions || 'Negative media flags'}`;
+          exitUrgency = 'HIGH';
+        } else if (h.ratingTrend === 'deteriorating') {
+          exitRationale = 'Credit rating deterioration with negative agency outlook';
+          exitUrgency = 'HIGH';
+        } else {
+          exitRationale = 'Sub-9% yield drag vs market opportunities';
+          exitUrgency = 'MEDIUM';
+        }
+
         const exitEntry = exitHoldingMap.get(h.isin) || {
           isin: h.isin,
           issuerName: h.issuerName || h.readableName || h.securityName,
           rating: h.rating,
           coupon: h.couponPercent,
-          rationale: h.ratingTrend === 'deteriorating'
-            ? 'Rating deterioration with negative credit outlook'
-            : 'Sub-9% yield drag vs market average',
+          rationale: exitRationale,
+          urgency: exitUrgency,
           clients: []
         };
         exitEntry.clients.push({
@@ -128,10 +151,16 @@ export function calculateAggregateClientMetrics(
   const crossClientPromoterExposures: CrossClientPromoterExposure[] = Array.from(promoterMap.entries())
     .map(([parentGroup, data]) => {
       const percentageOfFirmAUA = totalFirmAUA > 0 ? (data.total / totalFirmAUA) * 100 : 0;
+      const grpEntity = resolveBondEntity(data.sampleIsin || parentGroup);
+      
       let riskSeverity: 'LOW' | 'MODERATE' | 'HIGH' | 'CRITICAL' = 'LOW';
-      if (percentageOfFirmAUA > 25) riskSeverity = 'CRITICAL';
-      else if (percentageOfFirmAUA > 18) riskSeverity = 'HIGH';
-      else if (percentageOfFirmAUA > 10) riskSeverity = 'MODERATE';
+      if (grpEntity.riskSeverity === 'CRITICAL' || percentageOfFirmAUA > 25) {
+        riskSeverity = 'CRITICAL';
+      } else if (grpEntity.riskSeverity === 'HIGH' || percentageOfFirmAUA > 18) {
+        riskSeverity = 'HIGH';
+      } else if (grpEntity.riskSeverity === 'MODERATE' || percentageOfFirmAUA > 10) {
+        riskSeverity = 'MODERATE';
+      }
 
       return {
         parentGroup,
@@ -140,7 +169,9 @@ export function calculateAggregateClientMetrics(
         clientCount: data.clientIds.size,
         holdingCount: data.holdingCount,
         affectedClientNames: Array.from(data.clientNames),
-        riskSeverity
+        riskSeverity,
+        governanceScore: grpEntity.governanceScore,
+        promoterRiskSeverity: grpEntity.riskSeverity
       };
     })
     .sort((a, b) => b.totalAmount - a.totalAmount);
@@ -150,7 +181,11 @@ export function calculateAggregateClientMetrics(
 
   // Find suitable replacement bonds for maturities from inventory
   firmUpcomingMaturities.forEach((m) => {
-    const replacement = inventory.find(b => b.yield >= 0.11 && b.months >= 12 && b.months <= 36);
+    const replacement = inventory.find(b => {
+      if (b.yield < 0.11 || b.months < 12 || b.months > 36) return false;
+      const bEntity = resolveBondEntity(b);
+      return bEntity.riskSeverity !== 'CRITICAL' && bEntity.riskSeverity !== 'HIGH';
+    });
     if (replacement) {
       m.suggestedReinvestmentBond = replacement;
       m.reinvestmentYield = replacement.yield * 100;
@@ -189,13 +224,17 @@ export function calculateAggregateClientMetrics(
       })),
       totalFirmAmount: totalVal,
       rationale: e.rationale,
-      urgency: e.rationale.includes('Rating') ? 'HIGH' : 'MEDIUM'
+      urgency: e.urgency
     });
   });
 
-  // Batch Buys from Inventory (Top high-yield opportunities across firm)
+  // Batch Buys from Inventory (Top high-yield, clean-governance opportunities across firm)
   const topBuys = inventory
-    .filter(b => b.yield >= 0.115 && b.rating.includes('A'))
+    .filter(b => {
+      if (b.yield < 0.115 || !b.rating.includes('A')) return false;
+      const bEnt = resolveBondEntity(b);
+      return bEnt.riskSeverity !== 'CRITICAL' && bEnt.riskSeverity !== 'HIGH';
+    })
     .slice(0, 3);
 
   topBuys.forEach(b => {
@@ -217,7 +256,7 @@ export function calculateAggregateClientMetrics(
           holdingValueOrSuggestedAmount: Math.min(c.availableCash, suggestedPerClient)
         })),
         totalFirmAmount: totalPossible,
-        rationale: `Institutional grade ${b.rating} offering attractive ${buyYield.toFixed(2)}% yield with strong capital cover.`,
+        rationale: `Institutional grade ${b.rating} offering attractive ${buyYield.toFixed(2)}% yield with clean promoter governance.`,
         urgency: 'OPPORTUNITY'
       });
     }
@@ -238,3 +277,4 @@ export function calculateAggregateClientMetrics(
     batchActions
   };
 }
+

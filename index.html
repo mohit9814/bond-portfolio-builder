@@ -524,6 +524,15 @@
                 <option value="SUB_BBB">High Yield / Sub-BBB</option>
               </select>
             </div>
+            <div class="input-group" style="margin-bottom: 0;">
+              <label for="screener-governance" style="font-size: 0.8rem;">⚖️ Governance Gate</label>
+              <select id="screener-governance" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.55rem 0.75rem; color: var(--text-primary); font-size: 0.85rem; outline: none; width: 100%;">
+                <option value="">All Promoters</option>
+                <option value="EXCLUDE_CRITICAL_HIGH" selected>Exclude High & Critical Risk</option>
+                <option value="CLEAN_ONLY">Clean & Sovereign Only (>=80)</option>
+                <option value="CRITICAL_HIGH_ONLY">High Risk / Scrutiny Only</option>
+              </select>
+            </div>
           </div>
 
           <!-- Advanced Filters Collapsible Panel -->
@@ -604,6 +613,7 @@
                 <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold); white-space: nowrap;" data-sort="issuer">Issuer & Sector <span>↕</span></th>
                 <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold); white-space: nowrap;" data-sort="isin">ISIN <span>↕</span></th>
                 <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold); white-space: nowrap;" data-sort="rating">Rating <span>↕</span></th>
+                <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold); white-space: nowrap;" data-sort="governance">⚖️ Governance <span>↕</span></th>
                 <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold); white-space: nowrap;" data-sort="coupon">Coupon / Freq <span>↕</span></th>
                 <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold); white-space: nowrap;" data-sort="yield">Offer Yield (YTM) <span>▼</span></th>
                 <th style="padding: 0.75rem; cursor: pointer; color: var(--accent-gold); white-space: nowrap;" data-sort="months">Tenure / Maturity <span>↕</span></th>
@@ -613,7 +623,7 @@
               </tr>
             </thead>
             <tbody id="screener-table-body">
-              <tr><td colspan="9" style="text-align: center; padding: 2rem;">Upload inventory to view bonds.</td></tr>
+              <tr><td colspan="10" style="text-align: center; padding: 2rem;">Upload inventory to view bonds.</td></tr>
             </tbody>
           </table>
         </div>

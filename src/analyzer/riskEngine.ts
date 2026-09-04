@@ -1,4 +1,5 @@
 import { DefaultBond } from '../defaultInventory';
+import { resolveBondEntity } from '../entityResolver';
 import {
   PortfolioHolding,
   PortfolioRiskAssessment,
@@ -107,6 +108,24 @@ export function assessPortfolioRisk(holdings: PortfolioHolding[]): PortfolioRisk
     }
   });
 
+  // Deduct for Forensic & Governance Risks (per unique entity)
+  const evaluatedEntities = new Set<string>();
+  holdings.forEach(h => {
+    const entity = resolveBondEntity(h);
+    const key = entity.canonicalEntityKey || entity.canonicalEntityName;
+    if (!evaluatedEntities.has(key)) {
+      evaluatedEntities.add(key);
+      if (entity.riskSeverity === 'CRITICAL') {
+        healthScore -= 18;
+        const historySnippet = entity.promoterRecord?.detailedCaseHistory ? ` - ${entity.promoterRecord.detailedCaseHistory.substring(0, 110)}...` : '';
+        highRiskAlerts.push(`🚨 Critical Governance Risk: "${entity.canonicalEntityName}" flagged in forensic investigation (Score: ${entity.governanceScore}/100)${historySnippet}`);
+      } else if (entity.riskSeverity === 'HIGH') {
+        healthScore -= 10;
+        highRiskAlerts.push(`⚠️ High Governance Scrutiny: "${entity.canonicalEntityName}" carries adverse promoter risk signals (Score: ${entity.governanceScore}/100).`);
+      }
+    }
+  });
+
   // Deduct for Deteriorating Rating Trend
   if (deterioratingPercent > 25) {
     healthScore -= 20;
@@ -165,6 +184,28 @@ export function generateExitRecommendations(
 
   holdings.forEach(h => {
     const secLower = ((h.rawSecurityName || '') + ' ' + h.securityName + ' ' + h.issuerName).toLowerCase();
+    const entity = resolveBondEntity(h);
+
+    // Condition 0: Critical or High Forensic / Promoter Risk
+    if (entity.riskSeverity === 'CRITICAL' || entity.riskSeverity === 'HIGH') {
+      recommendations.push({
+        isin: h.isin,
+        securityName: h.securityName,
+        readableName: h.readableName,
+        issuerName: h.issuerName,
+        parentGroup: entity.canonicalEntityName || h.parentGroup,
+        qty: h.qty,
+        estimatedValue: h.estimatedMarketValue,
+        couponPercent: h.couponPercent,
+        rating: h.rating,
+        ratingTrend: h.ratingTrend,
+        severity: entity.riskSeverity === 'CRITICAL' ? 'HIGH' : 'MEDIUM',
+        category: 'PROMOTER_GOVERNANCE_RISK',
+        rationale: `Forensic Investigation (Score: ${entity.governanceScore}/100): ${entity.promoterRecord?.detailedCaseHistory?.substring(0, 180) || entity.promoterRecord?.exclusionReason || entity.promoterRecord?.regulatoryActions || 'Adverse promoter negative media / regulatory order'}.`,
+        suggestedAction: 'Immediate Exit / Reallocate capital into clean AA/AAA rated institutional issuers.'
+      });
+      return;
+    }
 
     // Condition 1: Credit deterioration & Group Overconcentration (EFSL multiple holdings with negative outlook)
     if (secLower.includes('efsl') && (h.ratingTrend === 'deteriorating' || assessment.groupExposures.find(g => g.parentGroup.includes('Edelweiss'))?.percentage! > 20)) {
@@ -269,6 +310,8 @@ export function generateAddRecommendations(
     if (b.totalTradableQty !== undefined && b.totalTradableQty <= 0) return false;
     if (b.totalTradableFV !== undefined && b.totalTradableFV <= 0) return false;
     if (b.category && b.category.toLowerCase().includes('bundle')) return false;
+    const candEntity = resolveBondEntity(b);
+    if (candEntity.riskSeverity === 'CRITICAL' || candEntity.riskSeverity === 'HIGH') return false;
     return b.yield >= 0.105; // At least 10.5% yield
   });
 
@@ -377,9 +420,17 @@ export function generateBondDeepInsight(
   let verdict: import('./types').BondRecommendationVerdict = 'HOLD';
   let verdictReason = '';
 
-  if (targetHolding.monthsToMaturity <= 6) {
+  const targetEntity = resolveBondEntity(targetHolding.isin || targetHolding.issuerName);
+
+  if (targetEntity.riskSeverity === 'CRITICAL') {
+    verdict = 'EXIT_AND_ROTATE';
+    verdictReason = `Flagged in Forensic Investigation with CRITICAL promoter risk (Score: ${targetEntity.governanceScore}/100). ${targetEntity.promoterRecord?.detailedCaseHistory?.substring(0, 130) || 'Regulatory penal action / enforcement orders'}. Immediate exit recommended.`;
+  } else if (targetHolding.monthsToMaturity <= 6) {
     verdict = 'REINVEST_ON_MATURITY';
     verdictReason = `Redeems in ${targetHolding.monthsToMaturity.toFixed(1)} months. Cash inflow of ₹${(targetHolding.estimatedMarketValue / 100000).toFixed(2)}L should be earmarked for immediate reinvestment into high-yield alternatives.`;
+  } else if (targetEntity.riskSeverity === 'HIGH') {
+    verdict = 'EXIT_AND_ROTATE';
+    verdictReason = `High promoter governance scrutiny (Governance Score: ${targetEntity.governanceScore}/100). Reallocating capital protects portfolio from heightened promoter headline risk.`;
   } else if (targetHolding.ratingTrend === 'deteriorating') {
     verdict = 'EXIT_AND_ROTATE';
     verdictReason = `Credit rating trajectory is deteriorating with negative agency outlook. Reallocating ₹${(targetHolding.estimatedMarketValue / 100000).toFixed(2)}L protects capital from potential rating downgrades and liquidity freezes.`;
@@ -391,7 +442,7 @@ export function generateBondDeepInsight(
     verdictReason = `Legacy coupon of ${targetHolding.couponPercent.toFixed(2)}% is lagging portfolio average by ${Math.abs(yieldSpread).toFixed(2)}%. Capital can be rotated into higher-yielding secured paper (+2.5% to +3.5% pickup).`;
   } else {
     verdict = 'HOLD';
-    verdictReason = `Strong credit profile (${targetHolding.rating} / ${targetHolding.ratingTrend}) with healthy coupon of ${targetHolding.couponPercent.toFixed(2)}%. Well within risk and diversification tolerance limits.`;
+    verdictReason = `Strong credit profile (${targetHolding.rating} / ${targetHolding.ratingTrend}) with healthy coupon of ${targetHolding.couponPercent.toFixed(2)}% and clean governance (Score: ${targetEntity.governanceScore}/100). Well within risk and diversification tolerance limits.`;
   }
 
   // 3. Find Context-Aware Replacements
@@ -402,6 +453,8 @@ export function generateBondDeepInsight(
     if (existingIsins.has(b.isin.toUpperCase())) return false;
     const bIssuer = (b.issuer || '').toLowerCase();
     if (targetHolding.parentGroup && bIssuer.includes(targetHolding.parentGroup.toLowerCase())) return false;
+    const candEntity = resolveBondEntity(b);
+    if (candEntity.riskSeverity === 'CRITICAL' || candEntity.riskSeverity === 'HIGH') return false;
     return b.yield >= 0.108 && b.months >= 12;
   }).sort((a, b) => b.yield - a.yield);
 

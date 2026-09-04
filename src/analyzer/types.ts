@@ -93,7 +93,8 @@ export type ExitCategory =
   | 'GROUP_OVERCONCENTRATION'
   | 'SUBPAR_YIELD'
   | 'REAL_ESTATE_SECTOR_RISK'
-  | 'MATURITY_MISMATCH';
+  | 'MATURITY_MISMATCH'
+  | 'PROMOTER_GOVERNANCE_RISK';
 
 export interface ExitRecommendation {
   isin: string;

@@ -52,6 +52,8 @@ export interface CrossClientPromoterExposure {
   holdingCount: number;
   affectedClientNames: string[];
   riskSeverity: 'LOW' | 'MODERATE' | 'HIGH' | 'CRITICAL';
+  governanceScore?: number;
+  promoterRiskSeverity?: 'CLEAN' | 'LOW' | 'MODERATE' | 'HIGH' | 'CRITICAL';
 }
 
 export interface FirmUpcomingMaturityItem {

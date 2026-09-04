@@ -1,5 +1,6 @@
 import { EliminatedBond, EliminationReason } from './bondEngine';
 import { setCompanyOverride } from './overridesManager';
+import { resolveBondEntity } from './entityResolver';
 
 const MODAL_ID = 'eliminated-bonds-modal-overlay';
 
@@ -14,6 +15,13 @@ interface ReasonMeta {
 }
 
 const REASON_META: Record<EliminationReason, ReasonMeta> = {
+  PROMOTER_GOVERNANCE_RISK: {
+    label: "Promoter Governance / Negative Media",
+    icon: "⚖️",
+    color: "#f87171",
+    bgColor: "rgba(239, 68, 68, 0.15)",
+    description: "Excluded due to adverse promoter negative media, regulatory supervisory restrictions, or corporate governance litigation."
+  },
   ILLIQUID_QTY: {
     label: 'Zero Tradable Qty',
     icon: '🚫',
@@ -83,13 +91,6 @@ const REASON_META: Record<EliminationReason, ReasonMeta> = {
     color: "#ef4444",
     bgColor: "rgba(239,68,68,0.12)",
     description: "You manually excluded this company."
-  },
-  PROMOTER_GOVERNANCE_RISK: {
-    label: "Promoter Governance / Negative Media",
-    icon: "⚖️",
-    color: "#f87171",
-    bgColor: "rgba(239, 68, 68, 0.15)",
-    description: "Excluded due to adverse promoter negative media, regulatory supervisory restrictions, or corporate governance litigation."
   }
 };
 
@@ -121,6 +122,7 @@ export function renderEliminatedSummaryBar(
 
   // Priority order for the summary pills — most risk-relevant first
   const priorityOrder: EliminationReason[] = [
+    'PROMOTER_GOVERNANCE_RISK',
     'ILLIQUID_QTY', 'ILLIQUID_FV', 'BBB_TENOR_VIOLATION',
     'BELOW_MIN_RATING', 'TENURE_MISMATCH', 'BUNDLE_FLEXI',
     'USER_EXCLUDED', 'NOT_SELECTED'
@@ -211,6 +213,7 @@ export function openEliminatedBondsModal(
     const filtered = activeFilter === 'ALL' ? eliminated : eliminated.filter(e => e.reason === activeFilter);
 
     const priorityOrder: EliminationReason[] = [
+      'PROMOTER_GOVERNANCE_RISK',
       'ILLIQUID_QTY', 'ILLIQUID_FV', 'BBB_TENOR_VIOLATION',
       'BELOW_MIN_RATING', 'TENURE_MISMATCH', 'BUNDLE_FLEXI',
       'USER_EXCLUDED', 'NOT_SELECTED'
@@ -218,7 +221,7 @@ export function openEliminatedBondsModal(
 
     // Filter tabs
     const tabsHtml = [
-      { key: 'ALL' as const, label: `All  (${eliminated.length})`, color: 'var(--text-primary)', bg: 'rgba(255,255,255,0.08)' },
+      { key: 'ALL' as const, label: `All (${eliminated.length})`, color: 'var(--text-primary)', bg: 'rgba(255,255,255,0.08)' },
       ...priorityOrder.filter(r => counts[r]).map(r => ({
         key: r,
         label: `${REASON_META[r].icon} ${REASON_META[r].label} (${counts[r]})`,
@@ -243,6 +246,25 @@ export function openEliminatedBondsModal(
         const meta = REASON_META[e.reason];
         const yieldStr = e.bond.yield > 0 ? pct(e.bond.yield) : '—';
         const couponStr = e.bond.coupon !== null && e.bond.coupon !== undefined ? pct(e.bond.coupon) : '—';
+        const entity = resolveBondEntity(e.bond);
+
+        let extraDetailHtml = '';
+        if (e.reason === 'PROMOTER_GOVERNANCE_RISK' || entity.riskSeverity === 'CRITICAL' || entity.riskSeverity === 'HIGH') {
+          const flags = entity.promoterRecord?.negativeMediaFlags || [];
+          extraDetailHtml = `
+            <div style="margin-top: 0.35rem; font-size: 0.72rem; color: #fca5a5; line-height: 1.35;">
+              <strong>Forensic Audit:</strong> ${e.detail}
+            </div>
+            ${flags.length > 0 ? `
+              <div style="display: flex; gap: 0.25rem; flex-wrap: wrap; margin-top: 0.3rem;">
+                ${flags.slice(0, 3).map(f => `<span style="background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.4); padding: 0.1rem 0.35rem; border-radius: 4px; font-size: 0.65rem;">⚠️ ${f}</span>`).join('')}
+              </div>
+            ` : ''}
+          `;
+        } else {
+          extraDetailHtml = `<div style="font-size: 0.75rem; color: var(--text-secondary);">${e.detail}</div>`;
+        }
+
         return `
           <tr style="border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.1s; cursor: pointer;"
               onmouseenter="this.style.background='rgba(255,255,255,0.03)'"
@@ -254,6 +276,7 @@ export function openEliminatedBondsModal(
                 title="View Bond Details"
                 onclick="if(window.openBondDetailByIsin) window.openBondDetailByIsin('${e.bond.isin}')">
               ${e.bond.issuer}
+              ${entity.canonicalEntityName && entity.canonicalEntityName !== e.bond.issuer ? `<div style="font-size: 0.68rem; color: var(--text-secondary); font-weight: normal;">Group: ${entity.canonicalEntityName}</div>` : ''}
             </td>
             <td style="padding: 0.6rem 0.75rem; text-align: center;">
               <span style="font-size: 0.75rem; background: rgba(255,255,255,0.06); padding: 0.15rem 0.45rem; border-radius: 4px;">
@@ -270,10 +293,14 @@ export function openEliminatedBondsModal(
                 font-size: 0.68rem; font-weight: 700; color: ${meta.color};
               ">${meta.icon} ${meta.label}</span>
             </td>
-            <td style="padding: 0.6rem 0.75rem; font-size: 0.75rem; color: var(--text-secondary); max-width: 280px;">
-              ${e.detail}
+            <td style="padding: 0.6rem 0.75rem; max-width: 320px;">
+              ${extraDetailHtml}
             </td>
-            <td style="padding: 0.6rem 0.75rem; text-align: right;">
+            <td style="padding: 0.6rem 0.75rem; text-align: right; white-space: nowrap;">
+              <button onclick="if(window.openPromoterAuditByIsin) window.openPromoterAuditByIsin('${e.bond.isin}')"
+                style="background: rgba(212,175,55,0.15); border: 1px solid rgba(212,175,55,0.35); color: var(--accent-gold); font-size: 0.7rem; padding: 0.3rem 0.5rem; border-radius: 4px; cursor: pointer; margin-right: 0.3rem;" title="Open Forensic Audit Case File">
+                ⚖️ Audit
+              </button>
               <button onclick="window.forceIncludeCompany('${e.bond.issuer.replace(/'/g, "\\'")}')" 
                 style="background: transparent; border: 1px solid var(--border-glass); color: var(--text-primary); font-size: 0.7rem; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer;">
                 Override

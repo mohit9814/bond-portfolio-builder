@@ -216,9 +216,16 @@ export function renderMultiClientDashboard() {
                     <h4 style="margin: 0; font-size: 0.98rem; color: #fff; font-weight: 700;">${pe.parentGroup}</h4>
                     <span style="font-size: 0.72rem; color: var(--text-secondary);">${pe.clientCount} Client(s) • ${pe.holdingCount} Holding(s)</span>
                   </div>
-                  <span style="font-size: 0.72rem; font-weight: 800; color: ${s.text}; background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px;">
-                    ${pe.riskSeverity} RISK
-                  </span>
+                  <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.2rem;">
+                    <span style="font-size: 0.72rem; font-weight: 800; color: ${s.text}; background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px;">
+                      ${pe.riskSeverity} RISK
+                    </span>
+                    ${pe.governanceScore !== undefined ? `
+                      <span style="font-size: 0.65rem; font-weight: 700; color: var(--accent-gold); background: rgba(212,175,55,0.15); border: 1px solid rgba(212,175,55,0.3); padding: 1px 4px; border-radius: 3px;">
+                        Gov: ${pe.governanceScore}/100
+                      </span>
+                    ` : ''}
+                  </div>
                 </div>
 
                 <div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 0.5rem; margin-bottom: 0.5rem;">

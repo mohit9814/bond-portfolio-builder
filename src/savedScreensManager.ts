@@ -13,6 +13,7 @@ export interface ScreenerFilterState {
   minTradableFV?: number;
   guarantorOnly?: boolean;
   securedOnly?: boolean;
+  governanceRisk?: string;
 }
 
 export interface SavedScreen {
@@ -27,6 +28,14 @@ export interface SavedScreen {
 const STORAGE_KEY = 'bond-saved-screens';
 
 export const PRESET_SCREENS: SavedScreen[] = [
+  {
+    id: 'preset-clean-governance',
+    name: '🛡️ Clean Governance & High Yield',
+    description: 'Bonds with clean promoter governance (Score >= 80) and yield >= 10.5%',
+    isPreset: true,
+    filters: { minYield: 10.5, governanceRisk: 'CLEAN_ONLY' },
+    createdAt: 1700000000000
+  },
   {
     id: 'preset-high-yield',
     name: '🔥 High Yield (> 12% YTM)',

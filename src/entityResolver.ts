@@ -14,15 +14,30 @@ export interface EntityResolutionResult {
 }
 
 /**
- * Resolves any bond, issuer name, or ISIN to its canonical Ultimate Parent Entity.
+ * Resolves any bond, holding, issuer name, or ISIN to its canonical Ultimate Parent Entity.
  * Ensures that multiple bonds from the same group (e.g. IIFL Samasta + IIFL Home Fin,
  * or Edelweiss + Nido + ECap) share the exact same canonicalEntityKey.
  */
-export function resolveBondEntity(bondOrIssuer: DefaultBond | string): EntityResolutionResult {
-  const issuerStr = typeof bondOrIssuer === 'string' ? bondOrIssuer : (bondOrIssuer.issuer || '');
-  const isinStr = typeof bondOrIssuer === 'string' ? '' : (bondOrIssuer.isin || '');
+export function resolveBondEntity(bondOrIssuer: DefaultBond | any | string): EntityResolutionResult {
+  let issuerStr = '';
+  let isinStr = '';
+  let groupHint = '';
 
-  const promoter = getPromoterRiskRecord(issuerStr) || (isinStr ? getPromoterRiskRecord(isinStr) : null);
+  if (typeof bondOrIssuer === 'string') {
+    if (bondOrIssuer.toUpperCase().startsWith('INE')) {
+      isinStr = bondOrIssuer.trim();
+    } else {
+      issuerStr = bondOrIssuer.trim();
+    }
+  } else if (bondOrIssuer && typeof bondOrIssuer === 'object') {
+    issuerStr = bondOrIssuer.issuer || bondOrIssuer.issuerName || bondOrIssuer.readableName || '';
+    isinStr = bondOrIssuer.isin || '';
+    groupHint = bondOrIssuer.parentGroup || '';
+  }
+
+  const promoter = (issuerStr ? getPromoterRiskRecord(issuerStr) : null) ||
+                   (isinStr ? getPromoterRiskRecord(isinStr) : null) ||
+                   (groupHint ? getPromoterRiskRecord(groupHint) : null);
 
   if (promoter) {
     return {

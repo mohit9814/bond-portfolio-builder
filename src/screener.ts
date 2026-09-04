@@ -2,6 +2,7 @@ import { DefaultBond } from './defaultInventory';
 import { getUnitPrice } from './bondEngine';
 import { getCompanyOverrides, setCompanyOverride } from './overridesManager';
 import { openBondDetailModal } from './bondDetailModal';
+import { resolveBondEntity } from './entityResolver';
 import {
   ScreenerFilterState,
   getAllScreens,
@@ -15,7 +16,7 @@ let inventoryBonds: DefaultBond[] = [];
 let filteredBonds: DefaultBond[] = [];
 
 // Sorting State
-type ScreenerSortColumn = 'issuer' | 'isin' | 'rating' | 'coupon' | 'yield' | 'months' | 'price' | 'totalTradableFV' | 'sector';
+type ScreenerSortColumn = 'issuer' | 'isin' | 'rating' | 'governance' | 'coupon' | 'yield' | 'months' | 'price' | 'totalTradableFV' | 'sector';
 let sortColumn: ScreenerSortColumn = 'yield';
 let sortDirection: 'asc' | 'desc' = 'desc';
 
@@ -31,6 +32,7 @@ let screenerMaxCoupon: HTMLInputElement;
 let screenerMinTenure: HTMLInputElement;
 let screenerMaxTenure: HTMLInputElement;
 let screenerRating: HTMLSelectElement;
+let screenerGovernance: HTMLSelectElement;
 let screenerSector: HTMLSelectElement;
 let screenerFrequency: HTMLSelectElement;
 let screenerMaxPrice: HTMLSelectElement;
@@ -51,6 +53,7 @@ export function initScreener() {
   screenerMinTenure = document.getElementById('screener-min-tenure') as HTMLInputElement;
   screenerMaxTenure = document.getElementById('screener-max-tenure') as HTMLInputElement;
   screenerRating = document.getElementById('screener-rating') as HTMLSelectElement;
+  screenerGovernance = document.getElementById('screener-governance') as HTMLSelectElement;
   screenerSector = document.getElementById('screener-sector') as HTMLSelectElement;
   screenerFrequency = document.getElementById('screener-frequency') as HTMLSelectElement;
   screenerMaxPrice = document.getElementById('screener-max-price') as HTMLSelectElement;
@@ -66,8 +69,8 @@ export function initScreener() {
   const filterInputs = [
     screenerSearch, screenerMinYield, screenerMaxYield, screenerMinCoupon,
     screenerMaxCoupon, screenerMinTenure, screenerMaxTenure, screenerRating,
-    screenerSector, screenerFrequency, screenerMaxPrice, screenerMinTradableFV,
-    screenerGuarantorOnly
+    screenerGovernance, screenerSector, screenerFrequency, screenerMaxPrice,
+    screenerMinTradableFV, screenerGuarantorOnly
   ];
 
   filterInputs.forEach(input => {
@@ -287,6 +290,7 @@ function getCurrentFilterState(): ScreenerFilterState {
   if (screenerMinTenure?.value) state.minTenure = parseFloat(screenerMinTenure.value);
   if (screenerMaxTenure?.value) state.maxTenure = parseFloat(screenerMaxTenure.value);
   if (screenerRating?.value) state.rating = screenerRating.value;
+  if (screenerGovernance?.value) state.governanceRisk = screenerGovernance.value;
   if (screenerSector?.value) state.sector = screenerSector.value;
   if (screenerFrequency?.value) state.frequency = screenerFrequency.value;
   if (screenerMaxPrice?.value) state.maxUnitPrice = parseFloat(screenerMaxPrice.value);
@@ -304,6 +308,7 @@ function setFilterState(f: ScreenerFilterState) {
   if (screenerMinTenure) screenerMinTenure.value = f.minTenure !== undefined ? f.minTenure.toString() : '';
   if (screenerMaxTenure) screenerMaxTenure.value = f.maxTenure !== undefined ? f.maxTenure.toString() : '';
   if (screenerRating) screenerRating.value = f.rating || '';
+  if (screenerGovernance) screenerGovernance.value = f.governanceRisk || '';
   if (screenerSector) screenerSector.value = f.sector || '';
   if (screenerFrequency) screenerFrequency.value = f.frequency || '';
   if (screenerMaxPrice) screenerMaxPrice.value = f.maxUnitPrice !== undefined ? f.maxUnitPrice.toString() : '';
@@ -359,10 +364,22 @@ export function applyFilters() {
       if (f.rating === 'SUB_BBB' && (r.includes('AAA') || r.includes('AA') || r.includes('A') || r.includes('BBB') || r.includes('SOVEREIGN'))) return false;
     }
 
-    // 6. Sector Filter
+    // 6. Forensic & Governance Risk Filter
+    if (f.governanceRisk) {
+      const entity = resolveBondEntity(b);
+      if (f.governanceRisk === 'EXCLUDE_CRITICAL_HIGH') {
+        if (entity.riskSeverity === 'CRITICAL' || entity.riskSeverity === 'HIGH') return false;
+      } else if (f.governanceRisk === 'CLEAN_ONLY') {
+        if (entity.governanceScore < 80 && entity.riskSeverity !== 'CLEAN') return false;
+      } else if (f.governanceRisk === 'CRITICAL_HIGH_ONLY') {
+        if (entity.riskSeverity !== 'CRITICAL' && entity.riskSeverity !== 'HIGH') return false;
+      }
+    }
+
+    // 7. Sector Filter
     if (f.sector && b.sector?.trim().toLowerCase() !== f.sector.trim().toLowerCase()) return false;
 
-    // 7. Payment Frequency Filter
+    // 8. Payment Frequency Filter
     if (f.frequency) {
       const freq = (b.frequency || '').toUpperCase();
       if (f.frequency === 'MONTHLY' && !freq.includes('MONTH')) return false;
@@ -372,19 +389,19 @@ export function applyFilters() {
       if (f.frequency === 'ON_MATURITY' && !freq.includes('MATURITY') && !freq.includes('CUMULATIVE')) return false;
     }
 
-    // 8. Max Unit Price Cap
+    // 9. Max Unit Price Cap
     if (f.maxUnitPrice !== undefined) {
       const uPrice = getUnitPrice(b);
       if (uPrice > f.maxUnitPrice) return false;
     }
 
-    // 9. Min Tradable FV
+    // 10. Min Tradable FV
     if (f.minTradableFV !== undefined) {
       const fv = b.totalTradableFV || 0;
       if (fv < f.minTradableFV) return false;
     }
 
-    // 10. Guarantor Only
+    // 11. Guarantor Only
     if (f.guarantorOnly && (!b.guarantor || !b.guarantor.trim())) return false;
 
     return true;
@@ -399,6 +416,13 @@ export function applyFilters() {
       case 'issuer': valA = a.issuer; valB = b.issuer; break;
       case 'isin': valA = a.isin; valB = b.isin; break;
       case 'rating': valA = a.rating; valB = b.rating; break;
+      case 'governance': {
+        const entA = resolveBondEntity(a);
+        const entB = resolveBondEntity(b);
+        valA = entA.governanceScore;
+        valB = entB.governanceScore;
+        break;
+      }
       case 'coupon': valA = a.coupon || 0; valB = b.coupon || 0; break;
       case 'yield': valA = a.yield; valB = b.yield; break;
       case 'months': valA = a.months; valB = b.months; break;
@@ -435,6 +459,7 @@ function renderActiveFilterChips(f: ScreenerFilterState) {
   if (f.minTenure !== undefined) activeChips.push({ label: `Min Tenure: ${f.minTenure}m`, clear: () => { if (screenerMinTenure) screenerMinTenure.value = ''; } });
   if (f.maxTenure !== undefined) activeChips.push({ label: `Max Tenure: ${f.maxTenure}m`, clear: () => { if (screenerMaxTenure) screenerMaxTenure.value = ''; } });
   if (f.rating) activeChips.push({ label: `Rating: ${f.rating}`, clear: () => { if (screenerRating) screenerRating.value = ''; } });
+  if (f.governanceRisk) activeChips.push({ label: `Governance: ${f.governanceRisk.replace(/_/g, ' ')}`, clear: () => { if (screenerGovernance) screenerGovernance.value = ''; } });
   if (f.sector) activeChips.push({ label: `Sector: ${f.sector}`, clear: () => { if (screenerSector) screenerSector.value = ''; } });
   if (f.frequency) activeChips.push({ label: `Freq: ${f.frequency}`, clear: () => { if (screenerFrequency) screenerFrequency.value = ''; } });
   if (f.maxUnitPrice !== undefined) activeChips.push({ label: `Max Unit: ₹${(f.maxUnitPrice / 100000).toFixed(1)}L`, clear: () => { if (screenerMaxPrice) screenerMaxPrice.value = ''; } });
@@ -474,7 +499,7 @@ function renderTable() {
   screenerCount.innerText = `Showing ${filteredBonds.length} of ${inventoryBonds.length} bonds`;
 
   if (filteredBonds.length === 0) {
-    screenerTableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 3rem; color: var(--text-secondary);">No bonds match your active screening criteria. Try adjusting or clearing your filters.</td></tr>`;
+    screenerTableBody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 3rem; color: var(--text-secondary);">No bonds match your active screening criteria. Try adjusting or clearing your filters.</td></tr>`;
     return;
   }
 
@@ -498,6 +523,21 @@ function renderTable() {
     const isForced = overrides[b.issuer.trim().toUpperCase()]?.action === 'INCLUDE';
     const isExcluded = overrides[b.issuer.trim().toUpperCase()]?.action === 'EXCLUDE';
 
+    // Governance badge styling
+    const entityInfo = resolveBondEntity(b);
+    let govBadgeColor = '#10b981';
+    let govBg = 'rgba(16, 185, 129, 0.15)';
+    if (entityInfo.riskSeverity === 'CRITICAL') {
+      govBadgeColor = '#ef4444';
+      govBg = 'rgba(239, 68, 68, 0.2)';
+    } else if (entityInfo.riskSeverity === 'HIGH') {
+      govBadgeColor = '#f59e0b';
+      govBg = 'rgba(245, 158, 11, 0.2)';
+    } else if (entityInfo.riskSeverity === 'MODERATE') {
+      govBadgeColor = '#38bdf8';
+      govBg = 'rgba(56, 189, 248, 0.15)';
+    }
+
     tr.innerHTML = `
       <td style="padding: 0.75rem; font-weight: 600; cursor: pointer;" class="bond-name-cell" title="Click to view detailed insights">
         <div style="color: #fff;">${b.issuer}</div>
@@ -505,6 +545,15 @@ function renderTable() {
       </td>
       <td style="padding: 0.75rem; font-family: monospace; color: var(--text-secondary); font-size: 0.82rem;">${b.isin}</td>
       <td style="padding: 0.75rem;"><span style="background: rgba(255,255,255,0.08); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">${b.rating}</span></td>
+      <td style="padding: 0.75rem;">
+        <div style="display: flex; align-items: center; gap: 0.35rem;">
+          <span style="background: ${govBg}; color: ${govBadgeColor}; font-weight: 700; font-size: 0.78rem; padding: 0.18rem 0.45rem; border-radius: 4px; border: 1px solid ${govBadgeColor}40;">
+            ${entityInfo.governanceScore}/100
+          </span>
+          <span style="font-size: 0.68rem; color: ${govBadgeColor}; font-weight: 600;">${entityInfo.riskSeverity}</span>
+        </div>
+        ${entityInfo.canonicalEntityName && entityInfo.canonicalEntityName !== b.issuer ? `<div style="font-size: 0.68rem; color: var(--text-secondary); margin-top: 2px;">Grp: ${entityInfo.canonicalEntityName}</div>` : ''}
+      </td>
       <td style="padding: 0.75rem;">
         <div style="font-weight: 500;">${couponFmt}</div>
         <div style="font-size: 0.72rem; color: var(--text-secondary);">${b.frequency || 'ON MATURITY'}</div>
@@ -517,6 +566,9 @@ function renderTable() {
       <td style="padding: 0.75rem; font-weight: 600;">${priceFmt}</td>
       <td style="padding: 0.75rem;">${fvFmt}</td>
       <td style="padding: 0.75rem; text-align: right; white-space: nowrap;">
+        <button class="audit-row-btn" data-isin="${b.isin}" title="Inspect Forensic Intelligence & Regulatory Records" style="border-radius: 6px; padding: 0.3rem 0.55rem; font-size: 0.75rem; font-weight: 600; background: rgba(212, 175, 55, 0.15); color: var(--accent-gold); border: 1px solid rgba(212, 175, 55, 0.35); cursor: pointer; margin-right: 0.35rem;">
+          ⚖️ Audit
+        </button>
         <button class="force-add-btn" data-issuer="${b.issuer}" style="border-radius: 6px; padding: 0.3rem 0.65rem; font-size: 0.75rem; font-weight: 600; ${isForced ? 'background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4);' : 'background: rgba(255,255,255,0.08); color: var(--text-primary); border: 1px solid var(--border-glass); cursor: pointer;'}">
           ${isForced ? '✓ Added' : '+ Include'}
         </button>
@@ -531,6 +583,18 @@ function renderTable() {
     if (nameCell) {
       nameCell.addEventListener('click', () => {
         openBondDetailModal(b);
+      });
+    }
+
+    // Audit button handler
+    const auditBtn = tr.querySelector('.audit-row-btn') as HTMLButtonElement;
+    if (auditBtn) {
+      auditBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const globalWin = window as unknown as { openPromoterAuditByIsin?: (isin: string) => void };
+        if (typeof globalWin.openPromoterAuditByIsin === 'function') {
+          globalWin.openPromoterAuditByIsin(b.isin);
+        }
       });
     }
 
@@ -563,7 +627,7 @@ function renderTable() {
 
   if (filteredBonds.length > 500) {
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td colspan="9" style="text-align: center; padding: 1rem; color: var(--text-secondary); font-size: 0.85rem;">Showing first 500 results of ${filteredBonds.length}. Use filters above to narrow your query.</td>`;
+    tr.innerHTML = `<td colspan="10" style="text-align: center; padding: 1rem; color: var(--text-secondary); font-size: 0.85rem;">Showing first 500 results of ${filteredBonds.length}. Use filters above to narrow your query.</td>`;
     screenerTableBody.appendChild(tr);
   }
 }
@@ -574,21 +638,27 @@ function exportFilteredToCSV() {
     return;
   }
 
-  const headers = ['Issuer', 'ISIN', 'Rating', 'Coupon (%)', 'Yield (YTM %)', 'Frequency', 'Tenure (Months)', 'Maturity', 'Unit Price (₹)', 'Tradable FV (₹)', 'Sector', 'Guarantor'];
-  const rows = filteredBonds.map(b => [
-    `"${(b.issuer || '').replace(/"/g, '""')}"`,
-    `"${b.isin}"`,
-    `"${b.rating}"`,
-    b.coupon ? (b.coupon * 100).toFixed(2) : '0.00',
-    (b.yield * 100).toFixed(2),
-    `"${b.frequency || 'ON MATURITY'}"`,
-    b.months.toFixed(1),
-    `"${b.maturity}"`,
-    getUnitPrice(b),
-    b.totalTradableFV || 0,
-    `"${(b.sector || '').replace(/"/g, '""')}"`,
-    `"${(b.guarantor || '').replace(/"/g, '""')}"`
-  ]);
+  const headers = ['Issuer', 'ISIN', 'Rating', 'Governance Score', 'Governance Risk', 'Parent Group', 'Coupon (%)', 'Yield (YTM %)', 'Frequency', 'Tenure (Months)', 'Maturity', 'Unit Price (₹)', 'Tradable FV (₹)', 'Sector', 'Guarantor'];
+  const rows = filteredBonds.map(b => {
+    const entity = resolveBondEntity(b);
+    return [
+      `"${(b.issuer || '').replace(/"/g, '""')}"`,
+      `"${b.isin}"`,
+      `"${b.rating}"`,
+      entity.governanceScore,
+      `"${entity.riskSeverity}"`,
+      `"${(entity.canonicalEntityName || '').replace(/"/g, '""')}"`,
+      b.coupon ? (b.coupon * 100).toFixed(2) : '0.00',
+      (b.yield * 100).toFixed(2),
+      `"${b.frequency || 'ON MATURITY'}"`,
+      b.months.toFixed(1),
+      `"${b.maturity}"`,
+      getUnitPrice(b),
+      b.totalTradableFV || 0,
+      `"${(b.sector || '').replace(/"/g, '""')}"`,
+      `"${(b.guarantor || '').replace(/"/g, '""')}"`
+    ];
+  });
 
   const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
   const encodedUri = encodeURI(csvContent);
@@ -599,3 +669,4 @@ function exportFilteredToCSV() {
   link.click();
   document.body.removeChild(link);
 }
+
